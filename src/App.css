@@ -71,3 +71,352 @@
   font-size: 0.9rem;
   line-height: 1.5;
 }
+
+/* Visualizer Styles */
+.visualizer-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  /* Disable outer scroll, let internal container handle it */
+  padding: 0;
+  /* Removing padding so scrollbar hits edge */
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+}
+
+.visualizer-container {
+  flex: 1;
+  overflow: auto;
+  /* Single scroll container */
+  padding: 1rem;
+  /* Pad internal content */
+  font-family: 'Fira Code', monospace;
+  font-size: 0.9rem;
+}
+
+.visualizer-error {
+  color: var(--error);
+  background: rgba(239, 68, 68, 0.1);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--error);
+}
+
+.node-call {
+  margin-left: 1rem;
+  margin-top: 0.5rem;
+  border-left: 2px solid var(--glass-border);
+  padding-left: 0.5rem;
+}
+
+.node-header {
+  font-weight: bold;
+  color: var(--accent-secondary);
+  background: rgba(99, 102, 241, 0.1);
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-bottom: 4px;
+}
+
+.node-if>.node-header {
+  color: var(--warning);
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.node-equals>.node-header {
+  color: var(--accent-primary);
+}
+
+.node-and>.node-header,
+.node-or>.node-header {
+  color: var(--success);
+}
+
+.node-args {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.node-arg-wrapper {
+  position: relative;
+}
+
+.node-string {
+  color: var(--success);
+}
+
+.node-ident {
+  color: var(--text-primary);
+  font-style: italic;
+}
+
+/* Smart View Table */
+/* Smart View Table */
+.smart-table-wrapper {
+  /* Remove internal specific scrolling constraints */
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+}
+
+.smart-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.smart-table th {
+  background: var(--bg-secondary);
+  /* Needs solid bg for sticky */
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 0.8rem 1rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  border-bottom: 2px solid var(--glass-border);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.smart-table td {
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid var(--glass-border);
+  vertical-align: top;
+}
+
+.smart-table tr:last-child td {
+  border-bottom: none;
+}
+
+.smart-table tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.smart-table tr:hover td {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.smart-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  color: white;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px var(--accent-glow);
+}
+
+.node-keyword {
+  color: var(--warning);
+  font-weight: bold;
+}
+
+.header-field {
+  color: var(--accent-secondary);
+  background: rgba(99, 102, 241, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Fira Code', monospace;
+}
+
+.node-else {
+  font-style: italic;
+  opacity: 0.7;
+}
+
+.simplified-condition {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.op-equals {
+  color: var(--text-muted);
+  font-weight: bold;
+}
+
+.clean-string {
+  color: var(--text-primary);
+  font-weight: 500;
+  font-family: var(--font-sans);
+  /* Use sans-serif for natural text */
+}
+
+.header-label {
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-right: 0.5em;
+}
+
+.segment-table {
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+}
+
+.segment-tree {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+/* Segment Styles */
+.segment-wrapper {
+  margin-bottom: 2rem;
+}
+
+.segment-header {
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid var(--glass-border);
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-sans);
+}
+
+.segment-index {
+  background: var(--accent-primary);
+  color: white;
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Fira Code', monospace;
+}
+
+/* Compact Logic Styles */
+.condition-block {
+  padding: 0.5rem;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--glass-border);
+}
+
+.condition-and {
+  border-left: 3px solid var(--success);
+}
+
+.condition-or {
+  border-left: 3px solid var(--warning);
+}
+
+.condition-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.condition-or-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.logic-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  font-weight: bold;
+  opacity: 0.8;
+  margin-bottom: 0.25rem;
+  display: block;
+}
+
+.condition-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.condition-equals-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--glass-border);
+}
+
+.field-name {
+  color: var(--accent-secondary);
+  font-size: 0.85rem;
+}
+
+/* Rule Card Styles (Complex Logic) */
+.smart-card-list {
+  margin-bottom: 2rem;
+}
+
+.cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--glass-border);
+  border-top: none;
+  /* Header has border */
+}
+
+.rule-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.rule-card-header {
+  padding: 0.75rem 1rem;
+  background: var(--glass-highlight);
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.rule-label {
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: var(--text-muted);
+}
+
+.rule-result {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--accent-primary);
+  font-family: var(--font-sans);
+}
+
+.rule-card-body {
+  padding: 1rem;
+  background: var(--bg-tertiary);
+}
+
+.rule-conditions-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.rule-conditions-content {
+  padding-left: 0.5rem;
+}
