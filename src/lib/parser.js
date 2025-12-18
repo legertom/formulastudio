@@ -141,6 +141,12 @@ export function parse(tokens) {
     // Check if we start with {{
     if (peek().type === TokenType.OPEN_BRACE) {
         advance();
+
+        // Handle empty braces {{}}
+        if (peek().type === TokenType.CLOSE_BRACE) {
+            advance();
+            return null;
+        }
     } else {
         // We might allow parsing fragments without {{ }}
     }
@@ -225,6 +231,53 @@ export function stringify(ast) {
         // The prefix notation is `func arg1 arg2`.
         // So: `name arg1 arg2 ...`
         return `${ast.name} ${args}`;
+    }
+
+    throw new Error(`Unknown AST type: ${ast.type}`);
+}
+
+/**
+ * Pretty-prints AST to IDM formula string with indentation.
+ * @param {Object} ast 
+ * @param {number} indentLevel 
+ * @returns {string}
+ */
+export function prettyStringify(ast, indentLevel = 0) {
+    if (!ast) return '';
+    const indent = '  '.repeat(indentLevel);
+
+    if (ast.type === 'StringLiteral') {
+        return `"${ast.value}"`;
+    }
+
+    if (ast.type === 'Identifier') {
+        return ast.value;
+    }
+
+    if (ast.type === 'CallExpression') {
+        // Check if any argument is a CallExpression (nested)
+        const hasNestedCall = ast.arguments.some(arg => arg.type === 'CallExpression');
+
+        // If it's a simple call (no nested calls), keep it on one line? 
+        // Or strictly indent everything?
+        // Let's try a hybrid: if arguments are short/simple, one line.
+        // Actually, for "if" statements in IDM, they get long fast.
+        // Let's force newline if there are nested calls OR if it's an "if" 
+
+        if (hasNestedCall || ast.name === 'if') {
+            const args = ast.arguments.map(arg => {
+                const argStr = prettyStringify(arg, indentLevel + 1);
+                // If the argument itself was multiline, it already has indentation.
+                // But we need to make sure we don't double indent the first line?
+                // No, prettyStringify returns the string. We need to prepend the newline + indent.
+                return `\n${'  '.repeat(indentLevel + 1)}${argStr}`;
+            }).join('');
+
+            return `${ast.name}${args}`;
+        } else {
+            // Simple one-liner: name arg1 arg2
+            return `${ast.name} ${ast.arguments.map(a => prettyStringify(a, 0)).join(' ')}`;
+        }
     }
 
     throw new Error(`Unknown AST type: ${ast.type}`);

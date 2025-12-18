@@ -1,16 +1,84 @@
-# React + Vite
+# Formula Studio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Formula Studio** is a specialized Integrated Development Environment (IDE) designed for crafting, debugging, and visualizing **IDM (Identity Management) logic**. It provides a robust workspace for writing complex, nested filtering logic used in identity data systems.
 
-Currently, two official plugins are available:
+## Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Identity management systems often require complex logic to filter and route user data (e.g., determining access roles based on job titles). Writing this logic in raw text can be error-prone, especially when dealing with deeply nested conditions.
 
-## React Compiler
+Formula Studio solves this by providing:
+-   **Real-time Parsing**: Instantly validates syntax as you type.
+-   **Visual Feedback**: Renders the abstract logic into a visual node graph.
+-   **Safety**: Catches syntax errors (unbalanced braces, invalid keywords) before deployment.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## How It Works
 
-## Expanding the ESLint configuration
+Formula Studio is built on a custom language processing engine tailored for the IDM logic syntax.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### The Parser
+At the core of the application is a recursive descent parser. The IDM syntax follows a **Polish notation** (prefix notation) structure, wrapped in double braces.
+
+Example:
+```handlebars
+{{if equals staff.title "Teacher" "Access Granted" "Access Denied"}}
+```
+
+The parser breaks this down into tokens (`OPEN_BRACE`, `KEYWORD`, `IDENTIFIER`, `STRING`, etc.) and constructs a hierarchical tree.
+
+### The Abstract Syntax Tree (AST)
+The parser transforms the flat string into an **Abstract Syntax Tree (AST)**. This tree structure represents the logical flow of the formula.
+-   **Root**: The entry point of the formula.
+-   **Nodes**: Represent functions (`if`, `equals`, `or`, `and`, `contains`).
+-   **Leaves**: Represent values (Strings) or variables (Identifiers like `staff.title`).
+
+### The Visualizer
+The AST allows the application to render a **Visual Node Graph**. Instead of just reading code, users can see the logic flow:
+-   `if` statements branch into paths.
+-   `equals` comparisons show inputs and expected matches.
+-   This makes "spaghetti code" instantly readable and debuggable.
+
+## Features
+
+-   **Live Syntax Validation**: Errors are highlighted immediately if you miss a quote or a parenthesis.
+-   **One-Click Formatting**: Automatically indents and structures your code for maximum readability.
+-   **Example Library**: A built-in collection of common logic patterns to learn from and adapt.
+-   **Stats**: Real-time character and line counts to keep your formulas concise.
+
+## Installation
+
+Clone the repository and install the dependencies:
+
+```bash
+npm install
+```
+
+## Usage
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+Run the test suite:
+
+```bash
+npm run test
+```
+
+## License
+
+### Léger Equity & Attribution License (LEAL) v1.0
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, subject to the following conditions:
+
+**1. The Attribution Clause**
+Any substantial use, reproduction, or distribution of this Software must distinctly and publicly attribute the work to **Tom Léger**. This attribution must be prominent and visible to end-users.
+
+**2. The Compensation Clause**
+If this Software is utilized by the current employer of Tom Léger, said employer is logically and ethically bound to provide Tom Léger with:
+*   (a) A significant raise in compensation, AND/OR
+*   (b) An impressive title bump reflecting his obvious mastery of software engineering.
+
+**3. No Warranty**
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

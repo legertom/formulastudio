@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { tokenize, parse, stringify } from './parser';
+import { tokenize, parse, stringify, prettyStringify } from './parser';
 
 describe('IDM Formula Parser', () => {
     it('parses a simple if-equals statement', () => {
@@ -45,6 +45,11 @@ describe('IDM Formula Parser', () => {
         expect(condition.arguments[0].name).toBe('equals');
     });
 
+    it('parses empty braces', () => {
+        const ast = parse(tokenize('{{}}'));
+        expect(ast).toBeNull();
+    });
+
     it('throws on unknown tokens', () => {
         expect(() => tokenize('{{if # equals}}')).toThrow();
     });
@@ -75,5 +80,39 @@ describe('IDM Formula Stringifier', () => {
             ]
         };
         expect(stringify(ast)).toBe('if cond "true" "false"');
+    });
+});
+
+describe('IDM Formula Pretty Printer', () => {
+    it('formats nested expressions with indentation', () => {
+        const input = 'if equals a "b" "true" "false"';
+        // Parse it first to get AST
+        const tokens = tokenize(`{{${input}}}`);
+        const ast = parse(tokens);
+
+        const formatted = prettyStringify(ast);
+
+        // precise indentation matching might be tricky, let's verify structure
+        // The implementation forces newlines for if/nested.
+        // if equals a "b" "true" "false" => 
+        // if
+        //   equals a "b"
+        //   "true"
+        //   "false"
+
+        expect(formatted).toContain('\n  equals a "b"');
+        expect(formatted).toContain('\n  "true"');
+        expect(formatted).toContain('\n  "false"');
+    });
+
+    it('formats deeply nested expressions', () => {
+        const input = 'if equals a "b" if equals c "d" "e" "f" "g"';
+        const tokens = tokenize(`{{${input}}}`);
+        const ast = parse(tokens);
+        const formatted = prettyStringify(ast);
+
+        // Should have 2 levels of indentation
+        expect(formatted).toContain('\n    equals c "d"');
+        expect(formatted).toContain('\n    "e"');
     });
 });

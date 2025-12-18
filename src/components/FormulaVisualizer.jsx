@@ -66,9 +66,6 @@ function segmentLogicChain(node) {
         if (currentSubject && currentBuffer.length > 1) {
             segments.push({ type: 'table', rows: [...currentBuffer], commonField: currentSubject });
         } else {
-            // Fallback to tree for each item if not enough for a table
-            // Actually, if it's just 1 item but valid if/else, we might want to just show it as a small table 
-            // OR just standard tree nodes. Let's keep it simple: small tables are fine.
             segments.push({ type: 'table', rows: [...currentBuffer], commonField: currentSubject });
         }
         currentBuffer = [];
@@ -81,10 +78,6 @@ function segmentLogicChain(node) {
         // Analyze condition for subject
         const subject = getSubjectField(condition);
 
-        // Logic: If subject matches current buffer, add to buffer.
-        // If subject differs, flush buffer and start new.
-        // Use 'null' subject for complex logic (which forces a flush if we were tracking a subject)
-
         if (subject && subject === currentSubject) {
             currentBuffer.push({ condition, value: trueVal });
         } else if (subject) {
@@ -94,16 +87,6 @@ function segmentLogicChain(node) {
             currentBuffer.push({ condition, value: trueVal });
         } else {
             // Complex condition (no single subject)
-            flushBuffer(); // Flush previous simple stuff
-
-            // For complex items, we can either:
-            // A) Make a "Generic Table Row" (Condition | Result)
-            // B) Output a Tree Node
-            // Let's use a "Generic Table" approach for the chain, but with no common field.
-            // Actually, typically if it's complex, it might be better as a tree.
-            // BUT, to keep the "Flow" vertical, a table with explicit conditions is often better.
-            // So let's start a generic buffer (subject = null).
-
             if (currentSubject !== null) flushBuffer();
             currentSubject = null;
             currentBuffer.push({ condition, value: trueVal });
@@ -114,7 +97,6 @@ function segmentLogicChain(node) {
             current = falseVal;
         } else {
             // End of chain
-            // Add the final 'else' to the current buffer
             currentBuffer.push({ condition: { type: 'Default', value: 'Catch All' }, value: falseVal });
             flushBuffer();
             current = null;
@@ -147,11 +129,15 @@ const ConditionView = ({ node }) => {
             <div className="tooltip-container">
                 <span className="node-keyword node-catch-all">
                     Catch All
-                    <span className="info-icon">?</span>
+                    <button
+                        className="info-icon"
+                        aria-label="What is Catch All?"
+                        onClick={(e) => e.preventDefault()} // Prevent focus loss if needed, mostly for tooltip behavior
+                    >?</button>
                 </span>
-                <span className="tooltip-text">
+                <div role="tooltip" className="tooltip-text">
                     This is the OU that users go into if they don't fit anywhere else.
-                </span>
+                </div>
             </div>
         );
     }
@@ -160,7 +146,7 @@ const ConditionView = ({ node }) => {
     if (node?.type === 'CallExpression' && node.name === 'and') {
         const args = flattenOp(node, 'and');
         return (
-            <div className="condition-block condition-and">
+            <div className="condition-block condition-and" role="group" aria-label="All conditions required">
                 <span className="logic-label">All Required:</span>
                 <div className="condition-stack">
                     {args.map((arg, i) => <ConditionView key={i} node={arg} />)}
@@ -173,7 +159,7 @@ const ConditionView = ({ node }) => {
     if (node?.type === 'CallExpression' && node.name === 'or') {
         const args = flattenOp(node, 'or');
         return (
-            <div className="condition-block condition-or">
+            <div className="condition-block condition-or" role="group" aria-label="At least one condition required">
                 <span className="logic-label">Matches One Of:</span>
                 <div className="condition-tags">
                     {args.map((arg, i) => <ConditionView key={i} node={arg} />)}
@@ -185,7 +171,7 @@ const ConditionView = ({ node }) => {
     // 3. Clean Equals: "Field = Value"
     if (node?.type === 'CallExpression' && node.name === 'equals') {
         return (
-            <div className="condition-equals-inline">
+            <div className="condition-equals-inline" aria-label={`${node.arguments[0]?.value} equals ${node.arguments[1]?.value}`}>
                 <span className="field-name">{node.arguments[0]?.value}</span>
                 <span className="op">=</span>
                 <CleanValue node={node.arguments[1]} />
@@ -200,36 +186,41 @@ const ConditionView = ({ node }) => {
 // --- Card View for Complex Logic ---
 
 const RuleCard = ({ row }) => {
+    const isCatchAll = row.condition.type === 'Default';
+
     return (
-        <div className="rule-card">
-            <div className="rule-card-header">
+        <article className="rule-card">
+            <header className="rule-card-header">
                 <span className="rule-label">Target OU</span>
                 <div className="rule-result">
                     <CleanValue node={row.value} />
                 </div>
-            </div>
-            <div className="rule-card-body">
-                <div className="rule-conditions-label">Requires:</div>
-                <div className="rule-conditions-content">
-                    <ConditionView node={row.condition} />
+                {isCatchAll && <ConditionView node={row.condition} />}
+            </header>
+            {!isCatchAll && (
+                <div className="rule-card-body">
+                    <div className="rule-conditions-label">Requires:</div>
+                    <div className="rule-conditions-content">
+                        <ConditionView node={row.condition} />
+                    </div>
                 </div>
-            </div>
-        </div>
+            )}
+        </article>
     );
 };
 
 const SmartSegment = ({ segment, index }) => {
     if (segment.type === 'tree') {
         return (
-            <div className="segment-wrapper">
-                <div className="segment-header">
+            <section className="segment-wrapper" aria-label={`Logic Segment ${index + 1}`}>
+                <header className="segment-header">
                     <span className="segment-index">#{index + 1}</span>
                     <span>Processing Rule</span>
-                </div>
+                </header>
                 <div className="segment-tree">
                     <NodeView node={segment.node} />
                 </div>
-            </div>
+            </section>
         );
     }
 
@@ -238,16 +229,16 @@ const SmartSegment = ({ segment, index }) => {
     // Case A: Clean Table (Common Field detected)
     if (commonField) {
         return (
-            <div className="smart-table-wrapper segment-table">
-                <div className="segment-header">
+            <section className="smart-table-wrapper segment-table" aria-label={`Mapping Table for ${commonField}`}>
+                <header className="segment-header">
                     <span className="segment-index">#{index + 1}</span>
                     <span>Mapping by <span className="header-field">{commonField}</span></span>
-                </div>
+                </header>
                 <table className="smart-table">
                     <thead>
                         <tr>
-                            <th><span className="header-label">If {commonField} is...</span></th>
-                            <th>Target OU</th>
+                            <th scope="col"><span className="header-label">If {commonField} is...</span></th>
+                            <th scope="col">Target OU</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -271,30 +262,30 @@ const SmartSegment = ({ segment, index }) => {
                         })}
                     </tbody>
                 </table>
-            </div>
+            </section>
         );
     }
 
     // Case B: Complex Logic -> Card List
     return (
-        <div className="smart-card-list segment-cards">
-            <div className="segment-header">
+        <section className="smart-card-list segment-cards" aria-label={`Complex Rules Segment ${index + 1}`}>
+            <header className="segment-header">
                 <span className="segment-index">#{index + 1}</span>
                 <span>Complex Rules</span>
-            </div>
+            </header>
             <div className="cards-container">
                 {rows.map((row, idx) => (
                     <RuleCard key={idx} row={row} />
                 ))}
             </div>
-        </div>
+        </section>
     );
 };
 
 export default function FormulaVisualizer({ ast, error }) {
     if (error) {
         return (
-            <div className="visualizer-error">
+            <div className="visualizer-error" role="alert">
                 <h3>Parse Error</h3>
                 <p>{error.message}</p>
             </div>
