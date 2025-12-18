@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 const NodeView = ({ node }) => {
     if (!node) return null;
@@ -106,6 +107,53 @@ function segmentLogicChain(node) {
     return segments;
 }
 
+const PortalTooltip = ({ children, text }) => {
+    const [visible, setVisible] = useState(false);
+    const [coords, setCoords] = useState({ top: 0, left: 0 });
+    const triggerRef = useRef(null);
+
+    const handleMouseEnter = () => {
+        if (triggerRef.current) {
+            const rect = triggerRef.current.getBoundingClientRect();
+            // Position above the element centered
+            setCoords({
+                top: rect.top - 10, // 10px spacing
+                left: rect.left + rect.width / 2
+            });
+            setVisible(true);
+        }
+    };
+
+    const handleMouseLeave = () => {
+        setVisible(false);
+    };
+
+    return (
+        <>
+            <span
+                ref={triggerRef}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                className="portal-tooltip-trigger"
+            >
+                {children}
+            </span>
+            {visible && createPortal(
+                <div
+                    className="portal-tooltip"
+                    style={{
+                        top: coords.top,
+                        left: coords.left,
+                    }}
+                    role="tooltip"
+                >
+                    {text}
+                </div>,
+                document.body
+            )}
+        </>
+    );
+};
 const CleanValue = ({ node }) => {
     if (node?.type === 'StringLiteral') {
         return <span className="clean-string">{node.value}</span>;
@@ -126,19 +174,12 @@ const ConditionView = ({ node }) => {
     // 0. Synthetic Default (Else) -> "Catch All"
     if (node?.type === 'Default') {
         return (
-            <div className="tooltip-container">
+            <PortalTooltip text="This is the OU that users go into if they don't fit anywhere else.">
                 <span className="node-keyword node-catch-all">
                     Catch All
-                    <button
-                        className="info-icon"
-                        aria-label="What is Catch All?"
-                        onClick={(e) => e.preventDefault()} // Prevent focus loss if needed, mostly for tooltip behavior
-                    >?</button>
+                    <span className="info-icon" aria-label="What is Catch All?">?</span>
                 </span>
-                <div role="tooltip" className="tooltip-text">
-                    This is the OU that users go into if they don't fit anywhere else.
-                </div>
-            </div>
+            </PortalTooltip>
         );
     }
 

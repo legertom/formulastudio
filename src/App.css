@@ -968,99 +968,118 @@
   font-weight: normal;
   pointer-events: none;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  border: 1px solid var(--glass-border);
 }
-
 
 .tooltip-container:hover .tooltip-text {
   visibility: visible;
   opacity: 1;
 }
 
-/* Example UI Styles for DocsOperations */
-.btn-show-example {
-  background: transparent;
-  border: 1px solid var(--glass-border);
-  color: var(--accent-secondary);
-  padding: 4px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.8rem;
-  transition: all 0.2s ease;
-}
-
-.btn-show-example:hover {
-  background: var(--glass-highlight);
-  border-color: var(--accent-secondary);
-}
-
-.btn-show-example.active {
-  background: var(--accent-secondary);
-  color: white;
-  border-color: var(--accent-secondary);
-}
-
-.op-row-expanded td {
-  border-bottom: none !important;
-  background: rgba(255, 255, 255, 0.02);
-}
-
-.example-row td {
-  padding: 0 1rem 1rem 1rem !important;
-  background: rgba(255, 255, 255, 0.02);
-}
-
-.example-details {
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid var(--glass-border);
+.portal-tooltip {
+  position: fixed;
+  transform: translate(-50%, -100%);
+  /* Center horizontally and move up */
+  background-color: rgba(0, 0, 0, 0.95);
+  color: #fff;
+  text-align: center;
   border-radius: 6px;
-  padding: 1rem;
-  margin-top: 0.5rem;
+  padding: 8px 12px;
+  width: max-content;
+  max-width: 250px;
+  z-index: 9999;
+  /* Very high z-index to sit on top of everything */
+  pointer-events: none;
+  font-size: 0.8rem;
+  font-weight: normal;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--glass-border);
+  animation: fadeIn 0.15s ease-out;
 }
 
-.example-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--glass-border);
-}
+  /* Example UI Styles for DocsOperations */
+  .btn-show-example {
+    background: transparent;
+    border: 1px solid var(--glass-border);
+    color: var(--accent-secondary);
+    padding: 4px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.2s ease;
+  }
 
-.example-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
+  .btn-show-example:hover {
+    background: var(--glass-highlight);
+    border-color: var(--accent-secondary);
+  }
 
-.example-label {
-  text-transform: uppercase;
-  font-size: 0.7rem;
-  color: var(--text-muted);
-  font-weight: 600;
-}
+  .btn-show-example.active {
+    background: var(--accent-secondary);
+    color: white;
+    border-color: var(--accent-secondary);
+  }
 
-.example-translation {
-  display: flex;
-  gap: 0.75rem;
-  align-items: flex-start;
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  line-height: 1.4;
-}
+  .op-row-expanded td {
+    border-bottom: none !important;
+    background: rgba(255, 255, 255, 0.02);
+  }
 
-.viz-icon {
-  font-size: 1.2rem;
-}
+  .example-row td {
+    padding: 0 1rem 1rem 1rem !important;
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .example-details {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--glass-border);
+    border-radius: 6px;
+    padding: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  .example-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--glass-border);
+  }
+
+  .example-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .example-label {
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  .example-translation {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .viz-icon {
+    font-size: 1.2rem;
+  }
 
 
-.op-syntax {
-  display: inline-block;
-  font-size: 0.85rem;
-  font-family: var(--font-mono);
-  color: var(--accent-secondary);
-  background: rgba(99, 102, 241, 0.1);
-  padding: 2px 6px;
-  border-radius: 4px;
-  margin-bottom: 0.5rem;
-}
+  .op-syntax {
+    display: inline-block;
+    font-size: 0.85rem;
+    font-family: var(--font-mono);
+    color: var(--accent-secondary);
+    background: rgba(99, 102, 241, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+  }

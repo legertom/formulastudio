@@ -76,9 +76,9 @@ const OPERATIONS_DATA = [
                 syntax: '{{textBefore [field] "char"}}',
                 desc: "Extracts text before a specific character.",
                 example: {
-                    code: '{{textBefore email "@"}}',
-                    result: '"user@school.edu" → "user"',
-                    translation: "Finds the '@' symbol and keeps only the text that comes before it."
+                    code: '{{textBefore student.email "@"}}',
+                    result: '"jdoe123@school.edu" → "jdoe123"',
+                    translation: "Extracts the username portion of an email address by taking everything before the '@' symbol."
                 }
             },
             {
@@ -86,9 +86,9 @@ const OPERATIONS_DATA = [
                 syntax: '{{textAfter [field] "char"}}',
                 desc: "Extracts text after a specific character.",
                 example: {
-                    code: '{{textAfter email "@"}}',
-                    result: '"user@school.edu" → "school.edu"',
-                    translation: "Finds the '@' symbol and keeps only the text that comes after it."
+                    code: '{{textAfter student.email "@"}}',
+                    result: '"jdoe123@school.edu" → "school.edu"',
+                    translation: "Extracts the domain portion of an email address by taking everything after the '@' symbol."
                 }
             },
             {
@@ -112,9 +112,9 @@ const OPERATIONS_DATA = [
                 syntax: '{{replace [field] "find" "replace"}}',
                 desc: "Replaces all occurrences of a string.",
                 example: {
-                    code: '{{replace name.first " " "-"}}',
-                    result: '"Mary Jane" → "Mary-Jane"',
-                    translation: "Finds every space in the First Name and replaces it with a hyphen."
+                    code: '{{replace student.phone "-" ""}}',
+                    result: '"555-0199" → "5550199"',
+                    translation: "Removes hyphens from a phone number by replacing them with nothing (empty text)."
                 }
             }
         ]
@@ -164,9 +164,9 @@ const OPERATIONS_DATA = [
                 syntax: '{{if condition "true" "false"}}',
                 desc: "Returns one value if true, another if false.",
                 example: {
-                    code: '{{if equals student.grade "12" "Senior" "Student"}}',
-                    result: "If Grade is 12, returns 'Senior', otherwise 'Student'",
-                    translation: "Checks a condition. If it's true, use the first value; otherwise, use the second."
+                    code: '{{if equals student.grade "12" "Senior" "Underclassman"}}',
+                    result: "If Grade is 12, returns 'Senior'. If 09, returns 'Underclassman'.",
+                    translation: "Checks if the student's grade is exactly '12'. If it is, the formula outputs 'Senior'; otherwise, it outputs 'Underclassman'."
                 }
             },
             {
@@ -290,9 +290,9 @@ const OPERATIONS_DATA = [
                 syntax: "{{ignoreIfNull [field]}}",
                 desc: "Skips the field if it has no data.",
                 example: {
-                    code: "{{ignoreIfNull name.middle}}",
-                    result: "Skips middle name if blank",
-                    translation: "If the field is empty, the formula pretends it isn't there (useful to prevent errors)."
+                    code: '{{concat name.first " " (ignoreIfNull name.middle) " " name.last}}',
+                    result: '"John" + "" + "Doe" → "John  Doe" (cleans up spaces)',
+                    translation: "Useful when building full names where a middle name might not exist. Prevents the formula from breaking or adding 'null' text."
                 }
             }
         ]
