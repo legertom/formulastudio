@@ -1,5 +1,6 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { tokenize, parse, stringify } from './lib/parser'
+import { getExamples } from './lib/examples'
 import FormulaVisualizer from './components/FormulaVisualizer'
 import './App.css'
 
@@ -7,6 +8,11 @@ function App() {
   const [formula, setFormula] = useState(`{{if equals staff.title "SECRETARY" "Business" 
   if equals staff.title "SPECIAL ED DIRECTOR" "Business" 
   if equals staff.title "BUSINESS MANAGER" "Business" "Unknown"}}`)
+  const [examples, setExamples] = useState([]);
+
+  useEffect(() => {
+    setExamples(getExamples());
+  }, []);
 
   const { ast, error } = useMemo(() => {
     try {
@@ -25,6 +31,13 @@ function App() {
     }
   };
 
+  const loadExample = (e) => {
+    const selected = examples.find(ex => ex.name === e.target.value);
+    if (selected) {
+      setFormula(selected.formula);
+    }
+  };
+
   return (
     <div className="app-container">
       <header className="app-header">
@@ -36,9 +49,15 @@ function App() {
         {/* Editor Panel */}
         <div className="panel glass-panel">
           <div className="panel-header">
-            <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1em' }}>
               <span>Raw Logic</span>
-              <span style={{ fontSize: '0.8em', opacity: 0.7, marginLeft: '0.5em' }}>IDM Syntax</span>
+              <select className="example-select" onChange={loadExample} defaultValue="">
+                <option value="" disabled>Load Example...</option>
+                {examples.map(ex => (
+                  <option key={ex.name} value={ex.name}>Example {ex.name}</option>
+                ))}
+              </select>
+              <span style={{ fontSize: '0.8em', opacity: 0.7 }}>IDM Syntax</span>
             </div>
             <button
               onClick={handleFormat}

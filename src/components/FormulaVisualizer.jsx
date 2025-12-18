@@ -115,7 +115,7 @@ function segmentLogicChain(node) {
         } else {
             // End of chain
             // Add the final 'else' to the current buffer
-            currentBuffer.push({ condition: { type: 'Default', value: 'Else' }, value: falseVal });
+            currentBuffer.push({ condition: { type: 'Default', value: 'Catch All' }, value: falseVal });
             flushBuffer();
             current = null;
         }
@@ -141,6 +141,21 @@ function flattenOp(node, op) {
 }
 
 const ConditionView = ({ node }) => {
+    // 0. Synthetic Default (Else) -> "Catch All"
+    if (node?.type === 'Default') {
+        return (
+            <div className="tooltip-container">
+                <span className="node-keyword node-catch-all">
+                    Catch All
+                    <span className="info-icon">?</span>
+                </span>
+                <span className="tooltip-text">
+                    This is the OU that users go into if they don't fit anywhere else.
+                </span>
+            </div>
+        );
+    }
+
     // 1. Top-Level AND: Stack them
     if (node?.type === 'CallExpression' && node.name === 'and') {
         const args = flattenOp(node, 'and');
@@ -188,7 +203,7 @@ const RuleCard = ({ row }) => {
     return (
         <div className="rule-card">
             <div className="rule-card-header">
-                <span className="rule-label">Result</span>
+                <span className="rule-label">Target OU</span>
                 <div className="rule-result">
                     <CleanValue node={row.value} />
                 </div>
@@ -209,7 +224,7 @@ const SmartSegment = ({ segment, index }) => {
             <div className="segment-wrapper">
                 <div className="segment-header">
                     <span className="segment-index">#{index + 1}</span>
-                    <span>Logic Tree</span>
+                    <span>Processing Rule</span>
                 </div>
                 <div className="segment-tree">
                     <NodeView node={segment.node} />
@@ -226,13 +241,13 @@ const SmartSegment = ({ segment, index }) => {
             <div className="smart-table-wrapper segment-table">
                 <div className="segment-header">
                     <span className="segment-index">#{index + 1}</span>
-                    <span>Match by <span className="header-field">{commonField}</span></span>
+                    <span>Mapping by <span className="header-field">{commonField}</span></span>
                 </div>
                 <table className="smart-table">
                     <thead>
                         <tr>
-                            <th><span className="header-label">Value</span></th>
-                            <th>Result</th>
+                            <th><span className="header-label">If {commonField} is...</span></th>
+                            <th>Target OU</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -240,7 +255,7 @@ const SmartSegment = ({ segment, index }) => {
                             if (row.condition.type === 'Default') {
                                 return (
                                     <tr key={idx}>
-                                        <td><span className="node-keyword node-else">Else</span></td>
+                                        <td><ConditionView node={row.condition} /></td>
                                         <td><CleanValue node={row.value} /></td>
                                     </tr>
                                 );
