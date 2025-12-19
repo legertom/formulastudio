@@ -24,7 +24,7 @@ export const TokenType = {
     UNKNOWN: 'UNKNOWN'
 };
 
-const KEYWORDS = new Set(['if', 'equals', 'and', 'or', 'contains', 'not', 'greater', 'concat', 'substr', 'replace', 'len', 'ignoreIfNull']);
+const KEYWORDS = new Set(['if', 'equals', 'and', 'or', 'contains', 'not', 'greater', 'concat', 'substr', 'replace', 'len', 'ignoreIfNull', 'forEach']);
 
 /**
  * Tokenizes the input formula string.
@@ -204,6 +204,7 @@ export function parse(tokens) {
                 case 'replace': arity = 3; break;
                 case 'len': arity = 1; break;
                 case 'ignoreIfNull': arity = 1; break;
+                case 'forEach': arity = 3; break;
                 default: throw new Error(`Unknown function '${name}'`);
             }
 

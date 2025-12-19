@@ -66,6 +66,13 @@ function App() {
     }
   };
 
+  // Clear formula when switching modes
+  const handleModeSwitch = (mode) => {
+    if (mode === logicMode) return;
+    setLogicMode(mode);
+    setFormula('{{}}');
+  };
+
   const renderContent = () => {
     switch (currentView) {
       case 'training':
@@ -81,7 +88,7 @@ function App() {
                 <div className="toggle-group" style={{ display: 'flex', background: 'var(--bg-secondary)', padding: '2px', borderRadius: '6px', border: '1px solid var(--glass-border)' }}>
                   <button
                     className={`btn-toggle ${logicMode === 'OU' ? 'active' : ''}`}
-                    onClick={() => setLogicMode('OU')}
+                    onClick={() => handleModeSwitch('OU')}
                     style={{
                       padding: '0.25rem 0.75rem',
                       borderRadius: '4px',
@@ -96,7 +103,7 @@ function App() {
                   </button>
                   <button
                     className={`btn-toggle ${logicMode === 'GROUP' ? 'active' : ''}`}
-                    onClick={() => setLogicMode('GROUP')}
+                    onClick={() => handleModeSwitch('GROUP')}
                     style={{
                       padding: '0.25rem 0.75rem',
                       borderRadius: '4px',

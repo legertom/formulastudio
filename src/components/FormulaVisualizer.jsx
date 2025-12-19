@@ -226,13 +226,13 @@ const ConditionView = ({ node }) => {
 
 // --- Card View for Complex Logic ---
 
-const RuleCard = ({ row }) => {
+const RuleCard = ({ row, targetLabel = "Target OU" }) => {
     const isCatchAll = row.condition.type === 'Default';
 
     return (
         <article className="rule-card">
             <header className="rule-card-header">
-                <span className="rule-label">Target OU</span>
+                <span className="rule-label">{targetLabel}</span>
                 <div className="rule-result">
                     <CleanValue node={row.value} />
                 </div>
@@ -250,7 +250,7 @@ const RuleCard = ({ row }) => {
     );
 };
 
-const SmartSegment = ({ segment, index }) => {
+const SmartSegment = ({ segment, index, targetLabel = "Target OU" }) => {
     if (segment.type === 'tree') {
         return (
             <section className="segment-wrapper" aria-label={`Logic Segment ${index + 1}`}>
@@ -279,7 +279,7 @@ const SmartSegment = ({ segment, index }) => {
                     <thead>
                         <tr>
                             <th scope="col"><span className="header-label">If {commonField} is...</span></th>
-                            <th scope="col">Target OU</th>
+                            <th scope="col">{targetLabel}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -316,7 +316,7 @@ const SmartSegment = ({ segment, index }) => {
             </header>
             <div className="cards-container">
                 {rows.map((row, idx) => (
-                    <RuleCard key={idx} row={row} />
+                    <RuleCard key={idx} row={row} targetLabel={targetLabel} />
                 ))}
             </div>
         </section>
@@ -326,15 +326,17 @@ const SmartSegment = ({ segment, index }) => {
 import { tokenize, parse } from '../lib/parser';
 
 const GroupLogicView = ({ ast, error }) => {
-    // 1. Validate if it's a valid forEach
-    if (ast?.type !== 'CallExpression' || ast.name !== 'forEach') {
+    // 1. Check if it's a forEach loop
+    const isForEach = ast?.type === 'CallExpression' && ast.name === 'forEach';
+
+    // Verification: If NOT forEach, render as standard logic but with "Target Group" label
+    if (!isForEach) {
+        const segments = segmentLogicChain(ast);
         return (
-            <div className="visualizer-error">
-                <h3>Invalid Group Formula</h3>
-                <p>Group Logic mode requires a <code>forEach</code> formula.</p>
-                <div style={{ marginTop: '1rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-                    Example: <code>{'{{forEach "item" sections ...}}'}</code>
-                </div>
+            <div className="view-mode-container">
+                {segments.map((seg, i) => (
+                    <SmartSegment key={i} segment={seg} index={i} targetLabel="Target Group" />
+                ))}
             </div>
         );
     }
@@ -411,7 +413,7 @@ const GroupLogicView = ({ ast, error }) => {
                 <div className="view-mode-container">
                     {segments.length > 0 ? (
                         segments.map((seg, i) => (
-                            <SmartSegment key={i} segment={seg} index={i} />
+                            <SmartSegment key={i} segment={seg} index={i} targetLabel="Target Group" />
                         ))
                     ) : (
                         <div className="visualizer-empty" style={{ padding: '2rem' }}>
