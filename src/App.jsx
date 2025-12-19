@@ -11,17 +11,19 @@ import './App.css'
 function App() {
   const [currentView, setCurrentView] = useState('editor'); // 'editor', 'training', 'docs'
 
+  // Load examples immediately
+  const examples = useMemo(() => getExamples(), []);
+
+  // Initialize with Example 0
+  const defaultExample = examples.find(ex => ex.name === '0');
+
   // Editor State
-  const [logicMode, setLogicMode] = useState('OU'); // 'OU', 'GROUP'
-  const [formula, setFormula] = useState(`{{if equals staff.title "SECRETARY" "Business" 
+  const [logicMode, setLogicMode] = useState(defaultExample ? defaultExample.type : 'OU'); // 'OU', 'GROUP'
+  const [formula, setFormula] = useState(defaultExample ? defaultExample.formula : `{{if equals staff.title "SECRETARY" "Business" 
   if equals staff.title "SPECIAL ED DIRECTOR" "Business" 
   if equals staff.title "BUSINESS MANAGER" "Business" "Unknown"}}`)
-  const [examples, setExamples] = useState([]);
+  const [selectedExample, setSelectedExample] = useState(defaultExample ? '0' : '');
   const [showQuickDocs, setShowQuickDocs] = useState(false);
-
-  useEffect(() => {
-    setExamples(getExamples());
-  }, []);
 
   const { ast, error, stats } = useMemo(() => {
     try {
@@ -57,12 +59,16 @@ function App() {
 
   const handleNew = () => {
     setFormula('{{}}');
+    setSelectedExample('');
   };
 
   const loadExample = (e) => {
-    const selected = examples.find(ex => ex.name === e.target.value);
+    const name = e.target.value;
+    const selected = examples.find(ex => ex.name === name);
     if (selected) {
       setFormula(selected.formula);
+      setSelectedExample(name);
+      setLogicMode(selected.type);
     }
   };
 
@@ -71,6 +77,7 @@ function App() {
     if (mode === logicMode) return;
     setLogicMode(mode);
     setFormula('{{}}');
+    setSelectedExample('');
   };
 
   const renderContent = () => {
@@ -140,7 +147,7 @@ function App() {
                       id="example-loader"
                       className="example-select"
                       onChange={loadExample}
-                      defaultValue=""
+                      value={selectedExample}
                       aria-label="Load Example"
                     >
                       <option value="" disabled>Load Example...</option>
@@ -166,7 +173,10 @@ function App() {
                   <textarea
                     className="editor-area"
                     value={formula}
-                    onChange={(e) => setFormula(e.target.value)}
+                    onChange={(e) => {
+                      setFormula(e.target.value);
+                      if (selectedExample) setSelectedExample('');
+                    }}
                     spellCheck="false"
                     placeholder="Type your IDM formula here..."
                     aria-label="Formula Editor"

@@ -1,7 +1,178 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext, createContext } from 'react';
 import { createPortal } from 'react-dom';
 
+// --- Context ---
+const FormulaContext = createContext({ loopVariable: null });
+
+// --- Concat Flattener ---
+
+function flattenConcat(node) {
+    if (node?.type === 'CallExpression' && node.name === 'concat') {
+        return node.arguments.flatMap(flattenConcat);
+    }
+    return [node];
+}
+
+const ConcatView = ({ node }) => {
+    const parts = flattenConcat(node);
+
+    return (
+        <div className="concat-stream">
+            {parts.map((part, i) => (
+                <div key={i} className="stream-part-wrapper">
+                    {i > 0 && <span className="stream-plus">+</span>}
+                    <CleanValue node={part} />
+                </div>
+            ))}
+        </div>
+    );
+};
+
+
+
+// --- Path Expansion Logic (The "Simulator") ---
+
+/**
+ * Expands a node into all possible execution paths (Scenarios).
+ * Returns: Array of { valueParts: Node[], conditions: Node[] }
+ */
+function expandLogicPaths(node) {
+    if (!node) return [{ valueParts: [], conditions: [] }];
+
+    // 1. Strings/Literals -> Single path, no conditions
+    if (node.type === 'StringLiteral' || node.type === 'Identifier' || node.type === 'NumberLiteral') {
+        return [{ valueParts: [node], conditions: [] }];
+    }
+
+    // 2. Concat -> Cartesian Product of all arguments' paths
+    if (node.type === 'CallExpression' && node.name === 'concat') {
+        // flattenConcat handles nested concats, so we just iterate args
+        const args = flattenConcat(node);
+        let paths = [{ valueParts: [], conditions: [] }];
+
+        for (const arg of args) {
+            const argPaths = expandLogicPaths(arg);
+            const newPaths = [];
+
+            // Cross-multiply current paths with new arg paths
+            for (const existing of paths) {
+                for (const next of argPaths) {
+                    newPaths.push({
+                        valueParts: [...existing.valueParts, ...next.valueParts],
+                        conditions: [...existing.conditions, ...next.conditions]
+                    });
+                }
+            }
+            paths = newPaths;
+        }
+        return paths;
+    }
+
+    // 3. If/Else -> Union of branches
+    if (node.type === 'CallExpression' && node.name === 'if') {
+        const paths = [];
+        const [condition, trueVal, falseVal] = node.arguments;
+
+        // Path A: Condition is True
+        const truePaths = expandLogicPaths(trueVal);
+        truePaths.forEach(p => {
+            p.conditions.unshift(condition); // Add this condition
+            paths.push(p);
+        });
+
+        // Path B: Condition is False (Else)
+        if (falseVal) {
+            const falsePaths = expandLogicPaths(falseVal);
+            // We don't explicitly store "NOT condition" for visualizer simplicity usually,
+            // but if it's an if-chain, `falseVal` is usually another IF.
+            // If `falseVal` is just a value, it's the "Catch All" / "Else".
+            // We can mark it as a "Default" condition if we want to show it.
+            falsePaths.forEach(p => {
+                // If the *next* thing is an IF, we don't strictly technically need to say "NOT Prev", 
+                // because the Next IF's condition will be the focus.
+                // However, for pure else, we might want a marker.
+                // Let's rely on the structure: if falseVal is NOT an if, it's a catch-all.
+                if (falseVal.type !== 'CallExpression' || falseVal.name !== 'if') {
+                    // It is a specific "Else" leaf
+                    p.conditions.unshift({ type: 'Default', value: 'Start' });
+                }
+                paths.push(p);
+            });
+        }
+
+        return paths;
+    }
+
+    // Fallback: Treat as atomic value
+    return [{ valueParts: [node], conditions: [] }];
+}
+
+/**
+ * Checks if a subtree contains branching logic (if).
+ */
+function hasNestedLogic(node) {
+    if (!node) return false;
+    if (node.type === 'CallExpression' && node.name === 'if') return true;
+    if (node.arguments) return node.arguments.some(hasNestedLogic);
+    return false;
+}
+
+
+// --- Scenario View (Flattened) ---
+
+const LogicScenariosView = ({ node }) => {
+    // 1. Calculate all possible outcomes
+    const paths = expandLogicPaths(node);
+
+    // Filter out paths that result in purely empty strings if they are just fallbacks?
+    // User might want to see them. Let's keep them but maybe dim them.
+
+    return (
+        <div className="scenarios-container">
+            {paths.map((path, i) => {
+                // Check if purely empty
+                const isEmpty = path.valueParts.every(p => p.type === 'StringLiteral' && !p.value);
+                // "Otherwise" condition is present if we hit an explicit else
+                const isDefault = path.conditions.some(c => c.type === 'Default');
+
+                return (
+                    <div key={i} className={`scenario-card ${isEmpty ? 'scenario-empty' : ''}`}>
+                        <header className="scenario-header">
+                            <span className="scenario-label">Group Name Pattern</span>
+                            <div className="scenario-result-stream">
+                                {isEmpty ? (
+                                    <span style={{ opacity: 0.5 }}>(Unique Empty Result)</span>
+                                ) : (
+                                    path.valueParts.map((part, pIdx) => (
+                                        <CleanValue key={pIdx} node={part} />
+                                    ))
+                                )}
+                            </div>
+                        </header>
+                        <div className="scenario-body">
+                            <div className="reqs-label">Requires:</div>
+                            <div className="scenario-reqs-list">
+                                {path.conditions.length === 0 ? (
+                                    <span style={{ opacity: 0.5, fontStyle: 'italic', fontSize: '0.8em' }}>Always matches</span>
+                                ) : (
+                                    path.conditions.map((cond, cIdx) => {
+                                        if (cond.type === 'Default') return <span key={cIdx} className="sc-catch-all">No other rules matched</span>;
+                                        return <ConditionView key={cIdx} node={cond} />;
+                                    })
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                );
+            })}
+        </div>
+    );
+};
+
+
 const NodeView = ({ node }) => {
+    const { loopVariable } = useContext(FormulaContext);
+
     if (!node) return null;
 
     if (node.type === 'StringLiteral') {
@@ -9,10 +180,33 @@ const NodeView = ({ node }) => {
     }
 
     if (node.type === 'Identifier') {
-        return <span className="node-ident">{node.value}</span>;
+        const isLoopVar = loopVariable && (node.value === loopVariable || node.value.startsWith(`${loopVariable}.`));
+        return (
+            <span className={`node-ident ${isLoopVar ? 'node-loop-var' : ''}`}>
+                {node.value}
+            </span>
+        );
     }
 
     if (node.type === 'CallExpression') {
+        // Smart Switching:
+        // If it's a Concat AND it has nested IFs, use the Flattened Scenario View
+        if (node.name === 'concat' && hasNestedLogic(node)) {
+            return <LogicScenariosView node={node} />;
+        }
+
+        if (node.name === 'concat') {
+            return <ConcatView node={node} />; // Standard stream for simple concats
+        }
+        if (node.name === 'if') {
+            // Also use Scenario View for top-level embedded IFs (not wrapped in concat)
+            // to maintain consistency if they are just pure logic trees.
+            // But wait, our previous view was nice cards.
+            // Actually, expandLogicPaths works for IFs too. 
+            // If we use ScenarioView here, it standardizes everything to "Output -> Conditions".
+            return <LogicScenariosView node={node} />;
+        }
+
         return (
             <div className={`node-call node-${node.name}`}>
                 <div className="node-header">{node.name}</div>
@@ -156,6 +350,9 @@ const PortalTooltip = ({ children, text }) => {
 };
 const CleanValue = ({ node }) => {
     if (node?.type === 'StringLiteral') {
+        if (!node.value) {
+            return <span className="clean-string empty" style={{ opacity: 0.5, fontStyle: 'italic', fontSize: '0.85em' }}>(Empty)</span>;
+        }
         return <span className="clean-string">{node.value}</span>;
     }
     return <NodeView node={node} />;
@@ -220,8 +417,73 @@ const ConditionView = ({ node }) => {
         );
     }
 
+    // 4. Clean In/Contains: "Field IN List"
+    if (node?.type === 'CallExpression' && (node.name === 'in' || node.name === 'contains')) {
+        return (
+            <div className="condition-equals-inline" style={{ maxWidth: '100%' }}>
+                <span className="field-name">{node.arguments[0]?.value}</span>
+                <span className="op" style={{ color: 'var(--accent-secondary)' }}>IN</span>
+                <div style={{ display: 'inline-block', maxWidth: '150px', verticalAlign: 'middle', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    <CleanValue node={node.arguments[1]} />
+                </div>
+            </div>
+        );
+    }
+
     // Fallback
     return <NodeView node={node} />;
+};
+
+// --- Embedded Logic (String Builder context) ---
+
+// --- Nested Logic Card (Inspired by RuleCard) ---
+const LogicResultCard = ({ row }) => {
+    const isCatchAll = row.condition.type === 'Default';
+
+    return (
+        <div className="logic-result-card">
+            <header className="card-header">
+                <span className="card-label">Result</span>
+                <div className="card-value">
+                    <CleanValue node={row.value} />
+                </div>
+            </header>
+            <div className="card-reqs">
+                <div className="reqs-label">{isCatchAll ? 'Otherwise' : 'Requires:'}</div>
+                <div className="reqs-content">
+                    {isCatchAll ? (
+                        <span className="sc-catch-all">Fallback</span>
+                    ) : (
+                        <ConditionView node={row.condition} />
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const EmbeddedLogicView = ({ node }) => {
+    const segments = segmentLogicChain(node);
+
+    return (
+        <div className="embedded-logic-container">
+            {segments.map((seg, i) => (
+                <div key={i} className="embedded-segment">
+                    {seg.rows ? (
+                        <div className="embedded-cards">
+                            {seg.rows.map((row, idx) => (
+                                <LogicResultCard key={idx} row={row} />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="embedded-raw">
+                            <NodeView node={seg.node} />
+                        </div>
+                    )}
+                </div>
+            ))}
+        </div>
+    );
 };
 
 // --- Card View for Complex Logic ---
@@ -342,6 +604,7 @@ const GroupLogicView = ({ ast, error }) => {
     }
 
     const [varNameNode, listNode, logicNode] = ast.arguments;
+    const loopVariable = varNameNode?.value;
 
     // 2. Extract Logic AST
     let innerAst = null;
@@ -367,62 +630,125 @@ const GroupLogicView = ({ ast, error }) => {
     const segments = innerAst ? segmentLogicChain(innerAst) : [];
 
     return (
-        <div className="group-logic-container">
-            <header className="group-header" style={{
-                background: 'var(--bg-secondary)',
-                padding: '1rem',
-                borderRadius: '8px',
-                marginBottom: '1.5rem',
-                border: '1px solid var(--glass-border)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.75rem'
-            }}>
-                <div style={{
-                    background: 'var(--accent-primary)',
-                    color: 'white',
-                    width: '32px',
-                    height: '32px',
-                    borderRadius: '50%',
+        <FormulaContext.Provider value={{ loopVariable }}>
+            <div className="group-logic-container">
+                <div className="group-args-breakdown" style={{
                     display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontWeight: 'bold',
-                    fontSize: '0.85rem'
+                    flexDirection: 'column',
+                    gap: '1rem',
+                    marginBottom: '1.5rem',
+                    background: 'var(--bg-secondary)',
+                    padding: '1.5rem',
+                    borderRadius: '12px',
+                    border: '1px solid var(--glass-border)'
                 }}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M12 2v20M2 12h20" />
-                    </svg>
-                </div>
-                <div>
-                    <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-muted)' }}>
-                        Iterator Context
-                    </div>
-                    <div style={{ fontSize: '1.1rem', color: 'var(--text-primary)' }}>
-                        For Each <span className="node-string" style={{ margin: '0 0.25rem' }}>"{varNameNode?.value}"</span> in <span className="node-ident" style={{ margin: '0 0.25rem' }}>{listNode?.value || 'list'}</span>
-                    </div>
-                </div>
-            </header>
-
-            {parseError ? (
-                <div className="visualizer-error">
-                    <h3>Inner Logic Parse Error</h3>
-                    <p>{parseError}</p>
-                </div>
-            ) : (
-                <div className="view-mode-container">
-                    {segments.length > 0 ? (
-                        segments.map((seg, i) => (
-                            <SmartSegment key={i} segment={seg} index={i} targetLabel="Target Group" />
-                        ))
-                    ) : (
-                        <div className="visualizer-empty" style={{ padding: '2rem' }}>
-                            No logic defined inside loop
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.75rem',
+                        borderBottom: '1px solid var(--glass-border)',
+                        paddingBottom: '1rem',
+                        marginBottom: '0.5rem'
+                    }}>
+                        <div style={{
+                            background: 'var(--accent-primary)',
+                            color: 'white',
+                            width: '28px',
+                            height: '28px',
+                            borderRadius: '50%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                        }}>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M12 2v20M2 12h20" />
+                            </svg>
                         </div>
-                    )}
+                        <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>ForEach Iterator</span>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+                        {/* Arg 1: Variable */}
+                        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+                            <div style={{
+                                background: 'var(--bg-tertiary)',
+                                color: 'var(--accent-secondary)',
+                                padding: '0.25rem 0.75rem',
+                                borderRadius: '6px',
+                                fontSize: '0.75rem',
+                                fontWeight: 700,
+                                border: '1px solid var(--glass-border)'
+                            }}>
+                                Arg 1
+                            </div>
+                            <div>
+                                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Variable</div>
+                                <div className="node-loop-var" style={{ fontSize: '0.9rem' }}>"{varNameNode?.value}"</div>
+                            </div>
+                        </div>
+
+                        {/* Arg 2: List */}
+                        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+                            <div style={{
+                                background: 'var(--bg-tertiary)',
+                                color: 'var(--warning)',
+                                padding: '0.25rem 0.75rem',
+                                borderRadius: '6px',
+                                fontSize: '0.75rem',
+                                fontWeight: 700,
+                                border: '1px solid var(--glass-border)'
+                            }}>
+                                Arg 2
+                            </div>
+                            <div>
+                                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Source List</div>
+                                <div className="node-ident" style={{ fontSize: '0.9rem' }}>{listNode?.value || 'list'}</div>
+                            </div>
+                        </div>
+
+                        {/* Arg 3: Logic */}
+                        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+                            <div style={{
+                                background: 'var(--bg-tertiary)',
+                                color: 'var(--success)',
+                                padding: '0.25rem 0.75rem',
+                                borderRadius: '6px',
+                                fontSize: '0.75rem',
+                                fontWeight: 700,
+                                border: '1px solid var(--glass-border)'
+                            }}>
+                                Arg 3
+                            </div>
+                            <div>
+                                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Inner Logic</div>
+                                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontStyle: 'italic' }}>
+                                    (Visualized below)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            )}
-        </div>
+
+                {parseError ? (
+                    <div className="visualizer-error">
+                        <h3>Inner Logic Parse Error</h3>
+                        <p>{parseError}</p>
+                    </div>
+                ) : (
+                    <div className="view-mode-container">
+                        {segments.length > 0 ? (
+                            segments.map((seg, i) => (
+                                <SmartSegment key={i} segment={seg} index={i} targetLabel="Target Group" />
+                            ))
+                        ) : (
+                            <div className="visualizer-empty" style={{ padding: '2rem' }}>
+                                No logic defined inside loop
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
+        </FormulaContext.Provider>
     );
 };
 

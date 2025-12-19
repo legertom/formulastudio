@@ -152,6 +152,7 @@ const DocsForEachOverview = () => {
                                     <span style={{ color: 'var(--success)', fontWeight: 600 }}>Logic</span>
                                     <span>Output <code>s.name</code> (encoded as <code>%7B%7Bs.name%7D%7D</code>).</span>
                                 </div>
+
                             </div>
 
                         </div>

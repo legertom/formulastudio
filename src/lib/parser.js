@@ -24,7 +24,7 @@ export const TokenType = {
     UNKNOWN: 'UNKNOWN'
 };
 
-const KEYWORDS = new Set(['if', 'equals', 'and', 'or', 'contains', 'not', 'greater', 'concat', 'substr', 'replace', 'len', 'ignoreIfNull', 'forEach']);
+const KEYWORDS = new Set(['if', 'equals', 'and', 'or', 'contains', 'not', 'greater', 'concat', 'substr', 'replace', 'len', 'ignoreIfNull', 'forEach', 'in']);
 
 /**
  * Tokenizes the input formula string.
@@ -167,7 +167,14 @@ export function parse(tokens) {
     }
 
     function parseExpression() {
-        const token = advance();
+        const token = peek();
+
+        if (!token || token.type === TokenType.CLOSE_BRACE) {
+            // Implicit empty string at end of formula for missing arguments
+            return { type: 'StringLiteral', value: '' };
+        }
+
+        advance(); // Consume the token we peeked
 
         if (token.type === TokenType.STRING) {
             return { type: 'StringLiteral', value: token.value };
@@ -205,6 +212,7 @@ export function parse(tokens) {
                 case 'len': arity = 1; break;
                 case 'ignoreIfNull': arity = 1; break;
                 case 'forEach': arity = 3; break;
+                case 'in': arity = 2; break;
                 default: throw new Error(`Unknown function '${name}'`);
             }
 
@@ -216,8 +224,8 @@ export function parse(tokens) {
         }
 
         if (token.type === TokenType.CLOSE_BRACE) {
-            // Should not happen if strictly parsing exprs, handled by caller or top level
-            throw new Error("Unexpected close brace");
+            // Should be handled by the check at top of function
+            return { type: 'StringLiteral', value: '' };
         }
 
         throw new Error(`Unexpected token type: ${token.type} value: ${token.value}`);
