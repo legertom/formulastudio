@@ -1402,6 +1402,18 @@
   gap: 2rem;
 }
 
+
+.focus-container {
+  max-width: 900px;
+  /* Constrain width for readability */
+  margin: 0 auto;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  /* Consistent spacing between major sections */
+}
+
 .focus-header {
   display: flex;
   align-items: center;
@@ -1621,7 +1633,7 @@
   border: 1px solid var(--glass-border);
   border-left: 4px solid var(--accent-secondary);
   border-radius: 8px;
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
   overflow: hidden;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }

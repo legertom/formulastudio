@@ -66,6 +66,11 @@ export const TEXT_TRANSFORM_OPS = [
         syntax: "{{substr arg1 arg2 arg3}}",
         arity: 3,
         desc: "Short for 'substring'. Extracts a portion of text starting at a position for a specified length.",
+        args: [
+            { name: "arg1", desc: "The source string to extract from" },
+            { name: "arg2", desc: "The starting position (0-indexed)" },
+            { name: "arg3", desc: "The number of characters to extract" }
+        ],
         note: {
             title: "How Position Counting Works",
             content: "Positions start at 0, not 1. Think of it as 'characters from the left edge'.",
@@ -108,6 +113,9 @@ export const TEXT_TRANSFORM_OPS = [
         syntax: "{{alphanumeric arg1}}",
         arity: 1,
         desc: "Removes all special characters, keeping only letters (A-Z, a-z) and numbers (0-9).",
+        args: [
+            { name: "arg1", desc: "The text to clean (variable or string)" }
+        ],
         examples: [
             {
                 level: "Basic",

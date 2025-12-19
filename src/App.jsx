@@ -137,9 +137,11 @@ function App() {
                       aria-label="Load Example"
                     >
                       <option value="" disabled>Load Example...</option>
-                      {examples.map(ex => (
-                        <option key={ex.name} value={ex.name}>Example {ex.name}</option>
-                      ))}
+                      {examples
+                        .filter(ex => ex.type === logicMode)
+                        .map(ex => (
+                          <option key={ex.name} value={ex.name}>Example {ex.name}</option>
+                        ))}
                     </select>
 
                     <button

@@ -187,6 +187,48 @@ const FunctionCategoryPage = ({ title, description, ops }) => {
                                     </div>
                                 </div>
 
+                                {/* Generic Arguments Explanation */}
+                                {op.args && (
+                                    <div style={{ marginBottom: '1.5rem' }}>
+                                        <div style={{
+                                            fontSize: '0.7rem',
+                                            textTransform: 'uppercase',
+                                            color: 'var(--text-muted)',
+                                            marginBottom: '0.5rem',
+                                            fontWeight: 600
+                                        }}>
+                                            Arguments
+                                        </div>
+                                        <div style={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            gap: '0.5rem'
+                                        }}>
+                                            {op.args.map((arg, i) => (
+                                                <div key={i} style={{
+                                                    display: 'flex',
+                                                    alignItems: 'baseline',
+                                                    gap: '0.75rem',
+                                                    fontSize: '0.9rem'
+                                                }}>
+                                                    <code style={{
+                                                        color: 'var(--accent-secondary)',
+                                                        background: 'rgba(99, 102, 241, 0.1)',
+                                                        padding: '2px 6px',
+                                                        borderRadius: '4px',
+                                                        fontSize: '0.85rem',
+                                                        minWidth: '60px',
+                                                        textAlign: 'center'
+                                                    }}>{arg.name}</code>
+                                                    <span style={{ color: 'var(--text-secondary)' }}>
+                                                        {arg.desc}
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
                                 {/* Note with Diagram (for functions like substr) */}
                                 {op.note && (
                                     <div style={{

@@ -15,6 +15,9 @@ import DocsLogic from './docs/DocsLogic';
 import DocsUtilities from './docs/DocsUtilities';
 import DocsComplex from './docs/DocsComplex';
 import DocsExamples from './docs/DocsExamples';
+import DocsForEachOverview from './docs/DocsForEachOverview';
+import DocsForEachEncoder from './docs/DocsForEachEncoder';
+import DocsForEachAdvanced from './docs/DocsForEachAdvanced';
 import DocsTroubleshooting from './docs/DocsTroubleshooting';
 import {
     TEXT_TRANSFORM_OPS,
@@ -53,6 +56,14 @@ const NAV_STRUCTURE = [
             { id: 'math-dates', label: 'Math & Dates', subItems: MATH_DATE_OPS.map(op => op.name) },
             { id: 'logic', label: 'Logic & Comparison', subItems: LOGIC_OPS.map(op => op.name) },
             { id: 'utilities', label: 'Utilities', subItems: UTILITY_OPS.map(op => op.name) },
+        ]
+    },
+    {
+        title: "forEach",
+        items: [
+            { id: 'foreach-overview', label: 'Overview & Syntax' },
+            { id: 'foreach-encoder', label: 'URL Encoder Tool' },
+            { id: 'foreach-advanced', label: 'Nested Functions' },
         ]
     },
     {
@@ -133,6 +144,9 @@ const RefactoredDocs = () => {
             case 'math-dates': return <DocsMathDates />;
             case 'logic': return <DocsLogic />;
             case 'utilities': return <DocsUtilities />;
+            case 'foreach-overview': return <DocsForEachOverview />;
+            case 'foreach-encoder': return <DocsForEachEncoder />;
+            case 'foreach-advanced': return <DocsForEachAdvanced />;
             case 'fields': return <DocsFields />;
             case 'complex': return <DocsComplex />;
             case 'examples': return <DocsExamples />;

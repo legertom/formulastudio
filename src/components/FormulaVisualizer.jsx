@@ -323,23 +323,108 @@ const SmartSegment = ({ segment, index }) => {
     );
 };
 
-export default function FormulaVisualizer({ ast, error, mode = 'OU' }) {
-    if (mode === 'GROUP') {
+import { tokenize, parse } from '../lib/parser';
+
+const GroupLogicView = ({ ast, error }) => {
+    // 1. Validate if it's a valid forEach
+    if (ast?.type !== 'CallExpression' || ast.name !== 'forEach') {
         return (
-            <div className="visualizer-empty" style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: '100%',
-                opacity: 0.6
-            }}>
-                <h3>Group Logic Visualization</h3>
-                <p>Coming Soon</p>
+            <div className="visualizer-error">
+                <h3>Invalid Group Formula</h3>
+                <p>Group Logic mode requires a <code>forEach</code> formula.</p>
+                <div style={{ marginTop: '1rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                    Example: <code>{'{{forEach "item" sections ...}}'}</code>
+                </div>
             </div>
         );
     }
 
+    const [varNameNode, listNode, logicNode] = ast.arguments;
+
+    // 2. Extract Logic AST
+    let innerAst = null;
+    let parseError = null;
+
+    try {
+        if (logicNode?.type === 'StringLiteral') {
+            // Case A: Encoded String (Standard)
+            const decoded = decodeURIComponent(logicNode.value);
+            const tokens = tokenize(decoded);
+            innerAst = parse(tokens);
+        } else if (logicNode?.type === 'CallExpression') {
+            // Case B: Direct Expression (User Friendly / Pre-Encoded)
+            innerAst = logicNode;
+        } else {
+            // Fallback or empty
+            innerAst = null;
+        }
+    } catch (e) {
+        parseError = e.message;
+    }
+
+    const segments = innerAst ? segmentLogicChain(innerAst) : [];
+
+    return (
+        <div className="group-logic-container">
+            <header className="group-header" style={{
+                background: 'var(--bg-secondary)',
+                padding: '1rem',
+                borderRadius: '8px',
+                marginBottom: '1.5rem',
+                border: '1px solid var(--glass-border)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.75rem'
+            }}>
+                <div style={{
+                    background: 'var(--accent-primary)',
+                    color: 'white',
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontWeight: 'bold',
+                    fontSize: '0.85rem'
+                }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 2v20M2 12h20" />
+                    </svg>
+                </div>
+                <div>
+                    <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-muted)' }}>
+                        Iterator Context
+                    </div>
+                    <div style={{ fontSize: '1.1rem', color: 'var(--text-primary)' }}>
+                        For Each <span className="node-string" style={{ margin: '0 0.25rem' }}>"{varNameNode?.value}"</span> in <span className="node-ident" style={{ margin: '0 0.25rem' }}>{listNode?.value || 'list'}</span>
+                    </div>
+                </div>
+            </header>
+
+            {parseError ? (
+                <div className="visualizer-error">
+                    <h3>Inner Logic Parse Error</h3>
+                    <p>{parseError}</p>
+                </div>
+            ) : (
+                <div className="view-mode-container">
+                    {segments.length > 0 ? (
+                        segments.map((seg, i) => (
+                            <SmartSegment key={i} segment={seg} index={i} />
+                        ))
+                    ) : (
+                        <div className="visualizer-empty" style={{ padding: '2rem' }}>
+                            No logic defined inside loop
+                        </div>
+                    )}
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default function FormulaVisualizer({ ast, error, mode = 'OU' }) {
     if (error) {
         return (
             <div className="visualizer-error" role="alert">
@@ -353,6 +438,15 @@ export default function FormulaVisualizer({ ast, error, mode = 'OU' }) {
         return <div className="visualizer-empty">No Formula Parsed</div>;
     }
 
+    if (mode === 'GROUP') {
+        return (
+            <div className="visualizer-container">
+                <GroupLogicView ast={ast} error={error} />
+            </div>
+        );
+    }
+
+    // Default OU View
     const segments = segmentLogicChain(ast);
 
     return (

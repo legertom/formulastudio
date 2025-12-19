@@ -17,11 +17,11 @@ const exampleFiles = import.meta.glob('../examples/*.md', { query: '?raw', eager
 function extractFormula(content) {
   const startMatch = content.indexOf('{{');
   const endMatch = content.lastIndexOf('}}');
-  
+
   if (startMatch !== -1 && endMatch !== -1 && endMatch > startMatch) {
     return content.substring(startMatch, endMatch + 2);
   }
-  
+
   return '';
 }
 
@@ -36,7 +36,12 @@ export function getExamples() {
     const name = path.split('/').pop().replace('.md', '');
     const content = module.default || module;
     const formula = extractFormula(content);
-    
-    return { name, formula };
+
+    // Infer type based on formula content
+    // If it starts with {{forEach (ignoring whitespace), it's Group Logic
+    const cleanFormula = formula.replace(/\s/g, '');
+    const type = cleanFormula.startsWith('{{forEach') ? 'GROUP' : 'OU';
+
+    return { name, formula, type };
   });
 }

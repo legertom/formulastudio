@@ -2,6 +2,23 @@
 import React, { useState, useEffect } from 'react';
 import { tokenize, parse } from '../lib/parser';
 
+
+// Helper to render text with basic markdown (bold **text**, code `text`)
+const renderMarkdownText = (text) => {
+    if (!text) return null;
+    return text.split('`').map((part, j) => {
+        if (j % 2 === 1) {
+            // Code block
+            return <code key={j} style={{ background: 'rgba(255,255,255,0.1)', padding: '0.2em 0.4em', borderRadius: '4px', fontFamily: 'monospace' }}>{part}</code>;
+        } else {
+            // Regular text, check for bold
+            return part.split('**').map((subPart, k) => (
+                k % 2 === 1 ? <strong key={`${j}-${k}`} style={{ color: 'var(--primary)' }}>{subPart}</strong> : subPart
+            ));
+        }
+    });
+};
+
 // Helper to evaluate AST against data (Simplified)
 const evaluateAst = (ast, data) => {
     if (!ast) return "";
@@ -123,17 +140,7 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep 
                     <div className="lesson-content" style={{ fontSize: '1.1rem', lineHeight: '1.7', maxWidth: '800px', marginBottom: '2rem' }}>
                         {level.content.split('\n').map((para, i) => (
                             <p key={i} style={{ marginBottom: '1rem' }}>
-                                {para.split('`').map((part, j) => {
-                                    if (j % 2 === 1) {
-                                        // Code block
-                                        return <code key={j} style={{ background: 'rgba(255,255,255,0.1)', padding: '0.2em 0.4em', borderRadius: '4px', fontFamily: 'monospace' }}>{part}</code>;
-                                    } else {
-                                        // Regular text, check for bold
-                                        return part.split('**').map((subPart, k) => (
-                                            k % 2 === 1 ? <strong key={`${j}-${k}`} style={{ color: 'var(--primary)' }}>{subPart}</strong> : subPart
-                                        ));
-                                    }
-                                })}
+                                {renderMarkdownText(para)}
                             </p>
                         ))}
                     </div>
@@ -174,7 +181,7 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep 
 
                 <div className="focus-content">
                     {level.description.split('\n').map((para, i) => (
-                        <p key={i}>{para}</p>
+                        <p key={i} style={{ lineHeight: '1.6' }}>{renderMarkdownText(para)}</p>
                     ))}
                 </div>
 
@@ -206,7 +213,7 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep 
                                 Need a hint?
                             </button>
                         ) : (
-                            level.hints.map((h, i) => <div key={i} className="hint-text">💡 {h}</div>)
+                            level.hints.map((h, i) => <div key={i} className="hint-text">{h}</div>)
                         )}
                     </div>
                 )}
