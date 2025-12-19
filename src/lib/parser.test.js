@@ -53,6 +53,28 @@ describe('IDM Formula Parser', () => {
     it('throws on unknown tokens', () => {
         expect(() => tokenize('{{if # equals}}')).toThrow();
     });
+
+    it('parses ignoreIfNull correctly', () => {
+        const input = '{{if ignoreIfNull name.middle ignoreIfNull name.middle "No Middle Name"}}';
+        const ast = parse(tokenize(input));
+
+        expect(ast.name).toBe('if');
+        expect(ast.arguments[0].name).toBe('ignoreIfNull');
+        expect(ast.arguments[1].name).toBe('ignoreIfNull');
+        expect(ast.arguments[2].value).toBe('No Middle Name');
+    });
+
+    it('parses other new functions (not, greater, concat, etc)', () => {
+        const input = '{{if greater len name.first 5 "Long" "Short"}}';
+        const ast = parse(tokenize(input));
+
+        expect(ast.name).toBe('if');
+        // Condition: greater(len(name.first), 5)
+        // Note: 5 is parsed as Identifier currently based on tokenization rules
+        const condition = ast.arguments[0];
+        expect(condition.name).toBe('greater');
+        expect(condition.arguments[0].name).toBe('len');
+    });
 });
 
 describe('IDM Formula Stringifier', () => {

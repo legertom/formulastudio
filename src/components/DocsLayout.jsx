@@ -2,12 +2,18 @@ import React, { useState } from 'react';
 import DocsFields from './docs/DocsFields';
 import DocsOperations from './docs/DocsOperations';
 import DocsComplex from './docs/DocsComplex';
+import DocsIntro from './docs/DocsIntro';
+import DocsSyntax from './docs/DocsSyntax';
 
 const DocsLayout = ({ onClose }) => {
-    const [activeSection, setActiveSection] = useState('fields');
+    const [activeSection, setActiveSection] = useState('intro');
 
     const renderContent = () => {
         switch (activeSection) {
+            case 'intro':
+                return <DocsIntro />;
+            case 'syntax':
+                return <DocsSyntax />;
             case 'fields':
                 return <DocsFields />;
             case 'operations':
@@ -15,7 +21,7 @@ const DocsLayout = ({ onClose }) => {
             case 'complex':
                 return <DocsComplex />;
             default:
-                return <DocsFields />;
+                return <DocsIntro />;
         }
     };
 
@@ -27,6 +33,21 @@ const DocsLayout = ({ onClose }) => {
                         <h2>Reference</h2>
                     </div>
                     <nav className="docs-nav">
+                        <div className="nav-group-title">Getting Started</div>
+                        <button
+                            className={`docs-nav-item ${activeSection === 'intro' ? 'active' : ''}`}
+                            onClick={() => setActiveSection('intro')}
+                        >
+                            Introduction
+                        </button>
+                        <button
+                            className={`docs-nav-item ${activeSection === 'syntax' ? 'active' : ''}`}
+                            onClick={() => setActiveSection('syntax')}
+                        >
+                            Syntax Guide
+                        </button>
+
+                        <div className="nav-group-title">Reference</div>
                         <button
                             className={`docs-nav-item ${activeSection === 'fields' ? 'active' : ''}`}
                             onClick={() => setActiveSection('fields')}

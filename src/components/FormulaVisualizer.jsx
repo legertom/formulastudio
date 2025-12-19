@@ -323,7 +323,23 @@ const SmartSegment = ({ segment, index }) => {
     );
 };
 
-export default function FormulaVisualizer({ ast, error }) {
+export default function FormulaVisualizer({ ast, error, mode = 'OU' }) {
+    if (mode === 'GROUP') {
+        return (
+            <div className="visualizer-empty" style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '100%',
+                opacity: 0.6
+            }}>
+                <h3>Group Logic Visualization</h3>
+                <p>Coming Soon</p>
+            </div>
+        );
+    }
+
     if (error) {
         return (
             <div className="visualizer-error" role="alert">

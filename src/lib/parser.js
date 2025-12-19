@@ -19,11 +19,12 @@ export const TokenType = {
     CLOSE_BRACE: 'CLOSE_BRACE', // }}
     KEYWORD: 'KEYWORD',         // if, equals, etc.
     STRING: 'STRING',           // "..."
+    NUMBER: 'NUMBER',           // 123, 2025 (bare numbers)
     IDENTIFIER: 'IDENTIFIER',   // staff.title
     UNKNOWN: 'UNKNOWN'
 };
 
-const KEYWORDS = new Set(['if', 'equals', 'and', 'or', 'contains']); // Added contains just in case
+const KEYWORDS = new Set(['if', 'equals', 'and', 'or', 'contains', 'not', 'greater', 'concat', 'substr', 'replace', 'len', 'ignoreIfNull']);
 
 /**
  * Tokenizes the input formula string.
@@ -96,8 +97,22 @@ export function tokenize(input) {
             }
         }
 
+        // Numbers (bare digits without quotes)
+        if (/[0-9]/.test(char)) {
+            let value = '';
+            let start = current;
+
+            while (/[0-9]/.test(char) && current < input.length) {
+                value += char;
+                char = input[++current];
+            }
+
+            tokens.push({ type: TokenType.NUMBER, value, index: start });
+            continue;
+        }
+
         // Identifiers and Keywords
-        if (/[a-zA-Z0-9_.-]/.test(char)) {
+        if (/[a-zA-Z_]/.test(char)) {
             let value = '';
             let start = current;
 
@@ -158,6 +173,11 @@ export function parse(tokens) {
             return { type: 'StringLiteral', value: token.value };
         }
 
+        // Bare numbers are treated as string literals (IDM treats numbers as text)
+        if (token.type === TokenType.NUMBER) {
+            return { type: 'StringLiteral', value: token.value };
+        }
+
         if (token.type === TokenType.IDENTIFIER) {
             return { type: 'Identifier', value: token.value };
         }
@@ -177,6 +197,13 @@ export function parse(tokens) {
                 // 'or or A B C' -> 'or (or A B) C'
                 // So standard arity 2 works if it's strictly binary prefix.
                 case 'contains': arity = 2; break;
+                case 'not': arity = 1; break;
+                case 'greater': arity = 2; break;
+                case 'concat': arity = 2; break;
+                case 'substr': arity = 3; break;
+                case 'replace': arity = 3; break;
+                case 'len': arity = 1; break;
+                case 'ignoreIfNull': arity = 1; break;
                 default: throw new Error(`Unknown function '${name}'`);
             }
 
