@@ -1,19 +1,19 @@
+import { tokenize } from './src/lib/parser.js';
 
-import { tokenize, parse, stringify } from './src/lib/parser.js';
+try {
+    const input = '{{ "escaped \\"quote\\"" }}';
+    console.log("Input:", input);
+    const tokens = tokenize(input);
+    console.log("Tokens:", JSON.stringify(tokens, null, 2));
+} catch (e) {
+    console.error("Error:", e.message);
+}
 
-const tests = [
-    '{{concat name.first " " name.last}}',
-    '{{concat name.first concat " " name.last}}'
-];
-
-tests.forEach(test => {
-    console.log(`\nParsing: ${test}`);
-    try {
-        const tokens = tokenize(test);
-        console.log('Tokens:', tokens.map(t => t.type + '(' + t.value + ')').join(', '));
-        const ast = parse(tokens);
-        console.log('AST:', JSON.stringify(ast, null, 2));
-    } catch (e) {
-        console.error('Error:', e.message);
-    }
-});
+try {
+    const input2 = '{{ "{ id: 123 }" }}';
+    console.log("Input2:", input2);
+    const tokens2 = tokenize(input2);
+    console.log("Tokens2:", JSON.stringify(tokens2, null, 2));
+} catch (e) {
+    console.error("Error2:", e.message);
+}

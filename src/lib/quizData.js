@@ -37,15 +37,26 @@ export const CURRICULUM = [
             {
                 id: "c1-s4",
                 type: "challenge",
+                title: "What is an Object?",
+                goal: "Output the text { id: 123 } as a string",
+                description: "In IDM, user data is stored in **Objects**.\n\nObjects are **containers** that group related information together.\n\nThey use **single curly braces** `{ }`.\n\n> [!WARNING]\n> **Don't confuse your braces!**\n> *   `{ ... }` = Data (Object)\n> *   `{{ ... }}` = Code (Formula)\n> *   Only **Code** braces trigger the formula engine.\n\n**Challenge:**\nOutput a fake object `{ id: 123 }` as a text string (mocking a real object).",
+                testCases: [{ name: "Test", data: {}, matchRegex: "^\\{\\s*id:\\s*123\\s*\\}$", expected: "{ id: 123 }" }],
+                hints: ["Type {{ \"{ id: 123 }\" }}"],
+                prefill: "{{}}"
+            },
+            {
+                id: "c1-s5",
+                type: "challenge",
                 title: "What is JSON?",
                 goal: "Look at the Reference Data. Type the value of the `color` field.",
-                description: "**JSON** is how user data is stored. It uses **single** curly braces `{ }` to group data.\n\nDon't confuse `{ }` (data) with `{{ }}` (code)!\n\nLook at the Reference Data panel above.",
+                description: "This \"Object\" format is called **JSON**.\n\nThis is how **Clever** delivers all its data, even if you don't always see it.\n\nLook at the Reference Data panel above to see the raw JSON object.",
+                referenceDataPlacement: "top",
                 testCases: [{ name: "Test", data: { "color": "blue" }, expected: "blue" }],
                 hints: ["The data shows color is 'blue'. Type {{ \"blue\" }}"],
                 prefill: "{{}}"
             },
             {
-                id: "c1-s5",
+                id: "c1-s6",
                 type: "challenge",
                 title: "Your First Formula",
                 goal: "Output \"Hello World\"",
@@ -55,7 +66,7 @@ export const CURRICULUM = [
                 prefill: "{{}}"
             },
             {
-                id: "c1-s6",
+                id: "c1-s7",
                 type: "challenge",
                 title: "Fix the Syntax!",
                 goal: "This formula is WRONG. Fix it!",
@@ -65,47 +76,51 @@ export const CURRICULUM = [
                 prefill: "{{concat(\"A\", \"B\")}}"
             },
             {
-                id: "c1-s7",
+                id: "c1-s8",
                 type: "challenge",
                 title: "Fields",
                 goal: "Output the user's ID from the data.",
-                description: "Instead of typing a string, you can pull values **from the data**.\n\nJust type the **field name** (no quotes). Look at the Reference Data for `id`.",
+                description: "Instead of typing a string, you can pull values **from the data**.\n\nJust type the **field name** (no quotes). Look at the Reference Data panel above for `id`.",
+                referenceDataPlacement: "top",
                 testCases: [{ name: "User A", data: { "id": "999" }, expected: "999" }],
                 hints: ["Type {{ id }}"],
                 prefill: "{{}}"
             },
             {
-                id: "c1-s8",
+                id: "c1-s9",
                 type: "challenge",
                 title: "Objects Are Not Output!",
                 goal: "Type `name` and see what happens.",
-                description: "Sometimes a field contains a **group** of other fields (an \"object\"), not a simple value.\n\nTry accessing just `name`. You'll get something weird like `{\"first\":...}`. That's the raw object — not what we want!",
+                description: "Sometimes a field contains a **group** of other fields (an \"object\"), not a simple value.\n\nTry accessing just `name`. You'll get something weird like `{\"first\":...}`. That's the raw object — not what we want!\n\nLook at the Reference Data panel above to see what's inside `name`.",
+                referenceDataPlacement: "top",
                 testCases: [{ name: "Inspect", data: { "name": { "first": "Jean", "last": "Picard" } }, expected: "{\"first\":\"Jean\",\"last\":\"Picard\"}" }],
                 hints: ["Type {{ name }}"],
                 prefill: "{{}}"
             },
             {
-                id: "c1-s9",
+                id: "c1-s10",
                 type: "challenge",
                 title: "Dot Notation",
                 goal: "Get the LAST name from inside the name object.",
-                description: "To get a value **inside** an object, use a **dot** `.`\n\n`name.last` means: go into `name`, then get `last`.",
+                description: "To get a value **inside** an object, use a **dot** `.`\n\n`name.last` means: go into `name`, then get `last`.\n\nUse the Reference Data panel above to confirm the structure.",
+                referenceDataPlacement: "top",
                 testCases: [{ name: "Picard", data: { "name": { "first": "Jean", "last": "Picard" } }, expected: "Picard" }],
                 hints: ["Type {{ name.last }}"],
                 prefill: "{{}}"
             },
             {
-                id: "c1-s10",
+                id: "c1-s11",
                 type: "challenge",
                 title: "Deeper Nesting",
                 goal: "Get the graduation year from inside the student object.",
-                description: "Data can be nested multiple levels. Use dot notation to walk the path.\n\nCheck the Reference Data!",
+                description: "Data can be nested multiple levels. Use dot notation to walk the path.\n\nCheck the Reference Data panel above!",
+                referenceDataPlacement: "top",
                 testCases: [{ name: "Student", data: { "student": { "graduation_year": "2030" } }, expected: "2030" }],
                 hints: ["Type {{ student.graduation_year }}"],
                 prefill: "{{}}"
             },
             {
-                id: "c1-s11",
+                id: "c1-s12",
                 type: "challenge",
                 title: "Final Exam: First Name",
                 goal: "Extract the first name.",

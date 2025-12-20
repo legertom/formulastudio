@@ -1,9 +1,10 @@
 import { useState, useMemo } from 'react'
-import { tokenize, parse, stringify, prettyStringify } from '../lib/parser'
-import { getExamples } from '../lib/examples'
-import FormulaVisualizer from './FormulaVisualizer'
-import DocsLayout from './DocsLayout'
+import { tokenize, parse, stringify, prettyStringify } from '../../lib/parser'
+import { getExamples } from '../../lib/examples'
+import FormulaVisualizer from '../visualizer/FormulaVisualizer'
+import QuickReference from '../docs/QuickReference'
 import LogicEditor from './LogicEditor'
+import './Editor.css'
 // App.css is imported in App.jsx or main.jsx, so we might not need it here if styles are global, 
 // but if there are specific styles for the editor, they might be there. 
 // However, the import in App.jsx suggests it might be needed. Let's keep it safe or rely on global.
@@ -215,7 +216,7 @@ function EditorView() {
                 </div>
             </main>
 
-            {showQuickDocs && <DocsLayout onClose={() => setShowQuickDocs(false)} />}
+            {showQuickDocs && <QuickReference onClose={() => setShowQuickDocs(false)} />}
         </>
     );
 }

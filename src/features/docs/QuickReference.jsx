@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import DocsFields from './docs/DocsFields';
-import DocsOperations from './docs/DocsOperations';
-import DocsComplex from './docs/DocsComplex';
-import DocsIntro from './docs/DocsIntro';
-import DocsSyntax from './docs/DocsSyntax';
+import DocsFields from './content/DocsFields';
+import DocsOperations from './content/DocsOperations';
+import DocsComplex from './content/DocsComplex';
+import DocsIntro from './content/DocsIntro';
+import DocsSyntax from './content/DocsSyntax';
 
-const DocsLayout = ({ onClose }) => {
+const QuickReference = ({ onClose }) => {
     const [activeSection, setActiveSection] = useState('intro');
 
     const renderContent = () => {
@@ -85,4 +85,4 @@ const DocsLayout = ({ onClose }) => {
     );
 };
 
-export default DocsLayout;
+export default QuickReference;

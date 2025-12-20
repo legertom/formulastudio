@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { CURRICULUM } from '../lib/quizData';
+import { CURRICULUM } from '../../lib/quizData';
+import './Training.css';
 import QuizLevel from './QuizLevel';
 
 const TRAINING_SIDEBAR_COLLAPSED_KEY = 'fs_training_sidebar_collapsed';
-const TRAINING_STYLE_KEY = 'fs_training_style';
-const TRAINING_LAYOUT_KEY = 'fs_training_layout';
 
 const TrainingCenter = () => {
     // Default to Chapter 1, Step 0
@@ -19,48 +18,19 @@ const TrainingCenter = () => {
         }
     });
 
-    const [trainingStyle, setTrainingStyle] = useState(() => {
-        try {
-            return window.localStorage.getItem(TRAINING_STYLE_KEY) || 'studio';
-        } catch {
-            return 'studio';
-        }
-    });
-
-    const [trainingLayout, setTrainingLayout] = useState(() => {
-        try {
-            return window.localStorage.getItem(TRAINING_LAYOUT_KEY) || 'stack';
-        } catch {
-            return 'stack';
-        }
-    });
-
     // Track completed step IDs (e.g., ["c1-s1", "c1-s2"])
     const [completedSteps, setCompletedSteps] = useState([]);
 
     useEffect(() => {
         try {
-            window.localStorage.setItem(TRAINING_SIDEBAR_COLLAPSED_KEY, sidebarCollapsed ? '1' : '0');
+            window.localStorage.setItem(
+                TRAINING_SIDEBAR_COLLAPSED_KEY,
+                sidebarCollapsed ? '1' : '0'
+            );
         } catch {
             // Ignore
         }
     }, [sidebarCollapsed]);
-
-    useEffect(() => {
-        try {
-            window.localStorage.setItem(TRAINING_STYLE_KEY, trainingStyle);
-        } catch {
-            // Ignore
-        }
-    }, [trainingStyle]);
-
-    useEffect(() => {
-        try {
-            window.localStorage.setItem(TRAINING_LAYOUT_KEY, trainingLayout);
-        } catch {
-            // Ignore
-        }
-    }, [trainingLayout]);
 
     const activeChapter = CURRICULUM[activeChapterIndex];
     const activeStep = activeChapter.steps[activeStepIndex];
@@ -198,68 +168,16 @@ const TrainingCenter = () => {
                     <div className="breadcrumbs" style={{ color: 'var(--text-muted)' }}>
                         {activeChapter.title} <span style={{ margin: '0 0.5rem' }}>/</span> Step {activeStepIndex + 1} of {activeChapter.steps.length}
                     </div>
-                    <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                        <div className="training-style-switch" aria-label="Training layout style">
-                            <span className="training-style-switch-label">Style</span>
-                            <button
-                                type="button"
-                                className={`training-style-pill ${trainingStyle === 'studio' ? 'active' : ''}`}
-                                onClick={() => setTrainingStyle('studio')}
-                            >
-                                Studio
-                            </button>
-                            <button
-                                type="button"
-                                className={`training-style-pill ${trainingStyle === 'lounge' ? 'active' : ''}`}
-                                onClick={() => setTrainingStyle('lounge')}
-                            >
-                                Lounge
-                            </button>
-                            <button
-                                type="button"
-                                className={`training-style-pill ${trainingStyle === 'minimal' ? 'active' : ''}`}
-                                onClick={() => setTrainingStyle('minimal')}
-                            >
-                                Minimal
-                            </button>
-                        </div>
-                        <div className="training-style-switch" aria-label="Training layout options">
-                            <span className="training-style-switch-label">Layout</span>
-                            <button
-                                type="button"
-                                className={`training-style-pill ${trainingLayout === 'stack' ? 'active' : ''}`}
-                                onClick={() => setTrainingLayout('stack')}
-                            >
-                                Stack
-                            </button>
-                            <button
-                                type="button"
-                                className={`training-style-pill ${trainingLayout === 'workbench' ? 'active' : ''}`}
-                                onClick={() => setTrainingLayout('workbench')}
-                            >
-                                Workbench
-                            </button>
-                            <button
-                                type="button"
-                                className={`training-style-pill ${trainingLayout === 'wide' ? 'active' : ''}`}
-                                onClick={() => setTrainingLayout('wide')}
-                            >
-                                Wide
-                            </button>
-                        </div>
-                    </div>
                 </div>
 
                 <QuizLevel
                     key={activeStep.id}
-                    level={activeStep} // Rename prop to generic 'level' or 'step'
+                    level={activeStep}
                     onComplete={() => handleStepComplete(activeStep.id)}
                     onNext={handleNext}
                     onPrev={handlePrev}
                     isFirstStep={activeStepIndex === 0 && activeChapterIndex === 0}
                     isLastStep={activeStepIndex === activeChapter.steps.length - 1 && activeChapterIndex === CURRICULUM.length - 1}
-                    uiStyle={trainingStyle}
-                    layout={trainingLayout}
                 />
             </div>
         </div>

@@ -1,24 +1,26 @@
-import React, { useState, useRef } from 'react';
-import DocsIntro from './docs/DocsIntro';
-import DocsSyntax from './docs/DocsSyntax';
-import DocsVariables from './docs/DocsVariables';
-import DocsLiterals from './docs/DocsLiterals';
-import DocsFunctions from './docs/DocsFunctions';
-import DocsArity from './docs/DocsArity';
-import DocsNesting from './docs/DocsNesting';
-import DocsFields from './docs/DocsFields';
-import DocsTextTransform from './docs/DocsTextTransform';
-import DocsTextExtraction from './docs/DocsTextExtraction';
-import DocsSearchReplace from './docs/DocsSearchReplace';
-import DocsMathDates from './docs/DocsMathDates';
-import DocsLogic from './docs/DocsLogic';
-import DocsUtilities from './docs/DocsUtilities';
-import DocsComplex from './docs/DocsComplex';
-import DocsExamples from './docs/DocsExamples';
-import DocsForEachOverview from './docs/DocsForEachOverview';
-import DocsForEachEncoder from './docs/DocsForEachEncoder';
-import DocsForEachAdvanced from './docs/DocsForEachAdvanced';
-import DocsTroubleshooting from './docs/DocsTroubleshooting';
+import React, { useState, useRef, useEffect } from 'react'; // Added useEffect for scrolling later if needed
+import { useParams, useNavigate } from 'react-router-dom';
+import DocsIntro from './content/DocsIntro';
+import './Docs.css';
+import DocsSyntax from './content/DocsSyntax';
+import DocsVariables from './content/DocsVariables';
+import DocsLiterals from './content/DocsLiterals';
+import DocsFunctions from './content/DocsFunctions';
+import DocsArity from './content/DocsArity';
+import DocsNesting from './content/DocsNesting';
+import DocsFields from './content/DocsFields';
+import DocsTextTransform from './content/DocsTextTransform';
+import DocsTextExtraction from './content/DocsTextExtraction';
+import DocsSearchReplace from './content/DocsSearchReplace';
+import DocsMathDates from './content/DocsMathDates';
+import DocsLogic from './content/DocsLogic';
+import DocsUtilities from './content/DocsUtilities';
+import DocsComplex from './content/DocsComplex';
+import DocsExamples from './content/DocsExamples';
+import DocsForEachOverview from './content/DocsForEachOverview';
+import DocsForEachEncoder from './content/DocsForEachEncoder';
+import DocsForEachAdvanced from './content/DocsForEachAdvanced';
+import DocsTroubleshooting from './content/DocsTroubleshooting';
 import {
     TEXT_TRANSFORM_OPS,
     TEXT_EXTRACTION_OPS,
@@ -26,7 +28,7 @@ import {
     MATH_DATE_OPS,
     LOGIC_OPS,
     UTILITY_OPS
-} from './docs/functionData';
+} from './content/functionData';
 
 // Navigation structure with sub-items for function categories
 const NAV_STRUCTURE = [
@@ -87,8 +89,10 @@ const NAV_STRUCTURE = [
     }
 ];
 
-const RefactoredDocs = () => {
-    const [activeDoc, setActiveDoc] = useState('intro');
+const DocsPage = () => {
+    const { pageId } = useParams();
+    const navigate = useNavigate();
+    const activeDoc = pageId || 'intro';
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [expandedItems, setExpandedItems] = useState({});
     const contentRef = useRef(null);
@@ -101,7 +105,7 @@ const RefactoredDocs = () => {
     };
 
     const handleNavClick = (item) => {
-        setActiveDoc(item.id);
+        navigate(`/docs/${item.id}`);
         // If item has sub-items, expand it
         if (item.subItems) {
             setExpandedItems(prev => ({
@@ -119,7 +123,7 @@ const RefactoredDocs = () => {
     };
 
     const handleFunctionNavigate = (category, funcName) => {
-        setActiveDoc(category);
+        navigate(`/docs/${category}`);
         // Expand the category in sidebar
         setExpandedItems(prev => ({
             ...prev,
@@ -213,7 +217,7 @@ const RefactoredDocs = () => {
                                                         className="docs-sub-nav-item"
                                                         onClick={() => {
                                                             if (activeDoc !== item.id) {
-                                                                setActiveDoc(item.id);
+                                                                navigate(`/docs/${item.id}`);
                                                                 // Wait for render then scroll
                                                                 setTimeout(() => scrollToFunction(funcName), 100);
                                                             } else {
@@ -250,4 +254,4 @@ const RefactoredDocs = () => {
     );
 };
 
-export default RefactoredDocs;
+export default DocsPage;

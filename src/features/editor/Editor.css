@@ -1,0 +1,63 @@
+/* Logic Editor (Interactive Highlighting) */
+.logic-editor-container {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+  overflow: hidden;
+}
+
+.logic-editor-container .backdrop,
+.logic-editor-container .editor-textarea {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 1rem;
+  border: none;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  box-sizing: border-box;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.logic-editor-container .backdrop {
+  z-index: 1;
+  color: var(--text-primary);
+  pointer-events: none;
+  overflow: hidden;
+  /* Scroll sync handled via JS */
+}
+
+.logic-editor-container .editor-textarea {
+  z-index: 2;
+  color: transparent;
+  /* Text transparent, caret visible */
+  background: transparent;
+  caret-color: var(--text-primary);
+  resize: none;
+  outline: none;
+  /* Focus handled by container border ideally, or default */
+  overflow: auto;
+}
+
+.editor-text-layer {
+  /* Ensure spans wrap correctly */
+}
+
+.editor-highlight {
+  background-color: rgba(99, 102, 241, 0.35);
+  /* Accent highlight */
+  border-radius: 3px;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.35);
+  /* Extend highlight slightly */
+  color: white;
+}
+

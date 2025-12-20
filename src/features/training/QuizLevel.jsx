@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { tokenize, parse } from '../lib/parser';
+import { tokenize, parse } from '../../lib/parser';
 
 
 // Helper to render text with basic markdown (bold **text**, code `text`)
@@ -89,7 +89,10 @@ const evaluateAst = (ast, data) => {
 };
 
 
-const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep, uiStyle = 'studio', layout = 'stack' }) => {
+const UI_STYLE = 'minimal';
+const LAYOUT = 'workbench';
+
+const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep }) => {
     const [formula, setFormula] = useState('');
     const [results, setResults] = useState([]);
     const [visibleHints, setVisibleHints] = useState(0);
@@ -118,9 +121,23 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep,
                 const tokens = tokenize(formula);
                 const ast = parse(tokens);
                 const computed = evaluateAst(ast, testCase.data);
+
+                let isCorrect = false;
+                if (testCase.matchRegex) {
+                    try {
+                        const regex = new RegExp(testCase.matchRegex);
+                        isCorrect = regex.test(computed);
+                    } catch (err) {
+                        console.error("Invalid regex in test case", err);
+                        isCorrect = false;
+                    }
+                } else {
+                    isCorrect = computed === testCase.expected;
+                }
+
                 return {
                     computed,
-                    isCorrect: computed === testCase.expected,
+                    isCorrect,
                     error: null
                 };
             } catch (e) {
@@ -143,7 +160,7 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep,
     // ---- RENDER LESSON ----
     if (level.type === 'lesson') {
         return (
-            <div className={`quiz-level lesson-mode training-style-${uiStyle} training-layout-${layout}`}>
+            <div className={`quiz-level lesson-mode training-style-${UI_STYLE} training-layout-${LAYOUT}`}>
                 <div className="quiz-header" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     <div className="nav-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <button
@@ -196,8 +213,10 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep,
         Object.keys(selectedCase.data).length > 0
     );
 
+    const referenceDataPlacement = level.referenceDataPlacement || 'side';
+
     return (
-        <div className={`quiz-level layout-focus training-style-${uiStyle} training-layout-${layout}`}>
+        <div className={`quiz-level layout-focus training-style-${UI_STYLE} training-layout-${LAYOUT}`}>
             <div className="focus-container">
                 <div className="focus-header">
                     <button className="btn-back-simple" onClick={onPrev} disabled={isFirstStep}>← Back</button>
@@ -217,7 +236,7 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep,
                     <div className="card-text">{renderMarkdownText(level.goal)}</div>
                 </div>
 
-                {hasReferenceData && (
+                {hasReferenceData && referenceDataPlacement === 'top' && (
                     <div className="focus-reference-card">
                         <div className="card-header">
                             <span className="icon">🗂️</span>
@@ -259,9 +278,21 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep,
 
                 {/* Results / Validation - Always visible in flow */}
                 <div className="focus-results">
-                    {(layout === 'workbench' || layout === 'wide') && (
+                    {LAYOUT === 'workbench' && (
                         <div className="editor-label-row results-label-row">
                             <label>Output</label>
+                        </div>
+                    )}
+
+                    {hasReferenceData && referenceDataPlacement !== 'top' && (
+                        <div className="focus-reference-card">
+                            <div className="card-header">
+                                <span className="icon">🗂️</span>
+                                <span>Reference Data (JSON)</span>
+                            </div>
+                            <pre className="json-content">
+                                {JSON.stringify(selectedCase.data, null, 2)}
+                            </pre>
                         </div>
                     )}
 
