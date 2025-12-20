@@ -1,14 +1,66 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CURRICULUM } from '../lib/quizData';
 import QuizLevel from './QuizLevel';
+
+const TRAINING_SIDEBAR_COLLAPSED_KEY = 'fs_training_sidebar_collapsed';
+const TRAINING_STYLE_KEY = 'fs_training_style';
+const TRAINING_LAYOUT_KEY = 'fs_training_layout';
 
 const TrainingCenter = () => {
     // Default to Chapter 1, Step 0
     const [activeChapterIndex, setActiveChapterIndex] = useState(0);
     const [activeStepIndex, setActiveStepIndex] = useState(0);
 
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+        try {
+            return window.localStorage.getItem(TRAINING_SIDEBAR_COLLAPSED_KEY) === '1';
+        } catch {
+            return false;
+        }
+    });
+
+    const [trainingStyle, setTrainingStyle] = useState(() => {
+        try {
+            return window.localStorage.getItem(TRAINING_STYLE_KEY) || 'studio';
+        } catch {
+            return 'studio';
+        }
+    });
+
+    const [trainingLayout, setTrainingLayout] = useState(() => {
+        try {
+            return window.localStorage.getItem(TRAINING_LAYOUT_KEY) || 'stack';
+        } catch {
+            return 'stack';
+        }
+    });
+
     // Track completed step IDs (e.g., ["c1-s1", "c1-s2"])
     const [completedSteps, setCompletedSteps] = useState([]);
+
+    useEffect(() => {
+        try {
+            window.localStorage.setItem(TRAINING_SIDEBAR_COLLAPSED_KEY, sidebarCollapsed ? '1' : '0');
+        } catch {
+            // Ignore
+        }
+    }, [sidebarCollapsed]);
+
+    useEffect(() => {
+        try {
+            window.localStorage.setItem(TRAINING_STYLE_KEY, trainingStyle);
+        } catch {
+            // Ignore
+        }
+    }, [trainingStyle]);
+
+    useEffect(() => {
+        try {
+            window.localStorage.setItem(TRAINING_LAYOUT_KEY, trainingLayout);
+        } catch {
+            // Ignore
+        }
+    }, [trainingLayout]);
 
     const activeChapter = CURRICULUM[activeChapterIndex];
     const activeStep = activeChapter.steps[activeStepIndex];
@@ -17,6 +69,11 @@ const TrainingCenter = () => {
         if (!completedSteps.includes(stepId)) {
             setCompletedSteps([...completedSteps, stepId]);
         }
+    };
+
+    const jumpTo = (chapterIndex, stepIndex) => {
+        setActiveChapterIndex(chapterIndex);
+        setActiveStepIndex(stepIndex);
     };
 
     const handleNext = () => {
@@ -43,62 +100,153 @@ const TrainingCenter = () => {
         }
     };
 
-    // Check if the overall chapter is locked (previous chapter not finished)
-    // Simple logic: Chapter N is locked if Chapter N-1's last step is not complete.
-    const isChapterLocked = (index) => {
-        if (index === 0) return false;
-        const prevChapter = CURRICULUM[index - 1];
-        const lastStepId = prevChapter.steps[prevChapter.steps.length - 1].id;
-        return !completedSteps.includes(lastStepId);
-    };
-
     return (
-        <div className="training-workspace">
-            <div className="training-sidebar">
+        <div className={`training-workspace ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+            <div className={`training-sidebar ${sidebarCollapsed ? 'collapsed' : ''}`}>
                 <div className="sidebar-header">
-                    <h2>Curriculum</h2>
+                    <div className="sidebar-header-row">
+                        <h2>Curriculum</h2>
+                        <button
+                            type="button"
+                            className="sidebar-toggle"
+                            onClick={() => setSidebarCollapsed(prev => !prev)}
+                            aria-label={sidebarCollapsed ? 'Expand curriculum sidebar' : 'Collapse curriculum sidebar'}
+                            title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+                        >
+                            {sidebarCollapsed ? '→' : '←'}
+                        </button>
+                    </div>
                     <span className="progress-text">
                         {completedSteps.length} Steps Completed
                     </span>
                 </div>
-                <div className="level-list">
-                    {CURRICULUM.map((chapter, index) => {
-                        const isLocked = isChapterLocked(index);
-                        const isActive = index === activeChapterIndex;
-                        // Calculate chapter progress
+
+                <div className="level-list" aria-label="Training curriculum">
+                    {CURRICULUM.map((chapter, chapterIndex) => {
+                        const isActiveChapter = chapterIndex === activeChapterIndex;
+
                         const totalSteps = chapter.steps.length;
                         const completedInChapter = chapter.steps.filter(s => completedSteps.includes(s.id)).length;
                         const isChapterComplete = completedInChapter === totalSteps;
 
                         return (
-                            <button
-                                key={chapter.id}
-                                className={`level-item chapter-item ${isActive ? 'active' : ''} ${isLocked ? 'locked' : ''}`}
-                                onClick={() => !isLocked && setActiveChapterIndex(index)}
-                                disabled={isLocked}
-                            >
-                                <div className="level-status">
-                                    {isChapterComplete ? '✓' : (index + 1)}
-                                </div>
-                                <div className="level-info">
-                                    <span className="level-title">{chapter.title}</span>
-                                    <div className="chapter-progress-bar">
-                                        <div
-                                            className="progress-fill"
-                                            style={{ width: `${(completedInChapter / totalSteps) * 100}%` }}
-                                        />
+                            <div key={chapter.id} className="chapter-block">
+                                <button
+                                    type="button"
+                                    className={`level-item chapter-item ${isActiveChapter ? 'active' : ''} ${isChapterComplete ? 'completed' : ''}`}
+                                    onClick={() => jumpTo(chapterIndex, 0)}
+                                    title={chapter.title}
+                                    aria-current={isActiveChapter ? 'true' : undefined}
+                                >
+                                    <div className="level-status">
+                                        {isChapterComplete ? '✓' : (chapterIndex + 1)}
                                     </div>
-                                </div>
-                            </button>
+
+                                    {!sidebarCollapsed && (
+                                        <div className="level-info">
+                                            <span className="level-title">{chapter.title}</span>
+                                            <div className="chapter-progress-bar">
+                                                <div
+                                                    className="progress-fill"
+                                                    style={{ width: `${(completedInChapter / totalSteps) * 100}%` }}
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {sidebarCollapsed && isActiveChapter && (
+                                        <div className="rail-step-indicator" aria-label={`Step ${activeStepIndex + 1}`}>
+                                            S{activeStepIndex + 1}
+                                        </div>
+                                    )}
+                                </button>
+
+                                {isActiveChapter && !sidebarCollapsed && (
+                                    <div className="step-subnav" aria-label={`${chapter.title} steps`}>
+                                        {chapter.steps.map((step, stepIndex) => {
+                                            const isActiveStep = stepIndex === activeStepIndex;
+                                            const isStepComplete = completedSteps.includes(step.id);
+
+                                            return (
+                                                <button
+                                                    key={step.id}
+                                                    type="button"
+                                                    className={`level-item step-item ${isActiveStep ? 'active' : ''} ${isStepComplete ? 'completed' : ''}`}
+                                                    onClick={() => jumpTo(chapterIndex, stepIndex)}
+                                                    title={step.title}
+                                                    aria-current={isActiveStep ? 'step' : undefined}
+                                                >
+                                                    <div className="level-status">
+                                                        {isStepComplete ? '✓' : (stepIndex + 1)}
+                                                    </div>
+                                                    <div className="level-info">
+                                                        <span className="level-title">{step.title}</span>
+                                                    </div>
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </div>
                         );
                     })}
                 </div>
             </div>
 
             <div className="training-main" style={{ display: 'flex', flexDirection: 'column' }}>
-                <div style={{ padding: '0 0 1rem 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ padding: '0 0 1rem 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
                     <div className="breadcrumbs" style={{ color: 'var(--text-muted)' }}>
                         {activeChapter.title} <span style={{ margin: '0 0.5rem' }}>/</span> Step {activeStepIndex + 1} of {activeChapter.steps.length}
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                        <div className="training-style-switch" aria-label="Training layout style">
+                            <span className="training-style-switch-label">Style</span>
+                            <button
+                                type="button"
+                                className={`training-style-pill ${trainingStyle === 'studio' ? 'active' : ''}`}
+                                onClick={() => setTrainingStyle('studio')}
+                            >
+                                Studio
+                            </button>
+                            <button
+                                type="button"
+                                className={`training-style-pill ${trainingStyle === 'lounge' ? 'active' : ''}`}
+                                onClick={() => setTrainingStyle('lounge')}
+                            >
+                                Lounge
+                            </button>
+                            <button
+                                type="button"
+                                className={`training-style-pill ${trainingStyle === 'minimal' ? 'active' : ''}`}
+                                onClick={() => setTrainingStyle('minimal')}
+                            >
+                                Minimal
+                            </button>
+                        </div>
+                        <div className="training-style-switch" aria-label="Training layout options">
+                            <span className="training-style-switch-label">Layout</span>
+                            <button
+                                type="button"
+                                className={`training-style-pill ${trainingLayout === 'stack' ? 'active' : ''}`}
+                                onClick={() => setTrainingLayout('stack')}
+                            >
+                                Stack
+                            </button>
+                            <button
+                                type="button"
+                                className={`training-style-pill ${trainingLayout === 'workbench' ? 'active' : ''}`}
+                                onClick={() => setTrainingLayout('workbench')}
+                            >
+                                Workbench
+                            </button>
+                            <button
+                                type="button"
+                                className={`training-style-pill ${trainingLayout === 'wide' ? 'active' : ''}`}
+                                onClick={() => setTrainingLayout('wide')}
+                            >
+                                Wide
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -110,6 +258,8 @@ const TrainingCenter = () => {
                     onPrev={handlePrev}
                     isFirstStep={activeStepIndex === 0 && activeChapterIndex === 0}
                     isLastStep={activeStepIndex === activeChapter.steps.length - 1 && activeChapterIndex === CURRICULUM.length - 1}
+                    uiStyle={trainingStyle}
+                    layout={trainingLayout}
                 />
             </div>
         </div>

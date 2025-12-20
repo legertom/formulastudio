@@ -171,22 +171,29 @@ export function parse(tokens) {
 
         if (!token || token.type === TokenType.CLOSE_BRACE) {
             // Implicit empty string at end of formula for missing arguments
-            return { type: 'StringLiteral', value: '' };
+            // We don't have a real token here, so range is ambiguous.
+            // Let's use the current token's index if available.
+            const idx = token ? token.index : 0;
+            return { type: 'StringLiteral', value: '', range: [idx, idx] };
         }
 
         advance(); // Consume the token we peeked
 
         if (token.type === TokenType.STRING) {
-            return { type: 'StringLiteral', value: token.value };
+            // String literal length: value.length + 2 quotes
+            const end = token.index + token.value.length + 2;
+            return { type: 'StringLiteral', value: token.value, range: [token.index, end] };
         }
 
         // Bare numbers are treated as string literals (IDM treats numbers as text)
         if (token.type === TokenType.NUMBER) {
-            return { type: 'StringLiteral', value: token.value };
+            const end = token.index + token.value.length;
+            return { type: 'StringLiteral', value: token.value, range: [token.index, end] };
         }
 
         if (token.type === TokenType.IDENTIFIER) {
-            return { type: 'Identifier', value: token.value };
+            const end = token.index + token.value.length;
+            return { type: 'Identifier', value: token.value, range: [token.index, end] };
         }
 
         if (token.type === TokenType.KEYWORD) {
@@ -198,11 +205,7 @@ export function parse(tokens) {
                 case 'if': arity = 3; break;
                 case 'equals': arity = 2; break;
                 case 'and': arity = 2; break;
-                case 'or': arity = 2; break; // Binary OR. 'or or A B C' is nested: or(or(A, B), C) ? No, 'or A B' is standard.
-                // Wait, the formula has 'or or or A B C D'.
-                // Polish notation: 'or A B' is one expr.
-                // 'or or A B C' -> 'or (or A B) C'
-                // So standard arity 2 works if it's strictly binary prefix.
+                case 'or': arity = 2; break;
                 case 'contains': arity = 2; break;
                 case 'not': arity = 1; break;
                 case 'greater': arity = 2; break;
@@ -220,12 +223,30 @@ export function parse(tokens) {
                 args.push(parseExpression());
             }
 
-            return { type: 'CallExpression', name, arguments: args };
+            // Determine end of function call
+            // It ends where the last argument ends.
+            // If no arguments (arity 0 - not possible here but theoretically), ends at keyword end.
+            const start = token.index;
+            let end = start + name.length;
+
+            if (args.length > 0) {
+                const lastArg = args[args.length - 1];
+                if (lastArg.range) {
+                    end = lastArg.range[1];
+                }
+            }
+
+            return {
+                type: 'CallExpression',
+                name,
+                arguments: args,
+                range: [start, end]
+            };
         }
 
         if (token.type === TokenType.CLOSE_BRACE) {
             // Should be handled by the check at top of function
-            return { type: 'StringLiteral', value: '' };
+            return { type: 'StringLiteral', value: '', range: [token.index, token.index] };
         }
 
         throw new Error(`Unexpected token type: ${token.type} value: ${token.value}`);

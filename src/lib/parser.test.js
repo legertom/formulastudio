@@ -6,7 +6,7 @@ describe('IDM Formula Parser', () => {
         const input = '{{if equals staff.title "Admin" "Yes" "No"}}';
         const ast = parse(tokenize(input));
 
-        expect(ast).toEqual({
+        expect(ast).toMatchObject({
             type: 'CallExpression',
             name: 'if',
             arguments: [
@@ -136,5 +136,65 @@ describe('IDM Formula Pretty Printer', () => {
         // Should have 2 levels of indentation
         expect(formatted).toContain('\n    equals c "d"');
         expect(formatted).toContain('\n    "e"');
+    });
+});
+
+describe('AST Range Tracking', () => {
+    it('tracks range for simple string literal', () => {
+        // Index: 0123456789
+        //        {{ "foo" }}
+        const input = '{{ "foo" }}';
+        const tokens = tokenize(input);
+        const ast = parse(tokens);
+
+        // "foo" starts at index 3. Length is 3 + 2 quotes = 5. End is 8.
+        expect(ast.range).toEqual([3, 8]);
+    });
+
+    it('tracks range for identifiers', () => {
+        // Index: 0123456789
+        //        {{ bar }}
+        const input = '{{ bar }}';
+        const tokens = tokenize(input);
+        const ast = parse(tokens);
+
+        expect(ast.type).toBe('Identifier');
+        // bar start 3. len 3. end 6.
+        expect(ast.range).toEqual([3, 6]);
+    });
+
+    it('tracks range for function calls', () => {
+        // Index: 012345678901234567890123456789
+        //        {{ equals a "b" }}
+        // equals: start 3.
+        // a: Identifier [10, 11]
+        // "b": String [12, 15]
+        // CallExpression end should be 15.
+        const input = '{{ equals a "b" }}';
+        const tokens = tokenize(input);
+        const ast = parse(tokens);
+
+        expect(ast.type).toBe('CallExpression');
+        expect(ast.range).toEqual([3, 15]);
+    });
+
+    it('tracks range for nested calls', () => {
+        //        012345678901234567890123456789012345
+        //        {{ if cond "true" equals a "b" }}
+        // if starts 3.
+        // cond: 6-10
+        // "true": 11-17
+        // equals a "b": 18-30 (equals at 18, "b" ends at 30)
+        // range should be [3, 30]
+        const input = '{{ if cond "true" equals a "b" }}';
+        const tokens = tokenize(input);
+        const ast = parse(tokens);
+
+        expect(ast.name).toBe('if');
+        expect(ast.range).toEqual([3, 30]);
+
+        const elseBranch = ast.arguments[2];
+        expect(elseBranch.name).toBe('equals');
+        expect(elseBranch.range).toEqual([18, 30]);
     });
 });

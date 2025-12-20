@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useContext, createContext } from 'r
 import { createPortal } from 'react-dom';
 
 // --- Context ---
-const FormulaContext = createContext({ loopVariable: null });
+const FormulaContext = createContext({ loopVariable: null, onHoverNode: () => { } });
 
 // --- Concat Flattener ---
 
@@ -171,18 +171,27 @@ const LogicScenariosView = ({ node }) => {
 
 
 const NodeView = ({ node }) => {
-    const { loopVariable } = useContext(FormulaContext);
+    const { loopVariable, onHoverNode } = useContext(FormulaContext);
+
+    const handleEnter = (e) => {
+        e.stopPropagation();
+        if (node?.range) onHoverNode(node.range);
+    };
+    const handleLeave = (e) => {
+        // e.stopPropagation(); // Maybe? 
+        onHoverNode(null);
+    };
 
     if (!node) return null;
 
     if (node.type === 'StringLiteral') {
-        return <span className="node-string">"{node.value}"</span>;
+        return <span className="node-string" onMouseEnter={handleEnter} onMouseLeave={handleLeave}>"{node.value}"</span>;
     }
 
     if (node.type === 'Identifier') {
         const isLoopVar = loopVariable && (node.value === loopVariable || node.value.startsWith(`${loopVariable}.`));
         return (
-            <span className={`node-ident ${isLoopVar ? 'node-loop-var' : ''}`}>
+            <span className={`node-ident ${isLoopVar ? 'node-loop-var' : ''}`} onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
                 {node.value}
             </span>
         );
@@ -208,7 +217,7 @@ const NodeView = ({ node }) => {
         }
 
         return (
-            <div className={`node-call node-${node.name}`}>
+            <div className={`node-call node-${node.name}`} onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
                 <div className="node-header">{node.name}</div>
                 <div className="node-args">
                     {node.arguments.map((arg, i) => (
@@ -349,11 +358,19 @@ const PortalTooltip = ({ children, text }) => {
     );
 };
 const CleanValue = ({ node }) => {
+    const { onHoverNode } = useContext(FormulaContext);
+
+    const handleEnter = (e) => {
+        e.stopPropagation();
+        if (node?.range) onHoverNode(node.range);
+    };
+    const handleLeave = () => onHoverNode(null);
+
     if (node?.type === 'StringLiteral') {
         if (!node.value) {
-            return <span className="clean-string empty" style={{ opacity: 0.5, fontStyle: 'italic', fontSize: '0.85em' }}>(Empty)</span>;
+            return <span className="clean-string empty" style={{ opacity: 0.5, fontStyle: 'italic', fontSize: '0.85em' }} onMouseEnter={handleEnter} onMouseLeave={handleLeave}>(Empty)</span>;
         }
-        return <span className="clean-string">{node.value}</span>;
+        return <span className="clean-string" onMouseEnter={handleEnter} onMouseLeave={handleLeave}>{node.value}</span>;
     }
     return <NodeView node={node} />;
 };
@@ -368,6 +385,14 @@ function flattenOp(node, op) {
 }
 
 const ConditionView = ({ node }) => {
+    const { onHoverNode } = useContext(FormulaContext);
+
+    const handleEnter = (e) => {
+        e.stopPropagation();
+        if (node?.range) onHoverNode(node.range);
+    };
+    const handleLeave = () => onHoverNode(null);
+
     // 0. Synthetic Default (Else) -> "Catch All"
     if (node?.type === 'Default') {
         return (
@@ -384,7 +409,7 @@ const ConditionView = ({ node }) => {
     if (node?.type === 'CallExpression' && node.name === 'and') {
         const args = flattenOp(node, 'and');
         return (
-            <div className="condition-block condition-and" role="group" aria-label="All conditions required">
+            <div className="condition-block condition-and" role="group" aria-label="All conditions required" onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
                 <span className="logic-label">All Required:</span>
                 <div className="condition-stack">
                     {args.map((arg, i) => <ConditionView key={i} node={arg} />)}
@@ -397,7 +422,7 @@ const ConditionView = ({ node }) => {
     if (node?.type === 'CallExpression' && node.name === 'or') {
         const args = flattenOp(node, 'or');
         return (
-            <div className="condition-block condition-or" role="group" aria-label="At least one condition required">
+            <div className="condition-block condition-or" role="group" aria-label="At least one condition required" onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
                 <span className="logic-label">Matches One Of:</span>
                 <div className="condition-tags">
                     {args.map((arg, i) => <ConditionView key={i} node={arg} />)}
@@ -409,7 +434,7 @@ const ConditionView = ({ node }) => {
     // 3. Clean Equals: "Field = Value"
     if (node?.type === 'CallExpression' && node.name === 'equals') {
         return (
-            <div className="condition-equals-inline" aria-label={`${node.arguments[0]?.value} equals ${node.arguments[1]?.value}`}>
+            <div className="condition-equals-inline" aria-label={`${node.arguments[0]?.value} equals ${node.arguments[1]?.value}`} onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
                 <span className="field-name">{node.arguments[0]?.value}</span>
                 <span className="op">=</span>
                 <CleanValue node={node.arguments[1]} />
@@ -420,7 +445,7 @@ const ConditionView = ({ node }) => {
     // 4. Clean In/Contains: "Field IN List"
     if (node?.type === 'CallExpression' && (node.name === 'in' || node.name === 'contains')) {
         return (
-            <div className="condition-equals-inline" style={{ maxWidth: '100%' }}>
+            <div className="condition-equals-inline" style={{ maxWidth: '100%' }} onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
                 <span className="field-name">{node.arguments[0]?.value}</span>
                 <span className="op" style={{ color: 'var(--accent-secondary)' }}>IN</span>
                 <div style={{ display: 'inline-block', maxWidth: '150px', verticalAlign: 'middle', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -588,6 +613,7 @@ const SmartSegment = ({ segment, index, targetLabel = "Target OU" }) => {
 import { tokenize, parse } from '../lib/parser';
 
 const GroupLogicView = ({ ast, error }) => {
+    const { onHoverNode } = useContext(FormulaContext);
     // 1. Check if it's a forEach loop
     const isForEach = ast?.type === 'CallExpression' && ast.name === 'forEach';
 
@@ -630,7 +656,7 @@ const GroupLogicView = ({ ast, error }) => {
     const segments = innerAst ? segmentLogicChain(innerAst) : [];
 
     return (
-        <FormulaContext.Provider value={{ loopVariable }}>
+        <FormulaContext.Provider value={{ loopVariable, onHoverNode }}>
             <div className="group-logic-container">
                 <div className="group-args-breakdown" style={{
                     display: 'flex',
@@ -752,7 +778,7 @@ const GroupLogicView = ({ ast, error }) => {
     );
 };
 
-export default function FormulaVisualizer({ ast, error, mode = 'OU' }) {
+export default function FormulaVisualizer({ ast, error, mode = 'OU', onHoverNode = () => { } }) {
     if (error) {
         return (
             <div className="visualizer-error" role="alert">
@@ -778,13 +804,15 @@ export default function FormulaVisualizer({ ast, error, mode = 'OU' }) {
     const segments = segmentLogicChain(ast);
 
     return (
-        <div className="visualizer-container">
-            <div className="view-mode-container">
-                {segments.map((seg, i) => (
-                    <SmartSegment key={i} segment={seg} index={i} />
-                ))}
+        <FormulaContext.Provider value={{ loopVariable: null, onHoverNode }}>
+            <div className="visualizer-container">
+                <div className="view-mode-container">
+                    {segments.map((seg, i) => (
+                        <SmartSegment key={i} segment={seg} index={i} />
+                    ))}
+                </div>
             </div>
-        </div>
+        </FormulaContext.Provider>
     );
 }
 

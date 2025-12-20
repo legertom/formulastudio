@@ -39,7 +39,7 @@ export const CURRICULUM = [
                 type: "challenge",
                 title: "What is JSON?",
                 goal: "Look at the Reference Data. Type the value of the `color` field.",
-                description: "**JSON** is how user data is stored. It uses **single** curly braces `{ }` to group data.\n\nDon't confuse `{ }` (data) with `{{ }}` (code)!\n\nLook at the data panel on the right.",
+                description: "**JSON** is how user data is stored. It uses **single** curly braces `{ }` to group data.\n\nDon't confuse `{ }` (data) with `{{ }}` (code)!\n\nLook at the Reference Data panel above.",
                 testCases: [{ name: "Test", data: { "color": "blue" }, expected: "blue" }],
                 hints: ["The data shows color is 'blue'. Type {{ \"blue\" }}"],
                 prefill: "{{}}"

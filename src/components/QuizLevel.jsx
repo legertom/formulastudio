@@ -4,18 +4,37 @@ import { tokenize, parse } from '../lib/parser';
 
 
 // Helper to render text with basic markdown (bold **text**, code `text`)
+// plus a tiny amount of "IDM-ish" token highlighting for {{ and }}.
 const renderMarkdownText = (text) => {
     if (!text) return null;
+
+    const renderInlineTokens = (segment) => {
+        if (typeof segment !== 'string' || segment.length === 0) return segment;
+        return segment.split(/(\{\{|\}\})/g).map((piece, i) => {
+            if (piece === '{{' || piece === '}}') {
+                return <code key={i}>{piece}</code>;
+            }
+            return piece;
+        });
+    };
+
     return text.split('`').map((part, j) => {
         if (j % 2 === 1) {
-            // Code block
-            return <code key={j} style={{ background: 'rgba(255,255,255,0.1)', padding: '0.2em 0.4em', borderRadius: '4px', fontFamily: 'monospace' }}>{part}</code>;
-        } else {
-            // Regular text, check for bold
-            return part.split('**').map((subPart, k) => (
-                k % 2 === 1 ? <strong key={`${j}-${k}`} style={{ color: 'var(--primary)' }}>{subPart}</strong> : subPart
-            ));
+            // Inline code
+            return <code key={j}>{part}</code>;
         }
+
+        // Regular text, check for bold
+        return part.split('**').map((subPart, k) => {
+            if (k % 2 === 1) {
+                return (
+                    <strong key={`${j}-${k}`} style={{ color: 'var(--primary)' }}>
+                        {renderInlineTokens(subPart)}
+                    </strong>
+                );
+            }
+            return <React.Fragment key={`${j}-${k}`}>{renderInlineTokens(subPart)}</React.Fragment>;
+        });
     });
 };
 
@@ -70,8 +89,8 @@ const evaluateAst = (ast, data) => {
 };
 
 
-const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep }) => {
-    const [formula, setFormula] = useState('{{}}');
+const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep, uiStyle = 'studio', layout = 'stack' }) => {
+    const [formula, setFormula] = useState('');
     const [results, setResults] = useState([]);
     const [visibleHints, setVisibleHints] = useState(0);
     const [selectedCaseIndex, setSelectedCaseIndex] = useState(0);
@@ -79,7 +98,7 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep 
     // Initialize/Reset
     useEffect(() => {
         // Use ?? instead of || so empty string prefills work
-        setFormula(level.prefill ?? '{{}}');
+        setFormula(level.prefill ?? '');
         setResults([]);
         setVisibleHints(0);
         setSelectedCaseIndex(0);
@@ -124,7 +143,7 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep 
     // ---- RENDER LESSON ----
     if (level.type === 'lesson') {
         return (
-            <div className="quiz-level lesson-mode">
+            <div className={`quiz-level lesson-mode training-style-${uiStyle} training-layout-${layout}`}>
                 <div className="quiz-header" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     <div className="nav-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <button
@@ -169,8 +188,16 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep 
     // ---- RENDER CHALLENGE (FOCUS FLOW - GLOBAL) ----
     const isAllCorrect = results.length > 0 && results.every(r => r.isCorrect);
 
+    const selectedCase = level.testCases?.[selectedCaseIndex];
+    const hasReferenceData = Boolean(
+        selectedCase &&
+        selectedCase.data &&
+        typeof selectedCase.data === 'object' &&
+        Object.keys(selectedCase.data).length > 0
+    );
+
     return (
-        <div className="quiz-level layout-focus">
+        <div className={`quiz-level layout-focus training-style-${uiStyle} training-layout-${layout}`}>
             <div className="focus-container">
                 <div className="focus-header">
                     <button className="btn-back-simple" onClick={onPrev} disabled={isFirstStep}>← Back</button>
@@ -187,8 +214,20 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep 
 
                 <div className="focus-goal-card">
                     <div className="card-label">YOUR GOAL</div>
-                    <div className="card-text">{level.goal}</div>
+                    <div className="card-text">{renderMarkdownText(level.goal)}</div>
                 </div>
+
+                {hasReferenceData && (
+                    <div className="focus-reference-card">
+                        <div className="card-header">
+                            <span className="icon">🗂️</span>
+                            <span>Reference Data (JSON)</span>
+                        </div>
+                        <pre className="json-content">
+                            {JSON.stringify(selectedCase.data, null, 2)}
+                        </pre>
+                    </div>
+                )}
 
                 <div className="focus-editor-section">
                     <div className="editor-label-row">
@@ -213,22 +252,16 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep 
                                 Need a hint?
                             </button>
                         ) : (
-                            level.hints.map((h, i) => <div key={i} className="hint-text">{h}</div>)
+                            level.hints.map((h, i) => <div key={i} className="hint-text">{renderMarkdownText(h)}</div>)
                         )}
                     </div>
                 )}
 
                 {/* Results / Validation - Always visible in flow */}
                 <div className="focus-results">
-                    {Object.keys(level.testCases[selectedCaseIndex].data).length > 0 && (
-                        <div className="focus-reference-card">
-                            <div className="card-header">
-                                <span className="icon">🗂️</span>
-                                <span>Reference Data (JSON)</span>
-                            </div>
-                            <pre className="json-content">
-                                {JSON.stringify(level.testCases[selectedCaseIndex].data, null, 2)}
-                            </pre>
+                    {(layout === 'workbench' || layout === 'wide') && (
+                        <div className="editor-label-row results-label-row">
+                            <label>Output</label>
                         </div>
                     )}
 

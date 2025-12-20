@@ -1,6 +1,7 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 
-const NavBar = ({ currentView, onViewChange }) => {
+const NavBar = () => {
     return (
         <nav className="main-nav">
             <div className="nav-brand">
@@ -11,24 +12,24 @@ const NavBar = ({ currentView, onViewChange }) => {
             </div>
 
             <div className="nav-links">
-                <button
-                    className={`nav-item ${currentView === 'editor' ? 'active' : ''}`}
-                    onClick={() => onViewChange('editor')}
+                <NavLink
+                    to="/"
+                    className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
                 >
                     Editor
-                </button>
-                <button
-                    className={`nav-item ${currentView === 'training' ? 'active' : ''}`}
-                    onClick={() => onViewChange('training')}
+                </NavLink>
+                <NavLink
+                    to="/training"
+                    className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
                 >
                     Training
-                </button>
-                <button
-                    className={`nav-item ${currentView === 'docs' ? 'active' : ''}`}
-                    onClick={() => onViewChange('docs')}
+                </NavLink>
+                <NavLink
+                    to="/docs"
+                    className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
                 >
                     Full Docs
-                </button>
+                </NavLink>
             </div>
         </nav>
     );
