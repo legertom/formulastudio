@@ -24,7 +24,12 @@ export const TokenType = {
     UNKNOWN: 'UNKNOWN'
 };
 
-const KEYWORDS = new Set(['if', 'equals', 'and', 'or', 'contains', 'not', 'greater', 'concat', 'substr', 'replace', 'len', 'ignoreIfNull', 'forEach', 'in']);
+const KEYWORDS = new Set([
+    'if', 'equals', 'and', 'or', 'contains', 'not', 'greater', 'concat', 'substr', 'replace', 'len', 'ignoreIfNull', 'forEach', 'in',
+    'toUpper', 'toLower', 'initials', 'alphanumeric', 'trimLeft', 'delimiterCapitalize',
+    'textBefore', 'textAfter', 'textAfterLast',
+    'add', 'subtract', 'formatDate'
+]);
 
 /**
  * Tokenizes the input formula string.
@@ -216,6 +221,18 @@ export function parse(tokens) {
                 case 'ignoreIfNull': arity = 1; break;
                 case 'forEach': arity = 3; break;
                 case 'in': arity = 2; break;
+                case 'toUpper': arity = 1; break;
+                case 'toLower': arity = 1; break;
+                case 'initials': arity = 1; break;
+                case 'alphanumeric': arity = 1; break;
+                case 'trimLeft': arity = 1; break;
+                case 'delimiterCapitalize': arity = 1; break;
+                case 'textBefore': arity = 2; break;
+                case 'textAfter': arity = 2; break;
+                case 'textAfterLast': arity = 2; break;
+                case 'add': arity = 2; break;
+                case 'subtract': arity = 2; break;
+                case 'formatDate': arity = 2; break;
                 default: throw new Error(`Unknown function '${name}'`);
             }
 

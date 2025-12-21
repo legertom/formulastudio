@@ -1,6 +1,6 @@
 import React from 'react';
 import FunctionCategoryPage from './FunctionCategoryPage';
-import { MATH_DATE_OPS } from './functionData';
+import { MATH_DATE_OPS } from '../data';
 
 const DocsMathDates = () => (
     <FunctionCategoryPage

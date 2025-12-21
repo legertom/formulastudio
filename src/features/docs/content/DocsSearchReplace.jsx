@@ -1,6 +1,6 @@
 import React from 'react';
 import FunctionCategoryPage from './FunctionCategoryPage';
-import { SEARCH_REPLACE_OPS } from './functionData';
+import { SEARCH_REPLACE_OPS } from '../data';
 
 const DocsSearchReplace = () => (
     <FunctionCategoryPage

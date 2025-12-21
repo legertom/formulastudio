@@ -1,0 +1,102 @@
+/* Editor wrapper - acts as positioning context */
+.syntax-editor-wrapper {
+    position: relative;
+    width: 100%;
+    min-height: 200px;
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    line-height: 1.6;
+}
+
+/* Shared base styles for EXACT alignment */
+.syntax-highlight-layer,
+.syntax-editor-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 1.5rem;
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    box-sizing: border-box;
+    overflow: auto;
+}
+
+/* Highlighted background layer */
+.syntax-highlight-layer {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Actual textarea input - sits on top but is transparent */
+.syntax-editor-input {
+    position: relative;
+    background: transparent;
+    color: transparent;
+    caret-color: var(--text-primary);
+    resize: vertical;
+    outline: none;
+    z-index: 2;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.syntax-editor-input::placeholder {
+    color: var(--text-muted);
+}
+
+.syntax-editor-input::selection {
+    background-color: rgba(99, 102, 241, 0.3);
+}
+
+.syntax-editor-input:focus {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+.syntax-editor-input:focus + .syntax-highlight-layer {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: var(--accent-primary);
+}
+
+/* Syntax highlighting tokens */
+.token-wrapper {
+    color: var(--accent-secondary);
+    font-weight: 700;
+}
+
+.token-string {
+    color: #fbbf24;
+}
+
+.token-function {
+    color: #a78bfa;
+    font-weight: 600;
+}
+
+.token-field {
+    color: #60a5fa;
+}
+
+.token-number {
+    color: #34d399;
+}
+
+/* Workbench layout adjustments */
+.training-layout-workbench .syntax-editor-wrapper {
+    height: 100%;
+}
+
+.training-layout-workbench .syntax-editor-input,
+.training-layout-workbench .syntax-highlight-layer {
+    height: 100%;
+}

@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { tokenize, parse } from '../../lib/parser';
+import SyntaxHighlightedEditor from './SyntaxHighlightedEditor';
 
 
 // Helper to render text with basic markdown (bold **text**, code `text`)
@@ -18,22 +19,127 @@ const renderMarkdownText = (text) => {
         });
     };
 
-    return text.split('`').map((part, j) => {
-        if (j % 2 === 1) {
-            // Inline code
-            return <code key={j}>{part}</code>;
+    // Helper for inline markdown (bold/code)
+    const renderInlineMarkdown = (inlineText, baseKey) => {
+        return inlineText.split('`').map((part, j) => {
+            if (j % 2 === 1) {
+                return <code key={`${baseKey}-${j}`}>{part}</code>;
+            }
+            return part.split('**').map((subPart, k) => {
+                if (k % 2 === 1) {
+                    return (
+                        <strong key={`${baseKey}-${j}-${k}`} style={{ color: 'var(--primary)' }}>
+                            {renderInlineTokens(subPart)}
+                        </strong>
+                    );
+                }
+                return <React.Fragment key={`${baseKey}-${j}-${k}`}>{renderInlineTokens(subPart)}</React.Fragment>;
+            });
+        });
+    };
+
+    // Helper to render a markdown table (matches docs diagram style)
+    const renderTable = (tableText, tableKey) => {
+        const lines = tableText.trim().split('\n').filter(line => line.trim());
+        if (lines.length < 2) return null;
+
+        const parseRow = (row) => row.split('|').map(cell => cell.trim()).filter(cell => cell);
+        const headerCells = parseRow(lines[0]);
+        const bodyRows = lines.slice(2).map(parseRow); // Skip header and separator
+
+        return (
+            <table key={tableKey} style={{
+                borderCollapse: 'collapse',
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.85rem',
+                margin: '1rem 0'
+            }}>
+                <thead>
+                    <tr>
+                        <td style={{
+                            padding: '0.25rem 0.5rem',
+                            color: 'var(--text-muted)',
+                            fontSize: '0.7rem'
+                        }}>{headerCells[0]}:</td>
+                        {headerCells.slice(1).map((cell, idx) => (
+                            <td key={idx} style={{
+                                padding: '0.25rem 0.75rem',
+                                textAlign: 'center',
+                                color: 'var(--accent-secondary)',
+                                fontWeight: 600
+                            }}>{cell}</td>
+                        ))}
+                    </tr>
+                </thead>
+                <tbody>
+                    {bodyRows.map((row, rowIdx) => (
+                        <tr key={rowIdx}>
+                            <td style={{
+                                padding: '0.25rem 0.5rem',
+                                color: 'var(--text-muted)',
+                                fontSize: '0.7rem'
+                            }}>{row[0]}:</td>
+                            {row.slice(1).map((cell, cellIdx) => (
+                                <td key={cellIdx} style={{
+                                    padding: '0.5rem 0.75rem',
+                                    textAlign: 'center',
+                                    background: 'var(--bg-tertiary)',
+                                    border: '1px solid var(--glass-border)',
+                                    fontWeight: 600
+                                }}>{cell}</td>
+                            ))}
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        );
+    };
+
+    // Check if text contains a markdown table
+    const isMarkdownTable = (text) => {
+        const lines = text.trim().split('\n');
+        return lines.length >= 2 && lines[1].match(/^\|?[\s-:|]+\|?$/);
+    };
+
+    // 1. Split by triple backticks for code blocks
+    return text.split('```').map((block, i) => {
+        if (i % 2 === 1) {
+            // CODE BLOCK
+            return (
+                <pre key={`block-${i}`} style={{
+                    background: 'var(--bg-tertiary)',
+                    padding: '1.25rem',
+                    borderRadius: '8px',
+                    overflowX: 'auto',
+                    border: '1px solid var(--glass-border)',
+                    fontFamily: "'Fira Code', monospace",
+                    fontSize: '0.95rem',
+                    lineHeight: '1.5',
+                    color: 'var(--text-secondary)',
+                    boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.1)',
+                    margin: '1.5rem 0'
+                }}>
+                    {block.trim()}
+                </pre>
+            );
         }
 
-        // Regular text, check for bold
-        return part.split('**').map((subPart, k) => {
-            if (k % 2 === 1) {
-                return (
-                    <strong key={`${j}-${k}`} style={{ color: 'var(--primary)' }}>
-                        {renderInlineTokens(subPart)}
-                    </strong>
-                );
+        // TEXT BLOCK:
+        // 1. Trim leading/trailing whitespace from the block (removes the newlines that border the code block)
+        // 2. Split by double-newlines to find distinct paragraphs
+        const cleanBlock = block.trim();
+        if (!cleanBlock) return null;
+
+        return cleanBlock.split(/\n\s*\n/).map((para, paraIdx) => {
+            // Check if this paragraph is a table
+            if (isMarkdownTable(para)) {
+                return renderTable(para, `table-${i}-${paraIdx}`);
             }
-            return <React.Fragment key={`${j}-${k}`}>{renderInlineTokens(subPart)}</React.Fragment>;
+            return (
+                <p key={`text-${i}-${paraIdx}`} style={{ lineHeight: '1.6', margin: '0 0 1rem 0' }}>
+                    {renderInlineMarkdown(para, `inline-${i}-${paraIdx}`)}
+                </p>
+            );
         });
     });
 };
@@ -53,7 +159,7 @@ const evaluateAst = (ast, data) => {
                 case 'if': return args[0] ? args[1] : args[2];
                 case 'equals': return args[0] === args[1];
                 case 'greater': return Number(args[0]) > Number(args[1]);
-                case 'len': return String(args[0]).length;
+                case 'len': return String(String(args[0]).length);
                 case 'substr':
                     const str = String(args[0]);
                     const start = parseInt(args[1], 10);
@@ -63,6 +169,56 @@ const evaluateAst = (ast, data) => {
                     return String(args[0]).replaceAll(args[1], args[2]);
                 case 'ignoreIfNull':
                     return (args[0] === null || args[0] === undefined) ? "" : args[0];
+
+                // New String Functions
+                case 'toUpper': return String(args[0]).toUpperCase();
+                case 'toLower': return String(args[0]).toLowerCase();
+                case 'trimLeft': return String(args[0]).trimStart();
+                case 'alphanumeric': return String(args[0]).replace(/[^a-z0-9]/gi, '');
+                case 'initials':
+                    return String(args[0]).split(/[\s-]+/).map(w => w[0] || '').join('').toUpperCase();
+                case 'delimiterCapitalize':
+                    return String(args[0]).replace(/(?:^|[\s-])\w/g, (match) => match.toUpperCase());
+
+                // Text Extraction
+                case 'textBefore': {
+                    const s = String(args[0]);
+                    const idx = s.indexOf(args[1]);
+                    return idx === -1 ? s : s.substring(0, idx);
+                }
+                case 'textAfter': {
+                    const s = String(args[0]);
+                    const idx = s.indexOf(args[1]);
+                    return idx === -1 ? s : s.substring(idx + String(args[1]).length);
+                }
+                case 'textAfterLast': {
+                    const s = String(args[0]);
+                    const idx = s.lastIndexOf(args[1]);
+                    return idx === -1 ? s : s.substring(idx + String(args[1]).length);
+                }
+
+                // Math/Date
+                case 'add': return String(Number(args[0]) + Number(args[1]));
+                case 'subtract': return String(Number(args[0]) - Number(args[1]));
+                case 'formatDate': {
+                    const date = new Date(args[0]);
+                    if (isNaN(date.getTime())) return args[0]; // Invalid date fallback
+                    const format = args[1];
+                    // Very basic formatter
+                    const yyyy = date.getFullYear();
+                    const mm = String(date.getMonth() + 1).padStart(2, '0');
+                    const dd = String(date.getDate()).padStart(2, '0');
+                    return format
+                        .replace('YYYY', yyyy)
+                        .replace('MM', mm)
+                        .replace('DD', dd);
+                }
+                // Logic
+                case 'and': return args[0] && args[1];
+                case 'or': return args[0] || args[1];
+                case 'not': return !args[0];
+                case 'contains': return String(args[0]).includes(args[1]);
+                case 'in': return String(args[1]).split(' ').includes(String(args[0]));
                 default: return "";
             }
         }
@@ -226,9 +382,7 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep 
                 <h1 className="focus-title">{level.title}</h1>
 
                 <div className="focus-content">
-                    {level.description.split('\n').map((para, i) => (
-                        <p key={i} style={{ lineHeight: '1.6' }}>{renderMarkdownText(para)}</p>
-                    ))}
+                    {renderMarkdownText(level.description)}
                 </div>
 
                 <div className="focus-goal-card">
@@ -253,25 +407,25 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep 
                         <label>Formula Editor</label>
                         <div className="live-tag">Live Preview</div>
                     </div>
-                    <div className="editor-wrapper">
-                        <textarea
-                            className="focus-editor"
-                            value={formula}
-                            onChange={(e) => setFormula(e.target.value)}
-                            spellCheck="false"
-                            placeholder="{{ ... }}"
-                        />
-                    </div>
+                    <SyntaxHighlightedEditor
+                        value={formula}
+                        onChange={(e) => setFormula(e.target.value)}
+                        placeholder="{{ ... }}"
+                    />
                 </div>
 
                 {level.hints && level.hints.length > 0 && (
                     <div className="focus-hints">
-                        {visibleHints < level.hints.length ? (
+                        {level.hints.slice(0, visibleHints).map((h, i) => (
+                            <div key={i} className="hint-text" style={{ marginBottom: '0.5rem' }}>
+                                {renderMarkdownText(h)}
+                            </div>
+                        ))}
+
+                        {visibleHints < level.hints.length && (
                             <button className="btn-hint-link" onClick={() => setVisibleHints(prev => prev + 1)}>
-                                Need a hint?
+                                {visibleHints === 0 ? "Need a hint?" : "Show next hint"}
                             </button>
-                        ) : (
-                            level.hints.map((h, i) => <div key={i} className="hint-text">{renderMarkdownText(h)}</div>)
                         )}
                     </div>
                 )}
@@ -297,12 +451,31 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep 
                     )}
 
                     <div className="focus-validation-list">
+                        <div style={{
+                            fontSize: '0.75rem',
+                            textTransform: 'uppercase',
+                            color: 'var(--text-muted)',
+                            fontWeight: 600,
+                            letterSpacing: '0.05em',
+                            marginBottom: '0.5rem',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            padding: '0 0.5rem'
+                        }}>
+                            <span>Test Results</span>
+                            <span style={{ opacity: 0.7 }}>Click row to view details</span>
+                        </div>
                         {level.testCases.map((testCase, idx) => {
                             const result = results[idx] || { computed: '', isCorrect: false };
+                            const isSelected = idx === selectedCaseIndex;
                             return (
-                                <div key={idx} className={`focus-test-item ${result.isCorrect ? 'pass' : 'fail'}`}>
+                                <div
+                                    key={idx}
+                                    className={`focus-test-item ${result.isCorrect ? 'pass' : 'fail'} ${isSelected ? 'selected' : ''}`}
+                                    onClick={() => setSelectedCaseIndex(idx)}
+                                >
                                     <div className="item-lhs">
-                                        <span className="case-name">{testCase.name}</span>
+                                        <span className="case-name">{testCase.name} {isSelected && <span style={{ fontSize: '0.7rem', color: 'var(--accent-secondary)', marginLeft: '0.5rem' }}>(VIEWING)</span>}</span>
                                         <span className="case-exp">Expects: {testCase.expected || '""'}</span>
                                     </div>
                                     <div className="item-rhs">

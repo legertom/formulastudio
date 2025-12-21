@@ -1,6 +1,6 @@
 import React from 'react';
 import FunctionCategoryPage from './FunctionCategoryPage';
-import { TEXT_EXTRACTION_OPS } from './functionData';
+import { TEXT_EXTRACTION_OPS } from '../data';
 
 const DocsTextExtraction = () => (
     <FunctionCategoryPage

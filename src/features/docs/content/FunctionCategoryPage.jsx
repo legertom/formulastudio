@@ -1,7 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 // Reusable component for rendering a function category page
 const FunctionCategoryPage = ({ title, description, ops }) => {
+    const { pageId } = useParams();
+    const [copiedId, setCopiedId] = useState(null);
+
+    const handleCopyLink = (funcName) => {
+        // Construct URL: origin + /docs/ + current category (pageId) + / + functionName
+        // Default to 'intro' if pageId is missing (though unlikely for function pages)
+        const category = pageId || 'intro';
+        const url = `${window.location.origin}/docs/${category}/${funcName}`;
+
+        navigator.clipboard.writeText(url).then(() => {
+            setCopiedId(funcName);
+            setTimeout(() => setCopiedId(null), 2000);
+        });
+    };
 
     const getLevelColor = (level) => {
         switch (level) {
@@ -155,7 +170,36 @@ const FunctionCategoryPage = ({ title, description, ops }) => {
                                 borderBottom: '1px solid var(--glass-border)',
                                 background: 'var(--glass-highlight)'
                             }}>
-                                <h4 style={{ margin: 0, color: 'var(--accent-secondary)' }}>{op.name}</h4>
+                                <h4 style={{ margin: 0, color: 'var(--accent-secondary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                    {op.name}
+                                    <button
+                                        onClick={() => handleCopyLink(op.name)}
+                                        title="Copy link to function"
+                                        aria-label={`Copy link to ${op.name}`}
+                                        style={{
+                                            background: 'none',
+                                            border: 'none',
+                                            cursor: 'pointer',
+                                            padding: '4px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            borderRadius: '4px',
+                                            color: copiedId === op.name ? 'var(--success)' : 'var(--text-muted)',
+                                            transition: 'all 0.2s ease'
+                                        }}
+                                        className="hover:bg-glass-border" // Assuming tailwind or utility class, otherwise use inline style hover via state or CSS
+                                    >
+                                        {copiedId === op.name ? (
+                                            <span style={{ fontSize: '0.8rem', fontWeight: 600 }}>Copied!</span>
+                                        ) : (
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                                            </svg>
+                                        )}
+                                    </button>
+                                </h4>
                                 {op.arity && (
                                     <span style={{
                                         fontSize: '0.75rem',

@@ -12,9 +12,11 @@ function App() {
       <div className="app-content">
         <Routes>
           <Route path="/" element={<EditorView />} />
-          <Route path="/training" element={<TrainingCenter />} />
+          <Route path="/training" element={<Navigate to="/training/1/1" replace />} />
+          <Route path="/training/:chapterIndex/:stepIndex" element={<TrainingCenter />} />
           <Route path="/docs" element={<Navigate to="/docs/intro" replace />} />
           <Route path="/docs/:pageId" element={<DocsPage />} />
+          <Route path="/docs/:pageId/:subId" element={<DocsPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>

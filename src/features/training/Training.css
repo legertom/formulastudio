@@ -143,10 +143,22 @@
   cursor: not-allowed;
 }
 
+.level-item:focus,
+.level-item:focus-visible {
+  outline: none;
+}
+
 .level-item.active {
   background: rgba(99, 102, 241, 0.12);
   border-color: rgba(129, 140, 248, 0.9);
   box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.6);
+}
+
+/* When sidebar is expanded, remove the active box style from the chapter item */
+.training-sidebar:not(.collapsed) .chapter-item.active {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
 }
 
 .level-item.active .level-status {
@@ -694,6 +706,19 @@
   background: var(--bg-secondary);
   border: 1px solid var(--glass-border);
   margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.focus-test-item:hover {
+  background: var(--bg-tertiary);
+  transform: translateY(-1px);
+}
+
+.focus-test-item.selected {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 1px var(--accent-primary);
+  background: rgba(99, 102, 241, 0.08);
 }
 
 .focus-test-item.pass {
@@ -895,6 +920,14 @@
 
 .training-layout-workbench .focus-editor-section {
   grid-area: editor;
+  display: flex;
+  flex-direction: column;
+  min-height: 300px;
+}
+
+.training-layout-workbench .focus-editor-section .syntax-editor-wrapper {
+  flex: 1;
+  min-height: 200px;
 }
 
 .training-layout-workbench .focus-hints {
@@ -906,8 +939,8 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  height: 100%;
-  min-height: 0;
+  min-height: 300px;
+  align-self: stretch;
 }
 
 .training-layout-workbench .results-label-row {

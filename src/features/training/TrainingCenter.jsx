@@ -1,14 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import { CURRICULUM } from '../../lib/quizData';
+import { useParams, useNavigate } from 'react-router-dom';
+import { CURRICULUM } from '../../lib/curriculum';
 import './Training.css';
 import QuizLevel from './QuizLevel';
 
 const TRAINING_SIDEBAR_COLLAPSED_KEY = 'fs_training_sidebar_collapsed';
 
 const TrainingCenter = () => {
-    // Default to Chapter 1, Step 0
-    const [activeChapterIndex, setActiveChapterIndex] = useState(0);
-    const [activeStepIndex, setActiveStepIndex] = useState(0);
+    const { chapterIndex, stepIndex } = useParams();
+    const navigate = useNavigate();
+
+    // Parse URL params (1-based from URL -> 0-based for internal use)
+    const rawChapter = parseInt(chapterIndex, 10);
+    const rawStep = parseInt(stepIndex, 10);
+
+    const activeChapterIndex = isNaN(rawChapter) ? -1 : rawChapter - 1;
+    const activeStepIndex = isNaN(rawStep) ? -1 : rawStep - 1;
+
+    // Validation
+    const isValid = activeChapterIndex >= 0 &&
+        activeStepIndex >= 0 &&
+        CURRICULUM[activeChapterIndex] &&
+        CURRICULUM[activeChapterIndex].steps[activeStepIndex];
+
+    // Redirect if invalid
+    useEffect(() => {
+        if (!isValid) {
+            navigate('/training/1/1', { replace: true });
+        }
+    }, [isValid, navigate]);
 
     const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
         try {
@@ -32,6 +52,9 @@ const TrainingCenter = () => {
         }
     }, [sidebarCollapsed]);
 
+    // If invalid, render nothing while redirecting (or render loading)
+    if (!isValid) return null;
+
     const activeChapter = CURRICULUM[activeChapterIndex];
     const activeStep = activeChapter.steps[activeStepIndex];
 
@@ -41,32 +64,29 @@ const TrainingCenter = () => {
         }
     };
 
-    const jumpTo = (chapterIndex, stepIndex) => {
-        setActiveChapterIndex(chapterIndex);
-        setActiveStepIndex(stepIndex);
+    const jumpTo = (cIdx, sIdx) => {
+        navigate(`/training/${cIdx + 1}/${sIdx + 1}`);
     };
 
     const handleNext = () => {
         // Is there a next step in this chapter?
         if (activeStepIndex < activeChapter.steps.length - 1) {
-            setActiveStepIndex(activeStepIndex + 1);
+            navigate(`/training/${activeChapterIndex + 1}/${activeStepIndex + 1 + 1}`);
         } else {
             // Move to next chapter
             if (activeChapterIndex < CURRICULUM.length - 1) {
-                setActiveChapterIndex(activeChapterIndex + 1);
-                setActiveStepIndex(0);
+                navigate(`/training/${activeChapterIndex + 1 + 1}/1`);
             }
         }
     };
 
     const handlePrev = () => {
         if (activeStepIndex > 0) {
-            setActiveStepIndex(activeStepIndex - 1);
+            navigate(`/training/${activeChapterIndex + 1}/${activeStepIndex - 1 + 1}`);
         } else if (activeChapterIndex > 0) {
             // Go to last step of previous chapter
             const prevChapter = CURRICULUM[activeChapterIndex - 1];
-            setActiveChapterIndex(activeChapterIndex - 1);
-            setActiveStepIndex(prevChapter.steps.length - 1);
+            navigate(`/training/${activeChapterIndex - 1 + 1}/${prevChapter.steps.length}`);
         }
     };
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import FunctionCategoryPage from './FunctionCategoryPage';
-import { TEXT_TRANSFORM_OPS } from './functionData';
+import { TEXT_TRANSFORM_OPS } from '../data';
 
 const DocsTextTransform = () => (
     <FunctionCategoryPage

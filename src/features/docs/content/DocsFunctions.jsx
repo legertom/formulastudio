@@ -6,7 +6,7 @@ import {
     MATH_DATE_OPS,
     LOGIC_OPS,
     UTILITY_OPS
-} from './functionData';
+} from '../data';
 
 const DocsFunctions = ({ onNavigate }) => {
 

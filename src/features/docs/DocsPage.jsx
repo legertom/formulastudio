@@ -28,7 +28,7 @@ import {
     MATH_DATE_OPS,
     LOGIC_OPS,
     UTILITY_OPS
-} from './content/functionData';
+} from './data';
 
 // Navigation structure with sub-items for function categories
 const NAV_STRUCTURE = [
@@ -90,7 +90,7 @@ const NAV_STRUCTURE = [
 ];
 
 const DocsPage = () => {
-    const { pageId } = useParams();
+    const { pageId, subId } = useParams();
     const navigate = useNavigate();
     const activeDoc = pageId || 'intro';
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -115,6 +115,25 @@ const DocsPage = () => {
         }
     };
 
+    // Auto-scroll when subId changes (or on mount if present)
+    useEffect(() => {
+        if (subId) {
+            // Expand the category
+            setExpandedItems(prev => ({
+                ...prev,
+                [pageId]: true
+            }));
+
+            // Wait slight tick for render
+            setTimeout(() => {
+                const element = document.getElementById(subId);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 100);
+        }
+    }, [pageId, subId]);
+
     const scrollToFunction = (funcName) => {
         const element = document.getElementById(funcName);
         if (element) {
@@ -123,14 +142,7 @@ const DocsPage = () => {
     };
 
     const handleFunctionNavigate = (category, funcName) => {
-        navigate(`/docs/${category}`);
-        // Expand the category in sidebar
-        setExpandedItems(prev => ({
-            ...prev,
-            [category]: true
-        }));
-        // Wait for render then scroll
-        setTimeout(() => scrollToFunction(funcName), 100);
+        navigate(`/docs/${category}/${funcName}`);
     };
 
     const renderContent = () => {
@@ -216,13 +228,7 @@ const DocsPage = () => {
                                                         key={funcName}
                                                         className="docs-sub-nav-item"
                                                         onClick={() => {
-                                                            if (activeDoc !== item.id) {
-                                                                navigate(`/docs/${item.id}`);
-                                                                // Wait for render then scroll
-                                                                setTimeout(() => scrollToFunction(funcName), 100);
-                                                            } else {
-                                                                scrollToFunction(funcName);
-                                                            }
+                                                            navigate(`/docs/${item.id}/${funcName}`);
                                                         }}
                                                     >
                                                         {funcName}

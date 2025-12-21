@@ -1,6 +1,6 @@
 import React from 'react';
 import FunctionCategoryPage from './FunctionCategoryPage';
-import { LOGIC_OPS } from './functionData';
+import { LOGIC_OPS } from '../data';
 
 const DocsLogic = () => (
     <FunctionCategoryPage
