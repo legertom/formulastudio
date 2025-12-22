@@ -1,2 +1,2 @@
 
-{{ if greater len name.first 5 "Long Name" "Short Name" }}
+{{ if greater length name.first 5 "Long Name" "Short Name" }}

@@ -215,7 +215,7 @@ export const chapter6 = {
                 { name: "Short", data: { "pass": "short#" }, expected: "false" },
                 { name: "No Hash", data: { "pass": "longpassword" }, expected: "false" }
             ],
-            hints: ["{{ and (greater (len pass) 8) (contains pass \"#\") }}"],
+            hints: ["{{ and (greater (length pass) 8) (contains pass \"#\") }}"],
             prefill: "{{}}"
         },
         {
@@ -243,7 +243,7 @@ export const chapter6 = {
                 { name: "Failed Part 2", data: { "pass": "mypassword#123" }, expected: "false" }
             ],
             hints: [
-                "Part 1: (and (greater (len pass) 8) (contains pass \"#\"))",
+                "Part 1: (and (greater (length pass) 8) (contains pass \"#\"))",
                 "Part 2: (not (contains pass \"password\"))",
                 "Combine: {{ and (Part 1) (Part 2) }}"
             ],

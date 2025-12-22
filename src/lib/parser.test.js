@@ -65,15 +65,15 @@ describe('IDM Formula Parser', () => {
     });
 
     it('parses other new functions (not, greater, concat, etc)', () => {
-        const input = '{{if greater len name.first 5 "Long" "Short"}}';
+        const input = '{{if greater length name.first 5 "Long" "Short"}}';
         const ast = parse(tokenize(input));
 
         expect(ast.name).toBe('if');
-        // Condition: greater(len(name.first), 5)
+        // Condition: greater(length(name.first), 5)
         // Note: 5 is parsed as Identifier currently based on tokenization rules
         const condition = ast.arguments[0];
         expect(condition.name).toBe('greater');
-        expect(condition.arguments[0].name).toBe('len');
+        expect(condition.arguments[0].name).toBe('length');
     });
 });
 

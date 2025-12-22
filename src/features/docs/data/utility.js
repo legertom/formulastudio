@@ -66,8 +66,8 @@ export const UTILITY_OPS = [
         ]
     },
     {
-        name: "len",
-        syntax: "{{len [field]}}",
+        name: "length",
+        syntax: "{{length [field]}}",
         arity: 1,
         desc: "Returns the character count of a string.",
         args: [
@@ -76,7 +76,7 @@ export const UTILITY_OPS = [
         examples: [
             {
                 level: "Basic",
-                code: '{{len name.first}}',
+                code: '{{length name.first}}',
                 argBreakdown: [
                     { arg: "Arg 1", value: "name.first", meaning: "The text to measure" }
                 ],
@@ -85,13 +85,13 @@ export const UTILITY_OPS = [
             },
             {
                 level: "Intermediate",
-                code: '{{if greater len student.password "8" "Valid" "Too Short"}}',
+                code: '{{if greater length student.password "8" "Valid" "Too Short"}}',
                 result: '"pass" (4 chars) → "Too Short"',
                 translation: "Check if a string meets a minimum length requirement."
             },
             {
                 level: "Advanced",
-                code: '{{if equals len student.sis_id "6" student.sis_id concat "0" student.sis_id}}',
+                code: '{{if equals length student.sis_id "6" student.sis_id concat "0" student.sis_id}}',
                 result: '"12345" → "012345"',
                 translation: "Pad an ID number with a leading zero if it's too short."
             }

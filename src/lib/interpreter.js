@@ -107,7 +107,7 @@ export const evaluateAndTrace = (ast, data) => {
                         case 'concat': result = evalArgs.join(''); break;
                         case 'upper': result = String(evalArgs[0]).toUpperCase(); break;
                         case 'lower': result = String(evalArgs[0]).toLowerCase(); break;
-                        case 'len': result = String(evalArgs[0]).length; break;
+                        case 'length': result = String(evalArgs[0]).length; break;
                         case 'contains': result = String(evalArgs[0]).includes(String(evalArgs[1])); break;
                         case 'replace': result = String(evalArgs[0]).replaceAll(String(evalArgs[1]), String(evalArgs[2])); break;
                         case 'substr': result = String(evalArgs[0]).substring(Number(evalArgs[1]), Number(evalArgs[2])); break;

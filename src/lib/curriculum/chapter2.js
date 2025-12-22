@@ -22,12 +22,12 @@ export const chapter2 = {
             type: "challenge",
             title: "What is an Argument?",
             goal: "Count the number of letters in the word \"argument\"",
-            description: "The input you give to the magic word (Function) is called an **Argument**.\n\n**Why \"Argument\"?**\nIt comes from mathematics (and Latin \"arguere\" - to make clear). It's the \"evidence\" or \"input\" you give the function so it can do its job.\n\n`{{ len \"text\" }}`\n\nWithout an argument, the function has nothing to work on!\n\n**Challenge:**\nThe `len` function (length) takes one Argument. Use it to count the letters.",
+            description: "The input you give to the magic word (Function) is called an **Argument**.\n\n**Why \"Argument\"?**\nIt comes from mathematics (and Latin \"arguere\" - to make clear). It's the \"evidence\" or \"input\" you give the function so it can do its job.\n\n`{{ length \"text\" }}`\n\nWithout an argument, the function has nothing to work on!\n\n**Challenge:**\nThe `length` function takes one Argument. Use it to count the letters.",
             testCases: [
                 { name: "Test", data: {}, expected: "8" }
             ],
             hints: [
-                "Type {{ len \"argument\" }}"
+                "Type {{ length \"argument\" }}"
             ],
             prefill: "{{}}"
         },
