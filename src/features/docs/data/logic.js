@@ -4,6 +4,11 @@ export const LOGIC_OPS = [
         syntax: '{{if condition "true" "false"}}',
         arity: 3,
         desc: "Returns one value if true, another if false.",
+        args: [
+            { name: "condition", desc: "The condition to check (must be True/False)" },
+            { name: "trueResult", desc: "Value to return if condition is True" },
+            { name: "falseResult", desc: "Value to return if condition is False" }
+        ],
         examples: [
             {
                 level: "Basic",
@@ -46,6 +51,10 @@ export const LOGIC_OPS = [
         syntax: "{{equals val1 val2}}",
         arity: 2,
         desc: "Checks if two values are identical.",
+        args: [
+            { name: "value1", desc: "The first value to compare" },
+            { name: "value2", desc: "The second value to compare" }
+        ],
         examples: [
             {
                 level: "Basic",
@@ -76,6 +85,10 @@ export const LOGIC_OPS = [
         syntax: "{{greater val1 val2}}",
         arity: 2,
         desc: "Checks if val1 > val2.",
+        args: [
+            { name: "value1", desc: "The value to check" },
+            { name: "value2", desc: "The threshold to compare against" }
+        ],
         examples: [
             {
                 level: "Basic",
@@ -106,6 +119,10 @@ export const LOGIC_OPS = [
         syntax: "{{less val1 val2}}",
         arity: 2,
         desc: "Checks if val1 < val2.",
+        args: [
+            { name: "value1", desc: "The value to check" },
+            { name: "value2", desc: "The threshold to compare against" }
+        ],
         examples: [
             {
                 level: "Basic",
@@ -136,6 +153,10 @@ export const LOGIC_OPS = [
         syntax: "{{geq val1 val2}}",
         arity: 2,
         desc: "Greater than or equal to.",
+        args: [
+            { name: "value1", desc: "The value to check" },
+            { name: "value2", desc: "The threshold to compare against" }
+        ],
         examples: [
             {
                 level: "Basic",
@@ -166,6 +187,10 @@ export const LOGIC_OPS = [
         syntax: "{{leq val1 val2}}",
         arity: 2,
         desc: "Less than or equal to.",
+        args: [
+            { name: "value1", desc: "The value to check" },
+            { name: "value2", desc: "The threshold to compare against" }
+        ],
         examples: [
             {
                 level: "Basic",
@@ -196,6 +221,10 @@ export const LOGIC_OPS = [
         syntax: "{{contains str sub}}",
         arity: 2,
         desc: "Checks if a string contains a substring.",
+        args: [
+            { name: "text", desc: "The text to search within" },
+            { name: "substring", desc: "The text to look for" }
+        ],
         examples: [
             {
                 level: "Basic",
@@ -226,6 +255,10 @@ export const LOGIC_OPS = [
         syntax: '{{in val "item1 item2"}}',
         arity: 2,
         desc: "Checks if a value is in a list.",
+        args: [
+            { name: "value", desc: "The value to check" },
+            { name: "list", desc: "A space-separated list of allowed values" }
+        ],
         examples: [
             {
                 level: "Basic",
@@ -256,6 +289,9 @@ export const LOGIC_OPS = [
         syntax: "{{not val}}",
         arity: 1,
         desc: "Inverts a boolean (True becomes False).",
+        args: [
+            { name: "value", desc: "The boolean value to invert" }
+        ],
         examples: [
             {
                 level: "Basic",
@@ -285,6 +321,10 @@ export const LOGIC_OPS = [
         syntax: "{{and val1 val2}}",
         arity: 2,
         desc: "True only if BOTH are true.",
+        args: [
+            { name: "condition1", desc: "First condition" },
+            { name: "condition2", desc: "Second condition" }
+        ],
         examples: [
             {
                 level: "Basic",
@@ -315,6 +355,10 @@ export const LOGIC_OPS = [
         syntax: "{{or val1 val2}}",
         arity: 2,
         desc: "True if AT LEAST ONE is true.",
+        args: [
+            { name: "condition1", desc: "First condition" },
+            { name: "condition2", desc: "Second condition" }
+        ],
         examples: [
             {
                 level: "Basic",

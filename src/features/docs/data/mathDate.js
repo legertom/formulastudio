@@ -4,6 +4,10 @@ export const MATH_DATE_OPS = [
         syntax: "{{add arg1 arg2}}",
         arity: 2,
         desc: "Performs addition on numeric values. Works with grade levels, years, IDs, or any numeric field.",
+        args: [
+            { name: "number1", desc: "The first number" },
+            { name: "number2", desc: "The number to add" }
+        ],
         examples: [
             {
                 level: "Basic",
@@ -34,6 +38,10 @@ export const MATH_DATE_OPS = [
         syntax: "{{subtract arg1 arg2}}",
         arity: 2,
         desc: "Performs subtraction on numeric values. Useful for calculating years ago, previous grades, or age calculations.",
+        args: [
+            { name: "number1", desc: "The first number" },
+            { name: "number2", desc: "The number to subtract" }
+        ],
         examples: [
             {
                 level: "Basic",
@@ -68,6 +76,10 @@ export const MATH_DATE_OPS = [
             title: "Common Date Format Patterns",
             content: "MM = month (01-12), DD = day (01-31), YYYY = 4-digit year, YY = 2-digit year. Use hyphens, slashes, or spaces as separators."
         },
+        args: [
+            { name: "date", desc: "The date to format" },
+            { name: "formatString", desc: "The desired output format (e.g. 'MM/DD/YYYY')" }
+        ],
         examples: [
             {
                 level: "Basic",

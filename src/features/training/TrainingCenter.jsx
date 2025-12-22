@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { CURRICULUM } from '../../lib/curriculum';
-import './Training.css';
+import './TrainingLayout.css';
+import './TrainingSidebar.css';
 import QuizLevel from './QuizLevel';
 
 const TRAINING_SIDEBAR_COLLAPSED_KEY = 'fs_training_sidebar_collapsed';
@@ -41,6 +42,9 @@ const TrainingCenter = () => {
     // Track completed step IDs (e.g., ["c1-s1", "c1-s2"])
     const [completedSteps, setCompletedSteps] = useState([]);
 
+    // Track which chapters are collapsed (by chapter index)
+    const [collapsedChapters, setCollapsedChapters] = useState(new Set());
+
     useEffect(() => {
         try {
             window.localStorage.setItem(
@@ -62,6 +66,18 @@ const TrainingCenter = () => {
         if (!completedSteps.includes(stepId)) {
             setCompletedSteps([...completedSteps, stepId]);
         }
+    };
+
+    const toggleChapterCollapse = (chapterIndex) => {
+        setCollapsedChapters(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(chapterIndex)) {
+                newSet.delete(chapterIndex);
+            } else {
+                newSet.add(chapterIndex);
+            }
+            return newSet;
+        });
     };
 
     const jumpTo = (cIdx, sIdx) => {
@@ -114,6 +130,7 @@ const TrainingCenter = () => {
                 <div className="level-list" aria-label="Training curriculum">
                     {CURRICULUM.map((chapter, chapterIndex) => {
                         const isActiveChapter = chapterIndex === activeChapterIndex;
+                        const isCollapsed = collapsedChapters.has(chapterIndex);
 
                         const totalSteps = chapter.steps.length;
                         const completedInChapter = chapter.steps.filter(s => completedSteps.includes(s.id)).length;
@@ -124,9 +141,10 @@ const TrainingCenter = () => {
                                 <button
                                     type="button"
                                     className={`level-item chapter-item ${isActiveChapter ? 'active' : ''} ${isChapterComplete ? 'completed' : ''}`}
-                                    onClick={() => jumpTo(chapterIndex, 0)}
+                                    onClick={() => toggleChapterCollapse(chapterIndex)}
                                     title={chapter.title}
                                     aria-current={isActiveChapter ? 'true' : undefined}
+                                    aria-expanded={!isCollapsed}
                                 >
                                     <div className="level-status">
                                         {isChapterComplete ? '✓' : (chapterIndex + 1)}
@@ -144,6 +162,17 @@ const TrainingCenter = () => {
                                         </div>
                                     )}
 
+                                    {!sidebarCollapsed && (
+                                        <div className="chapter-chevron" style={{
+                                            marginLeft: 'auto',
+                                            fontSize: '0.75rem',
+                                            color: 'var(--text-muted)',
+                                            transition: 'color 0.2s ease'
+                                        }}>
+                                            {isCollapsed ? '▼' : '▲'}
+                                        </div>
+                                    )}
+
                                     {sidebarCollapsed && isActiveChapter && (
                                         <div className="rail-step-indicator" aria-label={`Step ${activeStepIndex + 1}`}>
                                             S{activeStepIndex + 1}
@@ -151,10 +180,10 @@ const TrainingCenter = () => {
                                     )}
                                 </button>
 
-                                {isActiveChapter && !sidebarCollapsed && (
+                                {!isCollapsed && !sidebarCollapsed && (
                                     <div className="step-subnav" aria-label={`${chapter.title} steps`}>
                                         {chapter.steps.map((step, stepIndex) => {
-                                            const isActiveStep = stepIndex === activeStepIndex;
+                                            const isActiveStep = stepIndex === activeStepIndex && isActiveChapter;
                                             const isStepComplete = completedSteps.includes(step.id);
 
                                             return (

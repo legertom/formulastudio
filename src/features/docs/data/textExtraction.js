@@ -4,6 +4,10 @@ export const TEXT_EXTRACTION_OPS = [
         syntax: '{{textBefore arg1 arg2}}',
         arity: 2,
         desc: "Extracts all text that appears before a specific character or substring.",
+        args: [
+            { name: "text", desc: "The text to search" },
+            { name: "delimiter", desc: "The character/substring to find" }
+        ],
         examples: [
             {
                 level: "Basic",
@@ -34,6 +38,10 @@ export const TEXT_EXTRACTION_OPS = [
         syntax: '{{textAfter arg1 arg2}}',
         arity: 2,
         desc: "Extracts all text that appears after a specific character or substring.",
+        args: [
+            { name: "text", desc: "The text to search" },
+            { name: "delimiter", desc: "The character/substring to find" }
+        ],
         examples: [
             {
                 level: "Basic",
@@ -64,6 +72,10 @@ export const TEXT_EXTRACTION_OPS = [
         syntax: '{{textAfterLast arg1 arg2}}',
         arity: 2,
         desc: "Extracts text after the LAST occurrence of a character (useful when multiple matches exist).",
+        args: [
+            { name: "text", desc: "The text to search" },
+            { name: "delimiter", desc: "The character to find (last occurrence)" }
+        ],
         examples: [
             {
                 level: "Basic",

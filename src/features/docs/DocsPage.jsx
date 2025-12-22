@@ -4,6 +4,8 @@ import DocsIntro from './content/DocsIntro';
 import './Docs.css';
 import DocsSyntax from './content/DocsSyntax';
 import DocsVariables from './content/DocsVariables';
+import DocsArguments from './content/DocsArguments';
+import DocsBooleans from './content/DocsBooleans';
 import DocsLiterals from './content/DocsLiterals';
 import DocsFunctions from './content/DocsFunctions';
 import DocsArity from './content/DocsArity';
@@ -43,6 +45,8 @@ const NAV_STRUCTURE = [
         title: "Core Concepts",
         items: [
             { id: 'variables', label: 'Variables' },
+            { id: 'arguments', label: 'Arguments' },
+            { id: 'booleans', label: 'Booleans' },
             { id: 'literals', label: 'Literals' },
             { id: 'functions-concept', label: 'Functions' },
             { id: 'arity', label: 'Arity' },
@@ -150,6 +154,8 @@ const DocsPage = () => {
             case 'intro': return <DocsIntro />;
             case 'syntax': return <DocsSyntax />;
             case 'variables': return <DocsVariables />;
+            case 'arguments': return <DocsArguments />;
+            case 'booleans': return <DocsBooleans />;
             case 'literals': return <DocsLiterals />;
             case 'functions-concept': return <DocsFunctions onNavigate={handleFunctionNavigate} />;
             case 'arity': return <DocsArity />;

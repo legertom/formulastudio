@@ -4,6 +4,10 @@ export const TEXT_TRANSFORM_OPS = [
         syntax: "{{toLower arg1}}",
         arity: 1,
         desc: "Converts all letters in a text value to lowercase.",
+        returns: "String",
+        args: [
+            { name: "text", type: "String", desc: "The text to convert" }
+        ],
         examples: [
             {
                 level: "Basic",
@@ -33,6 +37,10 @@ export const TEXT_TRANSFORM_OPS = [
         syntax: "{{toUpper arg1}}",
         arity: 1,
         desc: "Converts all letters in a text value to uppercase.",
+        returns: "String",
+        args: [
+            { name: "text", type: "String", desc: "The text to convert" }
+        ],
         examples: [
             {
                 level: "Basic",
@@ -63,10 +71,11 @@ export const TEXT_TRANSFORM_OPS = [
         syntax: "{{substr arg1 arg2 arg3}}",
         arity: 3,
         desc: "Short for 'substring'. Extracts a portion of text starting at a position for a specified length.",
+        returns: "String",
         args: [
-            { name: "arg1", desc: "The source string to extract from" },
-            { name: "arg2", desc: "The starting position (0-indexed)" },
-            { name: "arg3", desc: "The number of characters to extract" }
+            { name: "text", type: "String", desc: "The source string to extract from" },
+            { name: "start", type: "Number", desc: "The starting position (0-indexed)" },
+            { name: "length", type: "Number", desc: "The number of characters to extract" }
         ],
         note: {
             title: "How Position Counting Works",
@@ -110,8 +119,9 @@ export const TEXT_TRANSFORM_OPS = [
         syntax: "{{alphanumeric arg1}}",
         arity: 1,
         desc: "Removes all special characters, keeping only letters (A-Z, a-z) and numbers (0-9).",
+        returns: "String",
         args: [
-            { name: "arg1", desc: "The text to clean (variable or string)" }
+            { name: "text", type: "String", desc: "The text to clean" }
         ],
         examples: [
             {
@@ -142,6 +152,10 @@ export const TEXT_TRANSFORM_OPS = [
         syntax: "{{initials arg1}}",
         arity: 1,
         desc: "Extracts the first letter of each word and converts them to Uppercase (Standard IDM Format).",
+        returns: "String",
+        args: [
+            { name: "text", type: "String", desc: "The text to extract initials from" }
+        ],
         examples: [
             {
                 level: "Basic",
@@ -171,6 +185,10 @@ export const TEXT_TRANSFORM_OPS = [
         syntax: "{{trimLeft arg1}}",
         arity: 1,
         desc: "Removes any leading whitespace (spaces, tabs) from the beginning of text.",
+        returns: "String",
+        args: [
+            { name: "text", type: "String", desc: "The text to trim" }
+        ],
         examples: [
             {
                 level: "Basic",
@@ -200,6 +218,10 @@ export const TEXT_TRANSFORM_OPS = [
         syntax: "{{delimiterCapitalize arg1}}",
         arity: 1,
         desc: "Capitalizes the first letter of each word, treating spaces and hyphens as word delimiters.",
+        returns: "String",
+        args: [
+            { name: "text", type: "String", desc: "The text to capitalize" }
+        ],
         examples: [
             {
                 level: "Basic",

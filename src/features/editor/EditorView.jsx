@@ -4,6 +4,7 @@ import { getExamples } from '../../lib/examples'
 import FormulaVisualizer from '../visualizer/FormulaVisualizer'
 import QuickReference from '../docs/QuickReference'
 import LogicEditor from './LogicEditor'
+import SyntaxHighlightedEditor from './SyntaxHighlightedEditor'
 import './Editor.css'
 // App.css is imported in App.jsx or main.jsx, so we might not need it here if styles are global, 
 // but if there are specific styles for the editor, they might be there. 
@@ -25,6 +26,8 @@ function EditorView() {
     const [selectedExample, setSelectedExample] = useState(defaultExample ? '0' : '');
     const [showQuickDocs, setShowQuickDocs] = useState(false);
     const [highlightRange, setHighlightRange] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [showSyntax, setShowSyntax] = useState(false);
 
     const { ast, error, stats } = useMemo(() => {
         try {
@@ -94,6 +97,21 @@ function EditorView() {
                 <div className="header-actions" style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginRight: 'auto' }}>
                     <div className="toggle-group" style={{ display: 'flex', background: 'var(--bg-secondary)', padding: '2px', borderRadius: '6px', border: '1px solid var(--glass-border)' }}>
                         <button
+                            className={`btn-toggle ${logicMode === 'EXPLORER' ? 'active' : ''}`}
+                            onClick={() => handleModeSwitch('EXPLORER')}
+                            style={{
+                                padding: '0.25rem 0.75rem',
+                                borderRadius: '4px',
+                                background: logicMode === 'EXPLORER' ? 'var(--accent-primary)' : 'transparent',
+                                color: logicMode === 'EXPLORER' ? 'white' : 'var(--text-secondary)',
+                                border: 'none',
+                                fontSize: '0.85rem',
+                                cursor: 'pointer'
+                            }}
+                        >
+                            Explorer
+                        </button>
+                        <button
                             className={`btn-toggle ${logicMode === 'OU' ? 'active' : ''}`}
                             onClick={() => handleModeSwitch('OU')}
                             style={{
@@ -158,6 +176,16 @@ function EditorView() {
                                     ))}
                             </select>
 
+                            <label className="toggle-label" style={{ display: 'flex', alignItems: 'center', fontSize: '0.8rem', marginRight: '1rem', cursor: 'pointer', gap: '6px' }}>
+                                <input
+                                    type="checkbox"
+                                    checked={showSyntax}
+                                    onChange={(e) => setShowSyntax(e.target.checked)}
+                                    style={{ cursor: 'pointer' }}
+                                />
+                                Syntax Highlight
+                            </label>
+
                             <button
                                 onClick={handleCompress}
                                 className="btn-secondary"
@@ -178,15 +206,29 @@ function EditorView() {
                     </div>
 
                     <div className="editor-wrapper">
-                        <LogicEditor
-                            value={formula}
-                            onChange={(e) => {
-                                setFormula(e.target.value);
-                                if (selectedExample) setSelectedExample('');
-                            }}
-                            highlightRange={highlightRange}
-                            placeholder="Type your IDM formula here..."
-                        />
+                        {logicMode === 'EXPLORER' && showSyntax ? (
+                            <SyntaxHighlightedEditor
+                                value={formula}
+                                onChange={(e) => {
+                                    setFormula(e.target.value);
+                                    if (selectedExample) setSelectedExample('');
+                                }}
+                                placeholder="Type your IDM formula here..."
+                                className="main-editor-syntax"
+                            />
+                        ) : (
+                            <LogicEditor
+                                value={formula}
+                                showSyntax={logicMode !== 'EXPLORER' && showSyntax}
+                                onChange={(e) => {
+                                    setFormula(e.target.value);
+                                    if (selectedExample) setSelectedExample('');
+                                }}
+                                highlightRange={highlightRange}
+                                placeholder="Type your IDM formula here..."
+                                className="main-editor-logic"
+                            />
+                        )}
                         <div style={{
                             padding: '0.5rem 1rem',
                             fontSize: '0.75rem',
@@ -209,9 +251,36 @@ function EditorView() {
                             <span>Visualizer</span>
                             <span style={{ fontSize: '0.8em', opacity: 0.5, fontWeight: 'normal' }}>Live Preview</span>
                         </div>
+                        <div className="panel-controls" style={{ marginLeft: 'auto' }}>
+                            <div className="search-box" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ position: 'absolute', left: '8px', opacity: 0.5 }}>
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                                <input
+                                    type="text"
+                                    placeholder="Search"
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    style={{
+                                        background: 'rgba(0,0,0,0.2)',
+                                        border: '1px solid var(--glass-border)',
+                                        borderRadius: '4px',
+                                        padding: '4px 8px 4px 28px',
+                                        fontSize: '0.85rem',
+                                        color: 'var(--text-primary)',
+                                        width: '140px',
+                                        outline: 'none',
+                                        transition: 'width 0.2s'
+                                    }}
+                                    onFocus={(e) => e.target.style.width = '200px'}
+                                    onBlur={(e) => e.target.style.width = '140px'}
+                                />
+                            </div>
+                        </div>
                     </div>
                     <div className="visualizer-wrapper">
-                        <FormulaVisualizer ast={ast} error={error} mode={logicMode} onHoverNode={setHighlightRange} />
+                        <FormulaVisualizer ast={ast} error={error} mode={logicMode} onHoverNode={setHighlightRange} searchTerm={searchTerm} />
                     </div>
                 </div>
             </main>

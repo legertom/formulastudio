@@ -1,14 +1,26 @@
 
-import React from 'react';
+import React, { useContext } from 'react';
+import { FormulaContext } from '../FormulaContext';
 import ConditionView from './ConditionView';
 import CleanValue from './CleanValue';
 import NodeView from './NodeView';
 
 const RuleCard = ({ row, targetLabel = "Target OU" }) => {
     const isCatchAll = row.condition.type === 'Default';
+    const { searchTerm } = useContext(FormulaContext);
+
+    // Simple highlighting check for card view
+    // We check the value representation for now
+    // TODO: Deep check of condition logic if needed
+    const valNode = row.condition.arguments?.[1];
+    const textVal = valNode?.type === 'StringLiteral' ? valNode.value : '';
+    const isMatch = searchTerm && textVal.toLowerCase().includes(searchTerm.toLowerCase());
 
     return (
-        <article className="rule-card">
+        <article className="rule-card" style={{
+            border: isMatch ? '1px solid var(--warning)' : undefined,
+            background: isMatch ? 'rgba(234, 179, 8, 0.1)' : undefined
+        }}>
             <header className="rule-card-header">
                 <span className="rule-label">{targetLabel}</span>
                 <div className="rule-result">
@@ -29,6 +41,8 @@ const RuleCard = ({ row, targetLabel = "Target OU" }) => {
 };
 
 const SmartSegment = ({ segment, index, targetLabel = "Target OU" }) => {
+    const { searchTerm } = useContext(FormulaContext);
+
     if (segment.type === 'tree') {
         return (
             <section className="segment-wrapper" aria-label={`Logic Segment ${index + 1}`}>
@@ -70,10 +84,26 @@ const SmartSegment = ({ segment, index, targetLabel = "Target OU" }) => {
                                     </tr>
                                 );
                             }
+
+                            // Highlighting Logic for Table Row
+                            const valNode = row.condition.arguments[1];
+                            const textVal = valNode?.type === 'StringLiteral' ? valNode.value : '';
+                            const isMatch = searchTerm && textVal.toLowerCase().includes(searchTerm.toLowerCase());
+
                             return (
                                 <tr key={idx}>
                                     <td>
-                                        <CleanValue node={row.condition.arguments[1]} />
+                                        <div style={{
+                                            width: 'fit-content',
+                                            padding: '2px 4px',
+                                            borderRadius: '4px',
+                                            background: isMatch ? 'rgba(234, 179, 8, 0.4)' : 'transparent',
+                                            color: isMatch ? '#fff' : 'inherit',
+                                            fontSize: '0.9rem',
+                                            transition: 'all 0.2s'
+                                        }}>
+                                            <CleanValue node={valNode} />
+                                        </div>
                                     </td>
                                     <td><CleanValue node={row.value} /></td>
                                 </tr>

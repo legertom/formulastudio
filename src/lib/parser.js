@@ -25,7 +25,7 @@ export const TokenType = {
 };
 
 const KEYWORDS = new Set([
-    'if', 'equals', 'and', 'or', 'contains', 'not', 'greater', 'concat', 'substr', 'replace', 'len', 'ignoreIfNull', 'forEach', 'in',
+    'if', 'equals', 'equal', 'and', 'or', 'contains', 'not', 'greater', 'less', 'geq', 'leq', 'concat', 'substr', 'replace', 'len', 'ignoreIfNull', 'forEach', 'in',
     'toUpper', 'toLower', 'initials', 'alphanumeric', 'trimLeft', 'delimiterCapitalize',
     'textBefore', 'textAfter', 'textAfterLast',
     'add', 'subtract', 'formatDate'
@@ -209,11 +209,15 @@ export function parse(tokens) {
             switch (name) {
                 case 'if': arity = 3; break;
                 case 'equals': arity = 2; break;
+                case 'equal': arity = 2; break;
                 case 'and': arity = 2; break;
                 case 'or': arity = 2; break;
                 case 'contains': arity = 2; break;
                 case 'not': arity = 1; break;
                 case 'greater': arity = 2; break;
+                case 'less': arity = 2; break;
+                case 'geq': arity = 2; break;
+                case 'leq': arity = 2; break;
                 case 'concat': arity = 2; break;
                 case 'substr': arity = 3; break;
                 case 'replace': arity = 3; break;

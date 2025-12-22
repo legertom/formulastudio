@@ -1,6 +1,24 @@
 import React from 'react';
+import {
+    TEXT_TRANSFORM_OPS,
+    LOGIC_OPS,
+    MATH_DATE_OPS,
+    UTILITY_OPS,
+    TEXT_EXTRACTION_OPS,
+    SEARCH_REPLACE_OPS
+} from '../data';
 
 const DocsArity = () => {
+    // Combine all functions into a single sorted list
+    const allFunctions = [
+        ...LOGIC_OPS,
+        ...TEXT_TRANSFORM_OPS,
+        ...MATH_DATE_OPS,
+        ...UTILITY_OPS,
+        ...TEXT_EXTRACTION_OPS,
+        ...SEARCH_REPLACE_OPS
+    ].sort((a, b) => a.name.localeCompare(b.name));
+
     return (
         <div className="docs-page">
             <header className="docs-page-header">
@@ -36,7 +54,7 @@ const DocsArity = () => {
 
             <section className="docs-section">
                 <h4>Common Function Arities</h4>
-                <p>Here are the arities for commonly used functions:</p>
+                <p>Here are the arities for all available functions:</p>
 
                 <table className="docs-table">
                     <thead>
@@ -48,78 +66,16 @@ const DocsArity = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><code>if</code></td>
-                            <td><strong>3</strong></td>
-                            <td>condition, trueValue, falseValue</td>
-                            <td><code>if equals x "5" "Yes" "No"</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>equals</code></td>
-                            <td><strong>2</strong></td>
-                            <td>value1, value2</td>
-                            <td><code>equals name.first "John"</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>concat</code></td>
-                            <td><strong>2</strong></td>
-                            <td>string1, string2</td>
-                            <td><code>concat name.first " " name.last</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>toUpper</code></td>
-                            <td><strong>1</strong></td>
-                            <td>text</td>
-                            <td><code>toUpper name.last</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>toLower</code></td>
-                            <td><strong>1</strong></td>
-                            <td>text</td>
-                            <td><code>toLower email.address</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>replace</code></td>
-                            <td><strong>3</strong></td>
-                            <td>text, searchFor, replaceWith</td>
-                            <td><code>replace phone.number "-" ""</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>substr</code></td>
-                            <td><strong>3</strong></td>
-                            <td>text, start, length</td>
-                            <td><code>substr student.id 0 5</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>and</code></td>
-                            <td><strong>2</strong></td>
-                            <td>condition1, condition2</td>
-                            <td><code>and equals x "5" equals y "10"</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>or</code></td>
-                            <td><strong>2</strong></td>
-                            <td>condition1, condition2</td>
-                            <td><code>or equals grade "11" equals grade "12"</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>initials</code></td>
-                            <td><strong>1</strong></td>
-                            <td>text</td>
-                            <td><code>initials name.first</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>formatDate</code></td>
-                            <td><strong>2</strong></td>
-                            <td>dateField, format</td>
-                            <td><code>formatDate student.dob "MM/DD/YYYY"</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>delimiterCapitalize</code></td>
-                            <td><strong>1</strong></td>
-                            <td>text</td>
-                            <td><code>delimiterCapitalize name.full</code></td>
-                        </tr>
+                        {allFunctions.map(func => (
+                            <tr key={func.name}>
+                                <td><code>{func.name}</code></td>
+                                <td><strong>{func.arity}</strong></td>
+                                <td>{func.args ? func.args.map(a => a.name || a.arg.replace('Arg ', 'arg')).join(', ') : 'args...'}</td>
+                                <td>
+                                    <code>{func.examples && func.examples[0] ? func.examples[0].code : ''}</code>
+                                </td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
 

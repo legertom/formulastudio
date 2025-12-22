@@ -40,7 +40,12 @@ export function getExamples() {
     // Infer type based on formula content
     // If it starts with {{forEach (ignoring whitespace), it's Group Logic
     const cleanFormula = formula.replace(/\s/g, '');
-    const type = cleanFormula.startsWith('{{forEach') ? 'GROUP' : 'OU';
+    let type = cleanFormula.startsWith('{{forEach') ? 'GROUP' : 'OU';
+
+    // Override if filename indicates Explorer mode
+    if (name.startsWith('explorer_')) {
+      type = 'EXPLORER';
+    }
 
     return { name, formula, type };
   });

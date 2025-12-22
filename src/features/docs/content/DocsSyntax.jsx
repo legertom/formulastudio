@@ -8,14 +8,16 @@ const DocsSyntax = () => {
                 <p>Understanding the unique notation that powers IDM formulas.</p>
             </header>
 
-            {/* Polish Notation History & Explanation */}
+            {/* Prefix Notation History & Explanation */}
             <section className="docs-section">
-                <h4>🇵🇱 What is Polish Notation?</h4>
+                <h4>🚀 What is Prefix Notation?</h4>
 
                 <p>
-                    IDM formulas use <strong>Polish Notation</strong> (also called <strong>Prefix Notation</strong>),
-                    invented in 1924 by Polish logician <strong>Jan Łukasiewicz</strong>. He created it to simplify
-                    logical expressions by eliminating the need for parentheses.
+                    IDM formulas use <strong>Prefix Notation</strong> (historically known as <strong>Polish Notation</strong>).
+                </p>
+                <p>
+                    It was invented in 1924 by the Polish logician and mathematician <strong>Jan Łukasiewicz</strong>.
+                    His goal was to create a logic system that could be written purely linearly, <strong>eliminating the need for parentheses</strong> entirely.
                 </p>
 
                 <div style={{
@@ -29,19 +31,19 @@ const DocsSyntax = () => {
                         💡 The Key Insight
                     </div>
                     <p style={{ margin: 0 }}>
-                        In Polish Notation, the <strong>operator comes FIRST</strong>, followed by its arguments.
+                        In Prefix Notation, the <strong>operator comes FIRST</strong>, followed by its arguments.
                         Because each function knows exactly how many arguments it needs,
                         <strong> no parentheses are ever needed</strong>.
                     </p>
                 </div>
 
-                <h5 style={{ marginTop: '1.5rem' }}>Comparison: Normal vs Polish</h5>
+                <h5 style={{ marginTop: '1.5rem' }}>Comparison: Normal vs Prefix</h5>
                 <table className="docs-table">
                     <thead>
                         <tr>
                             <th>What You Mean</th>
                             <th>Normal (Infix)</th>
-                            <th>Polish (Prefix)</th>
+                            <th>Prefix Notation</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -73,40 +75,34 @@ const DocsSyntax = () => {
 
             {/* Analogy Section */}
             <section className="docs-section">
-                <h4>🍕 The Pizza Analogy</h4>
+                <h4>👨‍🍳 The Recipe Analogy</h4>
                 <p>
-                    Think of functions as <strong>pizza orders</strong>. The function name is the type of pizza,
-                    and the arguments are the toppings that follow.
+                    Think of functions as <strong>cooking commands</strong>. When you follow a recipe, the instructions usually start with the <strong>VERB (Action)</strong>, followed by the ingredients.
                 </p>
 
-                <div style={{
-                    background: 'var(--bg-tertiary)',
-                    borderRadius: '8px',
-                    padding: '1rem',
-                    marginBottom: '1rem',
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '0.9rem'
-                }}>
-                    <div style={{ marginBottom: '0.5rem' }}>
-                        <span style={{ color: 'var(--accent-secondary)', fontWeight: 600 }}>Normal ordering:</span>
-                        <span> "I want pepperoni ON a pizza"</span>
-                    </div>
-                    <div>
-                        <span style={{ color: 'var(--warning)', fontWeight: 600 }}>Polish ordering:</span>
-                        <span> "PIZZA pepperoni"</span>
+                <div className="docs-analogy-box">
+                    <div className="docs-analogy-icon">🥣</div>
+                    <div className="docs-analogy-content">
+                        <h5>Verb First</h5>
+                        <p style={{ marginBottom: '0.5rem' }}>
+                            In English, we say: <em>"<strong>Mix</strong> flour, eggs, and milk."</em>
+                        </p>
+                        <p>
+                            We <strong>don't</strong> usually say: <em>"Flour, eggs, and milk <strong>mix</strong>."</em>
+                        </p>
                     </div>
                 </div>
 
                 <p>
-                    In IDM formulas, you always say <strong>WHAT you're doing first</strong>,
-                    then provide the ingredients:
+                    IDM formulas work the same way. You always state <strong>WHAT you're doing first</strong> (the function),
+                    then provide the items to do it to (the arguments):
                 </p>
 
                 <div className="code-example-block">
                     <code>{`{{toLower name.first}}`}</code>
                 </div>
                 <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-                    ☝️ "Apply TOLOWER to name.first" — not "name.first to lower"
+                    ☝️ "Apply TOLOWER to name.first"
                 </p>
             </section>
 
@@ -159,10 +155,10 @@ const DocsSyntax = () => {
             <section className="docs-section">
                 <h4>Why No Parentheses?</h4>
                 <p>
-                    In traditional programming, parentheses group things: <code>if(equals(a, b), "yes", "no")</code>
+                    In traditional programming, parentheses are used to group logic: <code>if(equals(a, b), "yes", "no")</code>.
                 </p>
                 <p>
-                    Polish notation doesn't need them because <strong>each function knows exactly how many
+                    Prefix Notation doesn't need them because <strong>each function knows exactly how many
                         arguments it consumes</strong>. The parser automatically figures out where one function's
                     arguments end and the next begins.
                 </p>
@@ -180,7 +176,7 @@ const DocsSyntax = () => {
                         padding: '1rem'
                     }}>
                         <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--error)', marginBottom: '0.5rem' }}>
-                            ❌ NOT how IDM works
+                            ❌ Traditional Infix
                         </div>
                         <code style={{ fontSize: '0.85rem' }}>if(equals(role, "admin"), "Yes", "No")</code>
                     </div>
@@ -191,7 +187,7 @@ const DocsSyntax = () => {
                         padding: '1rem'
                     }}>
                         <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--success)', marginBottom: '0.5rem' }}>
-                            ✅ IDM Polish Notation
+                            ✅ Prefix Notation
                         </div>
                         <code style={{ fontSize: '0.85rem' }}>{`{{if equals role "admin" "Yes" "No"}}`}</code>
                     </div>

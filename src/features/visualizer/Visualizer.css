@@ -724,3 +724,301 @@
   animation: fadeIn 0.15s ease-out;
 }
 
+
+/* === Premium Visualizer Styles === */
+
+/* Condition Group Container (Left Column) */
+.condition-group-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  /* Center align items vertically */
+  gap: 0.75rem;
+  padding: 0.85rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  /* Softer corners */
+  transition: all 0.2s ease;
+}
+
+.smart-table tr:hover .condition-group-container {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.condition-group-container .field-name {
+  font-family: 'Fira Code', monospace;
+  font-weight: 600;
+  color: var(--accent-secondary);
+  background: rgba(99, 102, 241, 0.1);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+}
+
+.condition-group-container .op-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 3px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Value Pills List */
+.value-pill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  flex: 1;
+  /* Take remaining space */
+}
+
+/* Individual Value Pill */
+.value-pill {
+  background: var(--bg-tertiary);
+  /* Darker contrast */
+  border: 1px solid var(--glass-border);
+  padding: 3px 10px;
+  border-radius: 100px;
+  /* Pill shape */
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  font-weight: 500;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: default;
+  display: inline-flex;
+  align-items: center;
+}
+
+.value-pill:hover {
+  background: var(--accent-primary);
+  color: white;
+  border-color: var(--accent-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(99, 102, 241, 0.4);
+}
+
+.value-pill .clean-string {
+  color: inherit !important;
+  /* Override default color on hover */
+}
+
+/* Target OU Box (Right Column) */
+.target-ou-box {
+  display: block;
+  /* Allow natural text flow */
+  line-height: 1.5;
+  padding: 0.75rem 1.25rem;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(99, 102, 241, 0.05));
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-left: 3px solid var(--accent-primary);
+  /* Accent line */
+  border-radius: 8px;
+  font-weight: 600;
+  color: var(--accent-primary);
+  font-size: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+  min-height: 48px;
+  /* Consistent height */
+}
+
+.smart-table tr:hover .target-ou-box {
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+  transform: translateX(2px);
+  /* Subtle nudge */
+}
+
+/* Explorer / Structure View Styles */
+.explorer-view-container {
+  width: 100%;
+}
+
+.explorer-root {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.block-container {
+  display: flex;
+  flex-direction: column;
+  /* Remove full border */
+  /* border: 1px solid var(--glass-border); */
+  margin-bottom: 8px;
+  background: transparent;
+  transition: all 0.2s ease;
+  position: relative;
+  padding-left: 12px;
+  /* Indent for hierarchy */
+}
+
+/* Vertical Guide Line */
+.block-container::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--glass-border);
+  border-radius: 2px;
+}
+
+.block-container:hover::before {
+  background: var(--accent-primary);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+
+.block-header {
+  padding: 4px 8px;
+  /* Transparent background to reduce visual noise */
+  background: transparent;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.block-func-name {
+  font-family: 'Fira Code', monospace;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.block-args-list {
+  padding: 0;
+  /* Remove internal padding, rely on left-margin of children */
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.block-arg-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.block-arg-label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0;
+  margin-left: 12px;
+  /* Match indent */
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  opacity: 0.7;
+}
+
+.block-arg-label-top {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+/* Leaf Nodes (Strings/Identifiers) */
+.block-leaf {
+  padding: 4px 8px;
+  /* Minimalist leaf style */
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid var(--glass-border);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  min-width: 60px;
+  margin-left: 12px;
+  /* Align with children */
+}
+
+.block-leaf-arg {
+  /* Specific styles if it's an argument leaf */
+}
+
+/* Category Coloring for Guide Lines */
+
+/* Control Flow (If, Switch, ForEach) - Purple/Blue */
+.block-func-control::before {
+  background: var(--accent-primary);
+  opacity: 0.5;
+}
+
+.block-func-control .block-func-name {
+  color: var(--accent-primary);
+}
+
+/* Logic (And, Or, Not, Equals) - Green */
+.block-func-logic::before {
+  background: var(--success);
+  opacity: 0.5;
+}
+
+.block-func-logic .block-func-name {
+  color: var(--success);
+}
+
+/* String (Concat, Substr) - Orange */
+.block-func-string::before {
+  background: var(--warning);
+  opacity: 0.5;
+}
+
+.block-func-string .block-func-name {
+  color: var(--warning);
+}
+
+/* Inline Function Styles */
+.block-inline-func {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  padding: 2px 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  border: 1px solid var(--glass-border);
+  margin: 2px 0;
+  margin-left: 12px;
+  /* Match indentation */
+}
+
+.block-func-name-inline {
+  font-family: 'Fira Code', monospace;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--accent-secondary);
+}
+
+.block-arg-label-inline {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-right: 4px;
+  font-weight: bold;
+}
+
+.block-comma {
+  color: var(--text-muted);
+}
+
+.block-paren {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+/* Generic guide lines */
+.block-func-generic::before {
+  background: var(--text-muted);
+  opacity: 0.3;
+}

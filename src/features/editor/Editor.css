@@ -61,3 +61,75 @@
   color: white;
 }
 
+/* -------------------------------------------------------------------------- */
+/* UNIFICATION OVERRIDES via EditorView */
+/* -------------------------------------------------------------------------- */
+
+/* Force both editors to accept the "Training Style" (Larger, relaxed) */
+.main-editor-syntax,
+.main-editor-logic {
+  /* Ensure container sizing behaves */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100% !important;
+  /* Force full height in panel */
+  min-height: 300px;
+  background: rgba(0, 0, 0, 0.2);
+  /* Unified background */
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+}
+
+/* Logic Editor Inner Overrides */
+.main-editor-logic .backdrop,
+.main-editor-logic .editor-textarea {
+  font-size: 1.2rem !important;
+  line-height: 1.6 !important;
+  padding: 1.5rem !important;
+  font-family: var(--font-mono) !important;
+  letter-spacing: normal;
+}
+
+/* Syntax Editor Overrides (Ensure it matches Logic properties if needed) */
+.main-editor-syntax .syntax-editor-input,
+.main-editor-syntax .syntax-highlight-layer {
+  font-size: 1.2rem !important;
+  /* Redundant but safe */
+  line-height: 1.6 !important;
+  padding: 1.5rem !important;
+  font-family: var(--font-mono) !important;
+  border: none !important;
+  /* Remove individual borders, handle on container */
+  background: transparent !important;
+  /* Let container handle bg */
+}
+
+/* Syntax Highlighting */
+.syntax-plain {
+  color: var(--text-primary);
+}
+
+.syntax-keyword {
+  color: var(--accent-primary);
+  font-weight: 600;
+}
+
+.syntax-string {
+  color: var(--warning);
+}
+
+.syntax-number {
+  color: var(--success);
+}
+
+.syntax-bool {
+  color: #e879f9;
+  /* Pink-ish */
+  font-weight: 600;
+}
+
+.syntax-ident {
+  color: #94a3b8;
+  /* Muted blue-grey */
+}

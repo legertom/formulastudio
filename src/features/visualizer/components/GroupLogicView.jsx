@@ -6,7 +6,7 @@ import { segmentLogicChain } from '../logic/pathExpansion';
 import SmartSegment from './SmartSegment';
 
 const GroupLogicView = ({ ast }) => {
-    const { onHoverNode } = useContext(FormulaContext); // Loop var might be passed down or set here?
+    const { onHoverNode, searchTerm } = useContext(FormulaContext); // Loop var might be passed down or set here?
     // Actually FormulaVisualizer sets the provider?
     // In original code, GroupLogicView SETS the provider.
 
@@ -52,7 +52,7 @@ const GroupLogicView = ({ ast }) => {
     const segments = innerAst ? segmentLogicChain(innerAst) : [];
 
     return (
-        <FormulaContext.Provider value={{ loopVariable, onHoverNode }}>
+        <FormulaContext.Provider value={{ loopVariable, onHoverNode, searchTerm, targetLabel: 'Target Group' }}>
             <div className="group-logic-container">
                 <div className="group-args-breakdown" style={{
                     display: 'flex',

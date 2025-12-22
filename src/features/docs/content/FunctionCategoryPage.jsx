@@ -168,46 +168,62 @@ const FunctionCategoryPage = ({ title, description, ops }) => {
                             <div style={{
                                 padding: '1rem 1.5rem',
                                 borderBottom: '1px solid var(--glass-border)',
-                                background: 'var(--glass-highlight)'
+                                background: 'var(--glass-highlight)',
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center'
                             }}>
-                                <h4 style={{ margin: 0, color: 'var(--accent-secondary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                    {op.name}
-                                    <button
-                                        onClick={() => handleCopyLink(op.name)}
-                                        title="Copy link to function"
-                                        aria-label={`Copy link to ${op.name}`}
-                                        style={{
-                                            background: 'none',
-                                            border: 'none',
-                                            cursor: 'pointer',
-                                            padding: '4px',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            borderRadius: '4px',
-                                            color: copiedId === op.name ? 'var(--success)' : 'var(--text-muted)',
-                                            transition: 'all 0.2s ease'
-                                        }}
-                                        className="hover:bg-glass-border" // Assuming tailwind or utility class, otherwise use inline style hover via state or CSS
-                                    >
-                                        {copiedId === op.name ? (
-                                            <span style={{ fontSize: '0.8rem', fontWeight: 600 }}>Copied!</span>
-                                        ) : (
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-                                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-                                            </svg>
-                                        )}
-                                    </button>
-                                </h4>
-                                {op.arity && (
-                                    <span style={{
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                    <h4 style={{ margin: 0, color: 'var(--accent-secondary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                        {op.name}
+                                        <button
+                                            onClick={() => handleCopyLink(op.name)}
+                                            title="Copy link to function"
+                                            aria-label={`Copy link to ${op.name}`}
+                                            style={{
+                                                background: 'none',
+                                                border: 'none',
+                                                cursor: 'pointer',
+                                                padding: '4px',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                borderRadius: '4px',
+                                                color: copiedId === op.name ? 'var(--success)' : 'var(--text-muted)',
+                                                transition: 'all 0.2s ease'
+                                            }}
+                                        >
+                                            {copiedId === op.name ? (
+                                                <span style={{ fontSize: '0.8rem', fontWeight: 600 }}>Copied!</span>
+                                            ) : (
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                                                </svg>
+                                            )}
+                                        </button>
+                                    </h4>
+                                    {op.arity && (
+                                        <span style={{
+                                            fontSize: '0.75rem',
+                                            color: 'var(--text-muted)',
+                                            marginLeft: '0.5rem'
+                                        }}>
+                                            ({op.arity} {op.arity === 1 ? 'argument' : 'arguments'})
+                                        </span>
+                                    )}
+                                </div>
+                                {op.returns && (
+                                    <div style={{
                                         fontSize: '0.75rem',
-                                        color: 'var(--text-muted)',
-                                        marginLeft: '0.5rem'
+                                        color: 'var(--text-secondary)',
+                                        background: 'var(--bg-tertiary)',
+                                        padding: '4px 8px',
+                                        borderRadius: '4px',
+                                        border: '1px solid var(--glass-border)'
                                     }}>
-                                        ({op.arity} {op.arity === 1 ? 'argument' : 'arguments'})
-                                    </span>
+                                        Returns: <span style={{ color: 'var(--accent-primary)', fontWeight: 600 }}>{op.returns}</span>
+                                    </div>
                                 )}
                             </div>
 
@@ -255,15 +271,27 @@ const FunctionCategoryPage = ({ title, description, ops }) => {
                                                     gap: '0.75rem',
                                                     fontSize: '0.9rem'
                                                 }}>
-                                                    <code style={{
-                                                        color: 'var(--accent-secondary)',
-                                                        background: 'rgba(99, 102, 241, 0.1)',
-                                                        padding: '2px 6px',
-                                                        borderRadius: '4px',
-                                                        fontSize: '0.85rem',
-                                                        minWidth: '60px',
-                                                        textAlign: 'center'
-                                                    }}>{arg.name}</code>
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                                        <code style={{
+                                                            color: 'var(--accent-secondary)',
+                                                            background: 'rgba(99, 102, 241, 0.1)',
+                                                            padding: '2px 6px',
+                                                            borderRadius: '4px',
+                                                            fontSize: '0.85rem',
+                                                            minWidth: '60px',
+                                                            textAlign: 'center'
+                                                        }}>{arg.name}</code>
+                                                        {arg.type && (
+                                                            <span style={{
+                                                                fontSize: '0.65rem',
+                                                                color: 'var(--text-muted)',
+                                                                border: '1px solid var(--border-color)',
+                                                                padding: '1px 4px',
+                                                                borderRadius: '3px',
+                                                                textTransform: 'uppercase'
+                                                            }}>{arg.type}</span>
+                                                        )}
+                                                    </div>
                                                     <span style={{ color: 'var(--text-secondary)' }}>
                                                         {arg.desc}
                                                     </span>

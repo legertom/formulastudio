@@ -3,11 +3,15 @@ export const SEARCH_REPLACE_OPS = [
         name: "replace",
         syntax: '{{replace arg1 arg2 arg3}}',
         arity: 3,
-        desc: "Finds all occurrences of a substring and replaces them with new text. Case-sensitive.",
         note: {
             title: "Common Use Cases",
             content: "Perfect for cleaning phone numbers, fixing formatting issues, standardizing data, or swapping characters."
         },
+        args: [
+            { name: "text", desc: "The text to search within" },
+            { name: "searchFor", desc: "The substring to find" },
+            { name: "replaceWith", desc: "The replacement text" }
+        ],
         examples: [
             {
                 level: "Basic",
