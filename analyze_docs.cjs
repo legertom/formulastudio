@@ -26,7 +26,7 @@ allFunctions.forEach(f => functionCounts[f] = 0);
 const curriculumDir = '/Users/tomleger/repo/formulastudio/src/lib/curriculum';
 const chapters = [1, 2, 3, 4, 5, 6, 7, 8];
 
-console.log("Analyzing chapters for DOCUMENTED functions...");
+console.log("Analyzing chapters for renamed function LENGTH...");
 
 chapters.forEach(chapNum => {
     const filename = path.join(curriculumDir, `chapter${chapNum}.js`);
@@ -53,8 +53,6 @@ chapters.forEach(chapNum => {
         const lastHint = hints[hints.length - 1];
 
         allFunctions.forEach(func => {
-            // Case-INSENSITIVE for the check to catch casing mismatches (e.g. using 'tolower' instead of 'toLower')
-            // But we will record it under the canonical name
             const regex = new RegExp(`\\b${func}\\b`, 'i');
             if (regex.test(lastHint)) {
                 functionCounts[func]++;

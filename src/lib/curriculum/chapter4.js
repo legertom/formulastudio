@@ -8,11 +8,11 @@ export const chapter4 = {
             type: "challenge",
             title: "Refresher: Length",
             goal: "Check the length of the dirty string",
-            description: "It's time to become a **Data Janitor**.\n\nData often comes in \"dirty\"—with extra spaces, weird symbols, or typos. Before we clean it, let's analyze it.\n\n**Challenge:**\nUse the `len` function (Arity 1) to count the characters in the `name` field.\n\n(It looks like \"Jean\", but is it?)",
+            description: "It's time to become a **Data Janitor**.\n\nData often comes in \"dirty\"—with extra spaces, weird symbols, or typos. Before we clean it, let's analyze it.\n\n**Challenge:**\nUse the `length` function (Arity 1) to count the characters in the `name` field.\n\n(It looks like \"Jean\", but is it?)",
             testCases: [
                 { name: "Dirty Name", data: { "name": "   Jean   " }, expected: "10" }
             ],
-            hints: ["Type {{ len name }}"],
+            hints: ["Type {{ length name }}"],
             prefill: "{{}}"
         },
         {
@@ -84,14 +84,14 @@ export const chapter4 = {
             type: "challenge",
             title: "Concept: Summing Up",
             goal: "Calculate total length of First + Last",
-            description: "Great cleanup work! Now let's analyze the data.\n\n**New Tool: `add`** (Arity 2)\n\n`{{ add number1 number2 }}`\n\nWe want to know the **Total Character Count** of the user's full name.\n\n**Challenge:**\n1. Get `len` of `name.first`.\n2. Get `len` of `name.last`.\n3. `add` them together.",
+            description: "Great cleanup work! Now let's analyze the data.\n\n**New Tool: `add`** (Arity 2)\n\n`{{ add number1 number2 }}`\n\nWe want to know the **Total Character Count** of the user's full name.\n\n**Challenge:**\n1. Get `length` of `name.first`.\n2. Get `length` of `name.last`.\n3. `add` them together.",
             testCases: [
                 { name: "Jean Picard", data: { "name": { "first": "Jean", "last": "Picard" } }, expected: "10" }
             ],
             hints: [
                 "Calculate the lengths first.",
-                "{{ add (len first) (len last) }}",
-                "{{ add len name.first len name.last }}"
+                "{{ add (length first) (length last) }}",
+                "{{ add length name.first length name.last }}"
             ],
             prefill: "{{}}"
         },

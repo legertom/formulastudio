@@ -92,15 +92,15 @@ export const chapter5 = {
             type: "challenge",
             title: "Practice: Short Text",
             goal: "Flag usernames that are too short",
-            description: "Sometimes we need to check if a number is `less` than another.\n\n**New Tool: `less`** (Arity 2)\n\n`{{ less number1 number2 }}` - Returns true if number1 is strictly smaller than number2.\n\n**Tool Combo: `len`**\n`{{ len string }}` - Returns the number of characters in a string.\n\n**Challenge:**\nIf the `username` length is less than `5` characters, output `\"Too Short\"`. Otherwise, output `\"OK\"`.",
+            description: "Sometimes we need to check if a number is `less` than another.\n\n**New Tool: `less`** (Arity 2)\n\n`{{ less number1 number2 }}` - Returns true if number1 is strictly smaller than number2.\n\n**Tool Combo: `length`**\n`{{ length string }}` - Returns the number of characters in a string.\n\n**Challenge:**\nIf the `username` length is less than `5` characters, output `\"Too Short\"`. Otherwise, output `\"OK\"`.",
             testCases: [
                 { name: "Valid User", data: { "username": "jdoe123" }, expected: "OK" },
                 { name: "Short User", data: { "username": "bob" }, expected: "Too Short" }
             ],
             hints: [
-                "Get the length: {{ len username }}",
-                "Compare it: {{ less (len username) 5 }}",
-                "{{ if (less (len username) 5) \"Too Short\" \"OK\" }}"
+                "Get the length: {{ length username }}",
+                "Compare it: {{ less (length username) 5 }}",
+                "{{ if (less (length username) 5) \"Too Short\" \"OK\" }}"
             ],
             prefill: "{{}}"
         },
@@ -115,7 +115,7 @@ export const chapter5 = {
                 { name: "Exact Limit", data: { "code": "ABC" }, expected: "Valid" },
                 { name: "Long Code", data: { "code": "ABCD" }, expected: "Invalid" }
             ],
-            hints: ["{{ if (leq (len code) 3) \"Valid\" \"Invalid\" }}"],
+            hints: ["{{ if (leq (length code) 3) \"Valid\" \"Invalid\" }}"],
             prefill: "{{}}"
         },
         {
@@ -168,8 +168,8 @@ export const chapter5 = {
                 }
             ],
             hints: [
-                "Use {{len}} to get the length.",
-                "Combine {{if}}, {{greater}}, and {{len}}."
+                "Use {{length}} to get the length.",
+                "Combine {{if}}, {{greater}}, and {{length}}."
             ],
             prefill: "{{}}"
         }
