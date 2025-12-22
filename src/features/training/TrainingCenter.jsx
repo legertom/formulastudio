@@ -43,7 +43,16 @@ const TrainingCenter = () => {
     const [completedSteps, setCompletedSteps] = useState([]);
 
     // Track which chapters are collapsed (by chapter index)
-    const [collapsedChapters, setCollapsedChapters] = useState(new Set());
+    // Initialize with all chapters collapsed except the active one
+    const [collapsedChapters, setCollapsedChapters] = useState(() => {
+        const initialCollapsed = new Set();
+        for (let i = 0; i < CURRICULUM.length; i++) {
+            if (i !== activeChapterIndex) {
+                initialCollapsed.add(i);
+            }
+        }
+        return initialCollapsed;
+    });
 
     useEffect(() => {
         try {

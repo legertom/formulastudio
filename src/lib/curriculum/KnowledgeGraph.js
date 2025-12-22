@@ -98,6 +98,11 @@ export const conceptGraph = {
         description: "Removes special characters.",
         dependencies: ["arity_1"]
     },
+    "ignoreIfNull": {
+        title: "ignoreIfNull",
+        description: "Safely accesses a field, returning empty string if missing.",
+        dependencies: ["arity_1", "dot_notation"]
+    },
     "textBefore": {
         title: "textBefore",
         description: "Extracts text occurring before a delimiter.",

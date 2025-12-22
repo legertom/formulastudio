@@ -44,8 +44,21 @@ export const evaluateAndTrace = (ast, data) => {
                 else if (val === 'false') result = false;
                 else if (val === 'null') result = null;
                 else {
-                    // Data Lookup
-                    result = val.split('.').reduce((obj, key) => obj?.[key], data) ?? "";
+                    // Data Lookup - throw error if field is missing
+                    const keys = val.split('.');
+                    let current = data;
+
+                    for (let i = 0; i < keys.length; i++) {
+                        if (current === null || current === undefined) {
+                            throw new Error(`Cannot access property '${keys[i]}' of ${current}`);
+                        }
+                        if (!(keys[i] in current)) {
+                            throw new Error(`Field '${keys.slice(0, i + 1).join('.')}' does not exist in data`);
+                        }
+                        current = current[keys[i]];
+                    }
+
+                    result = current ?? "";
                 }
             }
             else if (node.type === 'CallExpression') {
@@ -65,6 +78,16 @@ export const evaluateAndTrace = (ast, data) => {
                         // This allows the UI to dim it as "Unexecuted".
                     } else {
                         result = evalNode(args[2]);
+                    }
+                }
+                // SPECIAL HANDLING FOR ignoreIfNull
+                // We need to catch errors from missing fields
+                else if (funcName === 'ignoreifnull') {
+                    try {
+                        result = evalNode(args[0]);
+                    } catch (error) {
+                        // Field doesn't exist - return empty string
+                        result = "";
                     }
                 }
                 else if (funcName === 'switch') {
@@ -162,7 +185,8 @@ export const evaluateAndTrace = (ast, data) => {
                 }
             }
         } catch (e) {
-            result = "Error"; // Trace errors too?
+            // Re-throw the error so functions like ignoreIfNull can catch it
+            throw e;
         }
 
         // RECORD TRACE
