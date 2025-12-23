@@ -39,7 +39,7 @@ export const chapter1 = {
             title: "The Quote Rule (Part 1)",
             goal: "Try to type Hello WITHOUT quotes",
             description: "What happens if you forget the quotes?\n\nType `{{ Hello }}` and see what happens.\n\n(Spoiler: It won't work, because the computer thinks `Hello` is a command or a variable name!)",
-            testCases: [{ name: "Test", data: {}, expected: "" }], // Should return empty string as variable doesn't exist
+            testCases: [{ name: "Test", data: {}, expectedError: "does not exist" }],
             hints: ["Type {{ Hello }}"],
             prefill: "{{}}"
         },
@@ -48,7 +48,7 @@ export const chapter1 = {
             type: "challenge",
             title: "The Quote Rule (Part 2)",
             goal: "Fix it by adding quotes",
-            description: "The previous step printed nothing (an empty result).\n\nThat's because the computer looked for a variable named `Hello`, couldn't find it, and gave up.\n\n**Fix it:**\nAdd quotes around `\"Hello\"` to tell the computer: \"Relax, it's just text.\"",
+            description: "The previous step gave an **Error**.\n\nThat's because the computer looked for a variable named `Hello`, couldn't find it, and panicked.\n\n**Fix it:**\nAdd quotes around `\"Hello\"` to tell the computer: \"Relax, it's just text.\"",
             testCases: [{ name: "Test", data: {}, expected: "Hello" }],
             hints: ["Type {{ \"Hello\" }}"],
             prefill: "{{ Hello }}"
