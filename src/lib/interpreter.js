@@ -112,6 +112,7 @@ export const evaluateAndTrace = (ast, data) => {
                         case 'replace': result = String(evalArgs[0]).replaceAll(String(evalArgs[1]), String(evalArgs[2])); break;
                         case 'substr': result = String(evalArgs[0]).substring(Number(evalArgs[1]), Number(evalArgs[2])); break;
                         case 'trim': result = String(evalArgs[0]).trim(); break;
+                        case 'trimleft': result = String(evalArgs[0]).trimStart(); break; // Added trimLeft
 
                         // Logic Ops
                         case 'equals': result = evalArgs[0] == evalArgs[1]; break; // Loose equality for "5" == 5 ease
@@ -121,13 +122,33 @@ export const evaluateAndTrace = (ast, data) => {
                         case 'leq': result = Number(evalArgs[0]) <= Number(evalArgs[1]); break; // Less or Equal
                         case 'and': result = evalArgs[0] && evalArgs[1]; break; // JS short-circuits, but we eval'd eagerness above.
                         case 'or': result = evalArgs[0] || evalArgs[1]; break;
+                        case 'in': result = String(evalArgs[1]).includes(String(evalArgs[0])); break; // Check if arg0 is IN arg1
                         case 'not': result = !evalArgs[0]; break;
 
                         // Math
                         case 'add': result = Number(evalArgs[0]) + Number(evalArgs[1]); break;
                         case 'subtract': result = Number(evalArgs[0]) - Number(evalArgs[1]); break;
 
-                        // Advanced String Ops (Chapter 7)
+                        // Advanced String Ops (Chapter 7 & 9 & 10)
+                        case 'delimitercapitalize': {
+                            // Capitalize first letter of words separated by space or hyphen
+                            result = String(evalArgs[0]).replace(/(^|[\s-])\S/g, match => match.toUpperCase());
+                            break;
+                        }
+                        case 'alphanumeric': {
+                            // Check if string contains only letters and numbers
+                            result = /^[a-z0-9]+$/i.test(String(evalArgs[0]));
+                            break;
+                        }
+                        case 'initials': {
+                            // "Tom Leger" -> "TL"
+                            // "Mary-Anne" -> "MA" (if we treat hyphen as separator)
+                            // Simple version: split by space, take first char
+                            result = String(evalArgs[0]).split(' ').map(w => w[0] || '').join('').toUpperCase();
+                            break;
+                        }
+                        case 'tolower': result = String(evalArgs[0]).toLowerCase(); break;
+                        case 'toupper': result = String(evalArgs[0]).toUpperCase(); break;
                         case 'textbefore': {
                             const h = String(evalArgs[0]);
                             const n = String(evalArgs[1]);

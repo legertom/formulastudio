@@ -1,0 +1,54 @@
+{
+  "name": {
+    "first": "Jean-Luc",
+    "last": "Picard"
+  },
+  "email": "jeanluc@example.com",
+  "school_name": "school name",
+  "student": {
+    "credentials": {
+      "district_username": "username",
+      "district_password": "fake pw"
+    },
+    "dob": "2001-01-05t00:00:00z",
+    "ext": {
+      "extension_field_name": "field"
+    },
+    "grade": "11",
+    "graduation_year": "2027",
+    "sis_id": "1111",
+    "state_id": "11111",
+    "student_number": "1111111"
+  },
+  "teacher": {
+    "credentials": {
+      "district_username": "username",
+      "district_password": "fake pw"
+    },
+    "ext": {
+      "extension_field_name": "field"
+    },
+    "sis_id": "1111",
+    "state_id": "11111",
+    "teacher_number": "1111111",
+    "title": "title"
+  },
+  "staff": {
+    "credentials": {
+      "district_username": "username",
+      "district_password": "fake pw"
+    },
+    "department": "department",
+    "ext": {
+      "extension_field_name": "field"
+    },
+    "staff_id": "1111",
+    "title": "title"
+  },
+  "school": {
+    "district": "district name",
+    "id": "111",
+    "name": "name",
+    "sis_id": "11111"
+  }
+}

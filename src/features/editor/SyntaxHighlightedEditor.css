@@ -63,7 +63,7 @@
     box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
 }
 
-.syntax-editor-input:focus + .syntax-highlight-layer {
+.syntax-editor-input:focus+.syntax-highlight-layer {
     background: rgba(0, 0, 0, 0.3);
     border-color: var(--accent-primary);
 }
@@ -99,4 +99,141 @@
 .training-layout-workbench .syntax-editor-input,
 .training-layout-workbench .syntax-highlight-layer {
     height: 100%;
+}
+
+/* Tooltip */
+.syntax-tooltip {
+    position: fixed;
+    z-index: 9999;
+    pointer-events: none;
+    background: #1e293b;
+    /* Dark slate */
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 1rem;
+    color: #e2e8f0;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
+    width: 380px;
+    max-width: 90vw;
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    animation: tooltip-fade 0.15s ease-out;
+    transform: translate(-50%, -100%) translateY(-12px);
+    line-height: 1.5;
+}
+
+@keyframes tooltip-fade {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -100%) translateY(0);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, -100%) translateY(-12px);
+    }
+}
+
+.editor-tooltip {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Header */
+.tooltip-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    border-bottom: 1px solid #334155;
+    padding-bottom: 0.75rem;
+    margin-bottom: -0.25rem;
+}
+
+.tooltip-title {
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #a78bfa;
+    /* Purple-400 */
+}
+
+.tooltip-arity {
+    color: #94a3b8;
+    /* Slate-400 */
+    font-size: 0.8rem;
+}
+
+/* Description */
+.tooltip-desc {
+    color: #cbd5e1;
+    /* Slate-300 */
+    font-size: 0.9rem;
+}
+
+/* Sections */
+.tooltip-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.tooltip-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    color: #64748b;
+    /* Slate-500 */
+}
+
+/* Syntax Code Block */
+.tooltip-code {
+    background: #0f172a;
+    /* Slate-900 */
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: #e2e8f0;
+    border: 1px solid #334155;
+}
+
+/* Argument List */
+.tooltip-args {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.tooltip-arg-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+
+.tooltip-arg-tag {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    background: rgba(124, 58, 237, 0.15);
+    /* Purple tint */
+    color: #c4b5fd;
+    /* Purple-300 */
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.tooltip-arg-desc {
+    font-size: 0.85rem;
+    color: #94a3b8;
+}
+
+/* Ensure measurement char is truly hidden but takes space if needed (though we use abspos offscreen usually) */
+.measurement-char {
+    visibility: hidden;
+    position: absolute;
+    pointer-events: none;
+    z-index: -999;
 }
