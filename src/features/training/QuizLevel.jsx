@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { tokenize, parse } from '../../lib/parser';
 import SyntaxHighlightedEditor from '../editor/SyntaxHighlightedEditor';
 import { renderMarkdownText, evaluateAst } from '../../lib/quizUtils.jsx';
+import CoachMark from '../../components/CoachMark';
 import './QuizLevel.css';
 
 
@@ -58,9 +59,10 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep 
                     error: null
                 };
             } catch (e) {
+                const isExpectedError = testCase.expectedError && e.message.includes(testCase.expectedError);
                 return {
                     computed: '',
-                    isCorrect: false,
+                    isCorrect: !!isExpectedError,
                     error: e.message
                 };
             }
@@ -244,9 +246,17 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep 
                     {isAllCorrect ? (
                         <button className="btn-focus-continue" onClick={onNext}>Continue →</button>
                     ) : (
-                        <button className="btn-focus-skip" onClick={onNext}>Skip Step</button>
+                        <button className="btn-focus-continue disabled" disabled>Continue →</button>
                     )}
                 </div>
+
+                {level.coachMark && (
+                    <CoachMark
+                        targetSelector={level.coachMark.target}
+                        message={level.coachMark.text}
+                        placement={level.coachMark.placement || 'top'}
+                    />
+                )}
             </div>
         </div>
     );
