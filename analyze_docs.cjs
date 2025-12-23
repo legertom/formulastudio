@@ -23,16 +23,22 @@ const allFunctions = [...documentedFunctions, ...extraFunctions];
 const functionCounts = {};
 allFunctions.forEach(f => functionCounts[f] = 0);
 
-const curriculumDir = '/Users/tomleger/repo/formulastudio/src/lib/curriculum';
-const chapters = [1, 2, 3, 4, 5, 6, 7, 8];
+// We also want to track breakdown by chapter for the report
+const chapterCounts = {};
 
-console.log("Analyzing chapters for renamed function LENGTH...");
+const curriculumDir = '/Users/tomleger/repo/formulastudio/src/lib/curriculum';
+const chapters = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; // Added 9 and 10
+
+console.log("Analyzing chapters 1-10...");
 
 chapters.forEach(chapNum => {
     const filename = path.join(curriculumDir, `chapter${chapNum}.js`);
     if (!fs.existsSync(filename)) return;
 
     const content = fs.readFileSync(filename, 'utf8');
+
+    chapterCounts[chapNum] = {};
+    allFunctions.forEach(f => chapterCounts[chapNum][f] = 0);
 
     // Regex to find "hints: [ ... ]"
     const hintsRegex = /hints:\s*\[([\s\S]*?)\]/g;
@@ -56,6 +62,7 @@ chapters.forEach(chapNum => {
             const regex = new RegExp(`\\b${func}\\b`, 'i');
             if (regex.test(lastHint)) {
                 functionCounts[func]++;
+                chapterCounts[chapNum][func]++;
             }
         });
     }
@@ -63,12 +70,21 @@ chapters.forEach(chapNum => {
 
 console.log("\nFunction Usage Counts (Documented vs Used):");
 documentedFunctions.forEach(f => {
-    console.log(`${f}: ${functionCounts[f]}`);
+    // console.log(`${f}: ${functionCounts[f]}`);
 });
+console.table(functionCounts);
 
-console.log("\nExtra/Alias Usage:");
-extraFunctions.forEach(f => {
-    console.log(`${f}: ${functionCounts[f]}`);
+console.log("\nBreakdown by Chapter:");
+Object.keys(chapterCounts).forEach(c => {
+    console.log(`\nChapter ${c}:`);
+    const activeFuncs = Object.entries(chapterCounts[c])
+        .filter(([_, count]) => count > 0)
+        .reduce((acc, [f, count]) => ({ ...acc, [f]: count }), {});
+    if (Object.keys(activeFuncs).length === 0) {
+        console.log("(No functions used)");
+    } else {
+        console.table(activeFuncs);
+    }
 });
 
 const unused = documentedFunctions.filter(f => functionCounts[f] === 0);

@@ -1,31 +1,36 @@
 # Function Usage Report
 
-Analysis of function usage across all 92 steps in the curriculum (Chapters 1-8).
-*Note: Chapters 9 and 10 are currently empty.*
+Analysis of function usage across all 10 chapters of the curriculum.
 
 ## Total Usage Summary
 | Function | Count |
 | :--- | :--- |
-| `if` | 29 |
+| `if` | 35 |
 | `equals` | 19 |
-| `concat` | 16 |
+| `concat` | 17 |
 | `ignoreifnull` | 8 |
-| `length` | 7 |
 | `and` | 7 |
+| `length` | 7 |
+| `substr` | 6 |
+| `textAfter` | 6 |
 | `toUpper` | 5 |
-| `substr` | 5 |
 | `replace` | 5 |
+| `contains` | 5 |
 | `or` | 5 |
+| `trimLeft` | 4 |
 | `greater` | 4 |
 | `not` | 4 |
-| `contains` | 3 |
-| `add` | 3 |
+| `add` | 4 |
+| `subtract` | 4 |
+| `alphanumeric` | 3 |
+| `less` | 3 |
+| `textBefore` | 3 |
+| `in` | 3 |
 | `toLower` | 2 |
 | `initials` | 2 |
-| `trimLeft` | 2 |
-| `in` | 2 |
-| `alphanumeric` | 1 |
-| `less` | 1 |
+| `textAfterLast` | 2 |
+| `delimiterCapitalize` | 2 |
+| `formatDate` | 2 |
 | `geq` | 1 |
 | `leq` | 1 |
 | *Others* | 0 |
@@ -35,27 +40,35 @@ Analysis of function usage across all 92 steps in the curriculum (Chapters 1-8).
 ### Chapter 1: The Foundation
 | Function | Count |
 | :--- | :--- |
-| `concat` | 1 |
 | `or` | 1 |
+| `concat` | 1 |
 
 ### Chapter 2: Variables
 | Function | Count |
 | :--- | :--- |
 | `concat` | 7 |
+| `toUpper` | 3 |
+| `toLower` | 1 |
 | `length` | 1 |
 
 ### Chapter 3: Strings
 | Function | Count |
 | :--- | :--- |
-| `concat` | 5 |
 | `substr` | 5 |
+| `concat` | 5 |
+| `initials` | 2 |
+| `toLower` | 1 |
+| `toUpper` | 1 |
 
 ### Chapter 4: Numbers & Math
 | Function | Count |
 | :--- | :--- |
 | `replace` | 5 |
 | `add` | 3 |
+| `trimLeft` | 2 |
 | `length` | 2 |
+| `toUpper` | 1 |
+| `alphanumeric` | 1 |
 
 ### Chapter 5: Logic I
 | Function | Count |
@@ -78,6 +91,7 @@ Analysis of function usage across all 92 steps in the curriculum (Chapters 1-8).
 | `or` | 4 |
 | `not` | 4 |
 | `contains` | 3 |
+| `in` | 2 |
 | `greater` | 1 |
 | `length` | 1 |
 
@@ -86,13 +100,7 @@ Analysis of function usage across all 92 steps in the curriculum (Chapters 1-8).
 | :--- | :--- |
 | `if` | 9 |
 | `equals` | 5 |
-| `toUpper` | 5 |
-| `toLower` | 2 |
-| `trimLeft` | 2 |
-| `initials` | 2 |
-| `in` | 2 |
-| `greater` | 1 |
-| `alphanumeric` | 1 |
+| *Note: Earlier analysis showed usage here, checking for shifts.* | |
 
 ### Chapter 8: Missing Data
 | Function | Count |
@@ -100,3 +108,27 @@ Analysis of function usage across all 92 steps in the curriculum (Chapters 1-8).
 | `ignoreifnull` | 8 |
 | `if` | 5 |
 | `concat` | 3 |
+
+### Chapter 9: Messy Data
+| Function | Count |
+| :--- | :--- |
+| `textAfter` | 6 |
+| `textBefore` | 3 |
+| `trimLeft` | 2 |
+| `if` | 2 |
+| `contains` | 2 |
+| `textAfterLast` | 2 |
+| `substr` | 1 |
+| `in` | 1 |
+
+### Chapter 10: The Analyst
+| Function | Count |
+| :--- | :--- |
+| `if` | 4 |
+| `subtract` | 4 |
+| `alphanumeric` | 2 |
+| `delimiterCapitalize` | 2 |
+| `less` | 2 |
+| `formatDate` | 2 |
+| `add` | 1 |
+| `concat` | 1 |

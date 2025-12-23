@@ -122,7 +122,7 @@ export const evaluateAndTrace = (ast, data) => {
                         case 'leq': result = Number(evalArgs[0]) <= Number(evalArgs[1]); break; // Less or Equal
                         case 'and': result = evalArgs[0] && evalArgs[1]; break; // JS short-circuits, but we eval'd eagerness above.
                         case 'or': result = evalArgs[0] || evalArgs[1]; break;
-                        case 'in': result = String(evalArgs[1]).includes(String(evalArgs[0])); break; // Check if arg0 is IN arg1
+                        case 'in': result = String(evalArgs[1]).split(' ').includes(String(evalArgs[0])); break; // Check if arg0 is IN list (space separated)
                         case 'not': result = !evalArgs[0]; break;
 
                         // Math

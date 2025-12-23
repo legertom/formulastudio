@@ -105,6 +105,19 @@ export const chapter9 = {
             prefill: "{{}}"
         },
         {
+            id: "c9-s7-practice",
+            type: "challenge",
+            title: "Practice: Last Name",
+            goal: "Extract the last name",
+            description: "Let's try another one. Sometimes names are messy too.\n\n**Data:** `\"Startrek, Jean Luc\"` or `\"Picard\"` (no comma).\n\nWait, actually let's look at full names formatted as `First Middle Last`.\n\n**Data:** `\"Jean Luc Picard\"`\n\n**Challenge:**\nGet the text after the *last* space to find the surname.",
+            testCases: [
+                { name: "Picard", data: { "name": "Jean Luc Picard" }, expected: "Picard" },
+                { name: "Riker", data: { "name": "William T. Riker" }, expected: "Riker" }
+            ],
+            hints: ["{{ textAfterLast name \" \" }}"],
+            prefill: "{{}}"
+        },
+        {
             id: "c9-s8",
             type: "challenge",
             title: "Refinement: Cleaning Up",
@@ -121,19 +134,45 @@ export const chapter9 = {
             prefill: "{{}}"
         },
         {
+            id: "c9-s8-practice",
+            type: "challenge",
+            title: "Practice: System Logs",
+            goal: "Parse and clean",
+            description: "Logs are notoriously messy.\n\n**Data:** `\"ERROR -   Connection Timeout\"`\n\n**Challenge:**\nExtract the message after `\"-\"`, but make sure to remove those leading spaces so it looks clean.",
+            testCases: [
+                { name: "Timeout", data: { "log": "ERROR -   Connection Timeout" }, expected: "Connection Timeout" },
+                { name: "Auth", data: { "log": "INFO - Auth Successful" }, expected: "Auth Successful" }
+            ],
+            hints: ["{{ trimLeft (textAfter log \"-\") }}"],
+            prefill: "{{}}"
+        },
+        {
             id: "c9-s9",
             type: "challenge",
-            title: "Logic: Safety Check",
+            title: "Refresher: Safety Check",
             goal: "Extract only if safe",
-            description: "If a delimiter doesn't exist, these functions usually return the empty string or original string (depending on implementation). But sometimes we want to check first.\n\n**New Tool: `in`** (Arity 2)\n`{{ in needle haystack }}`\nReturns `true` if needle matches.\n\n*Example:* `{{ in \"@\" \"test@test.com\" }}` -> `true`\n\n**Challenge:**\nCheck if `\"@\"` is **in** the `email`. If yes, output `\"Valid\"`. If no, output `\"Invalid\"`.",
+            description: "If a delimiter doesn't exist, these functions usually return the empty string or original string. But sometimes we want to check first.\n\n**Refresher: `contains`** (Arity 2)\n`{{ contains haystack needle }}`\nReturns `true` if the text contains the substring.\n\n*Example:* `{{ contains \"test@test.com\" \"@\" }}` -> `true`\n\n**Challenge:**\nCheck if the `email` **contains** `\"@\"`. If yes, output `\"Valid\"`. If no, output `\"Invalid\"`.",
             testCases: [
                 { name: "Valid", data: { "email": "test@test.com" }, expected: "Valid" },
                 { name: "Invalid", data: { "email": "notanemail" }, expected: "Invalid" }
             ],
             hints: [
                 "This is just a boolean check.",
-                "{{ if (in \"@\" email) \"Valid\" \"Invalid\" }}"
+                "{{ if (contains email \"@\") \"Valid\" \"Invalid\" }}"
             ],
+            prefill: "{{}}"
+        },
+        {
+            id: "c9-s9-practice",
+            type: "challenge",
+            title: "Practice: Domain Check",
+            goal: "Block bad domains",
+            description: "We can also use `contains` for logic checks.\n\n**Scenario:**\nWe only want users from `.edu` addresses.\n\n**Challenge:**\nIf the `email` contains `\".edu\"`, return `\"Allowed\"`. Otherwise, return `\"Blocked\"`.",
+            testCases: [
+                { name: "Allowed", data: { "email": "student@college.edu" }, expected: "Allowed" },
+                { name: "Blocked", data: { "email": "hacker@gmail.com" }, expected: "Blocked" }
+            ],
+            hints: ["{{ if (contains email \".edu\") \"Allowed\" \"Blocked\" }}"],
             prefill: "{{}}"
         },
         {

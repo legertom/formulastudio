@@ -30,6 +30,19 @@ export const chapter10 = {
             prefill: "{{}}"
         },
         {
+            id: "c10-s2-practice",
+            type: "challenge",
+            title: "Practice: Years of Service",
+            goal: "Calculate tenure",
+            description: "Let's use `subtract` for dates (years).\n\n**Challenge:**\nCalculate how long an employee has been with the company by subtracting `start_year` from `current_year`.",
+            testCases: [
+                { name: "Veteran", data: { "current_year": 2024, "start_year": 2010 }, expected: "14" },
+                { name: "New Hire", data: { "current_year": 2024, "start_year": 2023 }, expected: "1" }
+            ],
+            hints: ["{{ subtract current_year start_year }}"],
+            prefill: "{{}}"
+        },
+        {
             id: "c10-s3",
             type: "challenge",
             title: "Practice: Days Remaining",
@@ -86,6 +99,19 @@ export const chapter10 = {
             prefill: "{{}}"
         },
         {
+            id: "c10-s6-practice",
+            type: "challenge",
+            title: "Practice: European Format",
+            goal: "Reformat to DD/MM/YYYY",
+            description: "Different regions use different date formats. In Europe, the day checks first.\n\n**Challenge:**\nFormat the `date` to look like `\"01/01/2023\"` (`DD/MM/YYYY`).",
+            testCases: [
+                { name: "New Year", data: { "date": "2023-01-01" }, expected: "01/01/2023" },
+                { name: "Mid Year", data: { "date": "2023-06-15" }, expected: "15/06/2023" }
+            ],
+            hints: ["{{ formatDate date \"DD/MM/YYYY\" }}"],
+            prefill: "{{}}"
+        },
+        {
             id: "c10-s7",
             type: "challenge",
             title: "Concept: Name Cleanup",
@@ -96,6 +122,19 @@ export const chapter10 = {
                 { name: "Lowercase", data: { "name": "john doe" }, expected: "John Doe" }
             ],
             hints: ["{{ delimiterCapitalize name }}"],
+            prefill: "{{}}"
+        },
+        {
+            id: "c10-s7-practice",
+            type: "challenge",
+            title: "Practice: Book Titles",
+            goal: "Fix title casing",
+            description: "This function is great for titles too.\n\n**Challenge:**\nFix the `title` to look like a proper book title (Capitalize All Words).",
+            testCases: [
+                { name: "War/Peace", data: { "title": "war and peace" }, expected: "War And Peace" },
+                { name: "Hobbit", data: { "title": "the-hobbit" }, expected: "The-Hobbit" }
+            ],
+            hints: ["{{ delimiterCapitalize title }}"],
             prefill: "{{}}"
         },
         {
@@ -112,14 +151,37 @@ export const chapter10 = {
             prefill: "{{}}"
         },
         {
+            id: "c10-s8-practice",
+            type: "challenge",
+            title: "Practice: Security Check",
+            goal: "Block special chars",
+            description: "We are strict about `username` security. No special characters allowed!\n\n**Challenge:**\nCheck if the `username` is alphanumeric. If NOT (`false`), return `\"Error\"`. If it is (`true`), return `\"OK\"`.\n\n*Hint: Use the if tool.*",
+            testCases: [
+                { name: "Hacker", data: { "username": "admin!" }, expected: "Error" },
+                { name: "User", data: { "username": "user1" }, expected: "OK" }
+            ],
+            hints: ["{{ if (alphanumeric username) \"OK\" \"Error\" }}"],
+            prefill: "{{}}"
+        },
+        {
             id: "c10-s9",
             type: "challenge",
             title: "Final Exam: The Statement",
             goal: "Generate a formatted financial report",
             description: "Combine everything!\n\n**Data:**\n`name`: \"acme-corp\"\n`due_date`: \"2023-11-01\"\n`amount`: 5000\n\n**Mission:**\nOutput a string: `\"Acme-Corp: $5000 due Nov 01, 2023\"`\n\n**Steps:**\n1. `delimiterCapitalize` the name.\n2. `formatDate` the date (`MMM DD, YYYY`).\n3. Combine them with `concat` and text.\n(Assume `amount` is just a number, you can concat `\"$\"` manually).",
             testCases: [
-                { name: "Acme", data: { "name": "acme-corp", "due_date": "2023-11-01", "amount": 5000 }, expected: "Acme-Corp: $5000 due Nov 01, 2023" },
-                { name: "Globex", data: { "name": "globex inc", "due_date": "2024-01-05", "amount": 100 }, expected: "Globex Inc: $100 due Jan 05, 2024" }
+                {
+                    name: "Acme",
+                    data: { "name": "acme-corp", "due_date": "2023-11-01", "amount": 5000 },
+                    expected: "Acme-Corp: $5000 due Nov 01, 2023",
+                    matchRegex: "^Acme-Corp: \\$5000 due\\s+Nov 01, 2023$"
+                },
+                {
+                    name: "Globex",
+                    data: { "name": "globex inc", "due_date": "2024-01-05", "amount": 100 },
+                    expected: "Globex Inc: $100 due Jan 05, 2024",
+                    matchRegex: "^Globex Inc: \\$100 due\\s+Jan 05, 2024$"
+                }
             ],
             hints: [
                 "Step 1: {{ delimiterCapitalize name }}",
