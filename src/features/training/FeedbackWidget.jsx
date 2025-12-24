@@ -43,7 +43,7 @@ const styles = {
         backgroundColor: '#000',
         flex: 1, // Take available height
         minHeight: '200px',
-        cursor: 'crosshair',
+        cursor: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><circle cx="20" cy="20" r="15" fill="yellow" opacity="0.4"/><circle cx="20" cy="20" r="15" fill="none" stroke="orange" stroke-width="2"/></svg>') 20 20, crosshair`,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'flex-start',
@@ -213,10 +213,15 @@ const FeedbackWidget = ({ location = 'Unknown' }) => {
         const ctx = canvasRef.current.getContext('2d');
         const pos = getMousePos(e);
 
-        ctx.strokeStyle = 'red';
-        ctx.lineWidth = 5;
-        ctx.lineCap = 'round';
+        // Highlighter style: thick, semi-transparent yellow with diffuse edges
+        ctx.strokeStyle = 'rgba(255, 255, 0, 0.4)'; // Semi-transparent yellow
+        ctx.lineWidth = 30; // Match cursor diameter (radius 15 = diameter 30)
+        ctx.lineCap = 'round'; // Round brush
         ctx.lineJoin = 'round';
+
+        // Add diffuse/soft edges
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = 'rgba(255, 255, 0, 0.3)';
 
         ctx.beginPath();
         ctx.moveTo(lastPos.current.x, lastPos.current.y);
@@ -303,7 +308,7 @@ const FeedbackWidget = ({ location = 'Unknown' }) => {
                         <h3 style={styles.title}>Send Feedback</h3>
 
                         <p style={{ margin: 0, fontSize: '0.9rem', color: '#aaa' }}>
-                            Draw on the screen to highlight the issue.
+                            Highlight the area you're referring to by drawing on the screenshot.
                         </p>
 
                         <div style={styles.canvasContainer}>
