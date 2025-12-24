@@ -156,9 +156,42 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep 
                 {/* Reference Data - ALWAYS Full Width Top */}
                 {hasReferenceData && (
                     <div className="focus-reference-card" style={{ width: '100%', marginBottom: '1rem' }}>
-                        <div className="card-header">
-                            <span className="icon">🗂️</span>
-                            <span>Reference Data (JSON)</span>
+                        <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                                <span className="icon">🗂️</span>
+                                <span>Reference Data (JSON)</span>
+                            </div>
+                            {level.testCases.length > 1 && (
+                                <div className="ref-controls" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                                    {level.testCases.map((tc, idx) => (
+                                        <button
+                                            key={idx}
+                                            className={`ref-avatar-${idx}`}
+                                            onClick={() => setSelectedCaseIndex(idx)}
+                                            style={{
+                                                width: '24px',
+                                                height: '24px',
+                                                borderRadius: '50%',
+                                                border: idx === selectedCaseIndex ? '2px solid var(--accent-primary)' : '1px solid var(--glass-border)',
+                                                background: idx === selectedCaseIndex ? 'var(--accent-primary)' : 'var(--bg-tertiary)',
+                                                color: idx === selectedCaseIndex ? '#fff' : 'var(--text-muted)',
+                                                fontSize: '0.7rem',
+                                                fontWeight: 700,
+                                                cursor: 'pointer',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                padding: 0,
+                                                opacity: idx === selectedCaseIndex ? 1 : 0.6,
+                                                transition: 'all 0.2s'
+                                            }}
+                                            title={`Switch to ${tc.name} data`}
+                                        >
+                                            {tc.name.charAt(0)}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                         <pre className="json-content" style={{ maxHeight: '300px', overflow: 'auto' }}>
                             {JSON.stringify(selectedCase.data, null, 2)}

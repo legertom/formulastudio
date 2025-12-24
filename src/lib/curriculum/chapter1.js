@@ -106,9 +106,17 @@ export const chapter1 = {
             type: "challenge",
             title: "Variables (The Value)",
             goal: "Output the data inside name",
-            description: "Now remove the quotes: `{{ name }}`.\n\nThis is a **Variable**. You are telling the computer: \"Don't write 'name'... go find what `name` **stands for**.\"\n\nIt's like the difference between a **Nametag** (Literal) and the **Person** wearing it (Variable).",
+            description: "Now remove the quotes: `{{ name }}`.\n\nThis is a **Variable**. You are telling the computer: \"Go look up the value for `name`.\"\n\n**Key Concept:**\nThe Variable `name` changes for every person. Checks the different users above to see it change!",
+            coachMark: {
+                target: ".ref-avatar-1",
+                text: "Click here to see Beverly's data.",
+                placement: "left"
+            },
             referenceDataPlacement: "top",
-            testCases: [{ name: "User", data: { "name": "Jean-Luc" }, expected: "Jean-Luc" }],
+            testCases: [
+                { name: "Jean-Luc", data: { "name": "Jean-Luc" }, expected: "Jean-Luc" },
+                { name: "Beverly", data: { "name": "Beverly" }, expected: "Beverly" }
+            ],
             hints: ["Type {{ name }}"],
             prefill: "{{ \"name\" }}"
         },
@@ -117,9 +125,17 @@ export const chapter1 = {
             type: "challenge",
             title: "Practice: Literal vs Variable",
             goal: "Output the student's grade value (11)",
-            description: "Look at the data: `\"grade\": \"11\"`.\n\n*   `{{ \"grade\" }}` -> Prints \"grade\"\n*   `{{ grade }}` -> Prints \"11\"\n\n**Challenge:**\nOutput the student's grade.",
+            description: "Look at the data: `\"grade\": \"11\"`.\n\n*   `{{ \"grade\" }}` -> Prints \"grade\" (Always)\n*   `{{ grade }}` -> Prints \"11\" (or \"12\", or \"10\"... it depends!)\n\n**Challenge:**\nOutput the student's grade. Check both students to see the value change.",
+            coachMark: {
+                target: ".ref-avatar-1",
+                text: "See the Senior's grade.",
+                placement: "left"
+            },
             referenceDataPlacement: "top",
-            testCases: [{ name: "Student", data: { "grade": "11" }, expected: "11" }],
+            testCases: [
+                { name: "Junior", data: { "grade": "11" }, expected: "11" },
+                { name: "Senior", data: { "grade": "12" }, expected: "12" }
+            ],
             hints: ["We want the value, so NO quotes.", "Type {{ grade }}"],
             prefill: "{{}}"
         },

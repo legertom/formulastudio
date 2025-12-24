@@ -4,6 +4,7 @@ import { CURRICULUM } from '../../lib/curriculum';
 import './TrainingLayout.css';
 import './TrainingSidebar.css';
 import QuizLevel from './QuizLevel';
+import FeedbackWidget from './FeedbackWidget';
 
 const TRAINING_SIDEBAR_COLLAPSED_KEY = 'fs_training_sidebar_collapsed';
 
@@ -238,6 +239,8 @@ const TrainingCenter = () => {
                     isLastStep={activeStepIndex === activeChapter.steps.length - 1 && activeChapterIndex === CURRICULUM.length - 1}
                 />
             </div>
+
+            <FeedbackWidget location={`Chapter ${activeChapterIndex + 1}, Step ${activeStepIndex + 1}`} />
         </div>
     );
 };

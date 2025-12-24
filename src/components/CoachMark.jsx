@@ -22,17 +22,17 @@ const CoachMark = ({ targetSelector, message, placement = 'top' }) => {
 
             // Basic positioning logic - can be expanded
             if (placement === 'top') {
-                top = rect.top + scrollY - 10; // 10px gap
+                top = rect.top + scrollY - 15;
                 left = rect.left + scrollX + (rect.width / 2);
             } else if (placement === 'bottom') {
-                top = rect.bottom + scrollY + 10;
+                top = rect.bottom + scrollY + 15;
                 left = rect.left + scrollX + (rect.width / 2);
             } else if (placement === 'left') {
                 top = rect.top + scrollY + (rect.height / 2);
-                left = rect.left + scrollX - 10;
+                left = rect.left + scrollX - 15;
             } else if (placement === 'right') {
                 top = rect.top + scrollY + (rect.height / 2);
-                left = rect.right + scrollX + 10;
+                left = rect.right + scrollX + 15;
             }
 
             setPosition({ top, left });
@@ -41,16 +41,26 @@ const CoachMark = ({ targetSelector, message, placement = 'top' }) => {
 
         // Check immediately and on resize/scroll
         updatePosition();
-        // Retry a few times in case of animation
         const interval = setInterval(updatePosition, 100);
-        const timeout = setTimeout(() => clearInterval(interval), 2000);
+
+        // Auto-dismiss logic: Add click listener to the target element
+        const targetEl = document.querySelector(targetSelector);
+        const handleTargetClick = () => {
+            setVisible(false);
+        };
+
+        if (targetEl) {
+            targetEl.addEventListener('click', handleTargetClick);
+        }
 
         window.addEventListener('resize', updatePosition);
         window.addEventListener('scroll', updatePosition);
 
         return () => {
             clearInterval(interval);
-            clearTimeout(timeout);
+            if (targetEl) {
+                targetEl.removeEventListener('click', handleTargetClick);
+            }
             window.removeEventListener('resize', updatePosition);
             window.removeEventListener('scroll', updatePosition);
         };
@@ -69,12 +79,16 @@ const CoachMark = ({ targetSelector, message, placement = 'top' }) => {
         color: 'white',
         padding: '0.8rem 1.2rem',
         borderRadius: '8px',
-        maxWidth: '300px',
+        maxWidth: '250px',
         zIndex: 9999,
         boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
-        fontSize: '0.95rem',
-        pointerEvents: 'none', // Let clicks pass through if needed? Maybe not.
-        animation: 'fadeIn 0.3s ease-out'
+        fontSize: '0.9rem',
+        fontWeight: 500,
+        pointerEvents: 'none', // Critical: Let clicks pass through so user can actually click the target!
+        animation: 'fadeIn 0.3s ease-out',
+        whiteSpace: 'normal',
+        textAlign: 'center',
+        lineHeight: '1.4'
     };
 
     const arrowStyle = {
@@ -85,18 +99,31 @@ const CoachMark = ({ targetSelector, message, placement = 'top' }) => {
     };
 
     if (placement === 'top') {
-        arrowStyle.borderWidth = '10px 10px 0 10px';
+        arrowStyle.borderWidth = '8px 8px 0 8px';
         arrowStyle.borderColor = '#6c5ce7 transparent transparent transparent';
-        arrowStyle.bottom = '-10px';
+        arrowStyle.bottom = '-8px';
         arrowStyle.left = '50%';
         arrowStyle.transform = 'translateX(-50%)';
     } else if (placement === 'bottom') {
-        arrowStyle.borderWidth = '0 10px 10px 10px';
+        arrowStyle.borderWidth = '0 8px 8px 8px';
         arrowStyle.borderColor = 'transparent transparent #6c5ce7 transparent';
-        arrowStyle.top = '-10px';
+        arrowStyle.top = '-8px';
         arrowStyle.left = '50%';
         arrowStyle.transform = 'translateX(-50%)';
+    } else if (placement === 'left') {
+        arrowStyle.borderWidth = '8px 0 8px 8px'; // Pointing right (displayed on left)
+        arrowStyle.borderColor = 'transparent transparent transparent #6c5ce7';
+        arrowStyle.right = '-8px';
+        arrowStyle.top = '50%';
+        arrowStyle.transform = 'translateY(-50%)';
+    } else if (placement === 'right') {
+        arrowStyle.borderWidth = '8px 8px 8px 0'; // Pointing left (displayed on right)
+        arrowStyle.borderColor = 'transparent #6c5ce7 transparent transparent';
+        arrowStyle.left = '-8px';
+        arrowStyle.top = '50%';
+        arrowStyle.transform = 'translateY(-50%)';
     }
+
 
     return createPortal(
         <div style={style} className="coach-mark">
