@@ -112,15 +112,26 @@ const styles = {
 };
 
 const FeedbackWidget = ({ location = 'Unknown' }) => {
+    // Initial State (Restored)
     const [isOpen, setIsOpen] = useState(false);
     const [feedback, setFeedback] = useState('');
     const [isCapturing, setIsCapturing] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    // Success Modal State
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [submittedScreenshot, setSubmittedScreenshot] = useState(null);
+    const [submittedFeedback, setSubmittedFeedback] = useState('');
+    const [showFullImage, setShowFullImage] = useState(false);
+
     // Canvas Refs
     const canvasRef = useRef(null);
     const isDrawing = useRef(false);
     const screenshotImageRef = useRef(null); // Keep reference to original image
+
+    // Drawing State (Refactored)
+    const strokes = useRef([]); // Array of completed strokes (paths)
+    const currentPoints = useRef([]); // Points for the current stroke being drawn
 
     // Function to grab screenshot
     const handleOpen = async () => {
@@ -189,6 +200,14 @@ const FeedbackWidget = ({ location = 'Unknown' }) => {
         setIsOpen(false);
         setFeedback('');
         setIsSubmitting(false);
+        // Don't clear success state here, it has its own close handler
+    };
+
+    const handleSuccessClose = () => {
+        setShowSuccess(false);
+        setSubmittedScreenshot(null);
+        setSubmittedFeedback('');
+        setShowFullImage(false);
     };
 
     // Drawing Logic
@@ -201,10 +220,6 @@ const FeedbackWidget = ({ location = 'Unknown' }) => {
             y: (e.clientY - rect.top) * scaleY
         };
     };
-
-    // Drawing State
-    const strokes = useRef([]); // Array of completed strokes (paths)
-    const currentPoints = useRef([]); // Points for the current stroke being drawn
 
     const renderCanvas = () => {
         const canvas = canvasRef.current;
@@ -315,15 +330,23 @@ const FeedbackWidget = ({ location = 'Unknown' }) => {
                     console.log('Location:', payload.location);
                     console.log('Message:', payload.feedback);
                     console.log('Screenshot:', payload.screenshot.substring(0, 100) + '...');
-                    alert('⚠️ Local dev mode: Feedback logged to console (not sent to Discord)');
+
+                    // Show success modal even in dev mode for UI testing
+                    setSubmittedScreenshot(finalScreenshot);
+                    setSubmittedFeedback(feedback);
                     handleClose();
+                    setShowSuccess(true);
                     return;
                 }
                 throw new Error('Failed to submit');
             }
 
-            alert('✅ Feedback sent! Thanks for your help.');
+            // Success path
+            setSubmittedScreenshot(finalScreenshot);
+            setSubmittedFeedback(feedback);
             handleClose();
+            setShowSuccess(true);
+
         } catch (error) {
             console.error(error);
             alert('Failed to send feedback. Check console for details.');
@@ -335,7 +358,7 @@ const FeedbackWidget = ({ location = 'Unknown' }) => {
     return (
         <>
             {/* Trigger Button */}
-            {!isOpen && (
+            {!isOpen && !showSuccess && (
                 <button
                     id="feedback-trigger-btn"
                     style={styles.triggerBtn}
@@ -346,7 +369,7 @@ const FeedbackWidget = ({ location = 'Unknown' }) => {
                 </button>
             )}
 
-            {/* Modal */}
+            {/* Main Feedback Modal */}
             {isOpen && (
                 <div style={styles.overlay}>
                     <div style={styles.modal} role="dialog" aria-modal="true">
@@ -401,6 +424,94 @@ const FeedbackWidget = ({ location = 'Unknown' }) => {
                             </button>
                         </div>
                     </div>
+                </div>
+            )}
+
+            {/* Success Modal */}
+            {showSuccess && (
+                <div style={styles.overlay}>
+                    <div style={{ ...styles.modal, width: '500px', alignItems: 'center', textAlign: 'center' }}>
+                        <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>✅</div>
+                        <h3 style={styles.title}>Feedback Sent!</h3>
+                        <p style={{ color: '#aaa', margin: '0 0 1.5rem 0' }}>
+                            Thanks for helping us improve FormulaStudio.
+                        </p>
+
+                        {/* Display User Message */}
+                        {submittedFeedback && (
+                            <div style={{
+                                width: '100%',
+                                backgroundColor: '#2A2A2A',
+                                padding: '1rem',
+                                borderRadius: '8px',
+                                border: '1px solid #333',
+                                marginBottom: '1.5rem',
+                                textAlign: 'left',
+                                fontSize: '0.95rem',
+                                lineHeight: '1.5',
+                                color: '#ddd'
+                            }}>
+                                <strong>You wrote:</strong>
+                                <p style={{ margin: '0.5rem 0 0 0', whiteSpace: 'pre-wrap' }}>{submittedFeedback}</p>
+                            </div>
+                        )}
+
+                        {submittedScreenshot && (
+                            <div
+                                style={{
+                                    width: '100%',
+                                    maxHeight: '200px',
+                                    overflow: 'hidden',
+                                    borderRadius: '8px',
+                                    border: '1px solid #333',
+                                    marginBottom: '1.5rem',
+                                    cursor: 'zoom-in',
+                                    position: 'relative'
+                                }}
+                                onClick={() => setShowFullImage(true)}
+                                title="Click to view full image"
+                            >
+                                <img
+                                    src={submittedScreenshot}
+                                    alt="Screenshot preview"
+                                    style={{ width: '100%', height: 'auto', display: 'block' }}
+                                />
+                                <div style={{
+                                    position: 'absolute',
+                                    bottom: '8px',
+                                    right: '8px',
+                                    background: 'rgba(0,0,0,0.6)',
+                                    padding: '4px 8px',
+                                    borderRadius: '4px',
+                                    fontSize: '0.75rem',
+                                    pointerEvents: 'none'
+                                }}>
+                                    🔍 View
+                                </div>
+                            </div>
+                        )}
+
+                        <button
+                            style={{ ...styles.button, ...styles.submitBtn, width: '100%' }}
+                            onClick={handleSuccessClose}
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Full Image Lightbox */}
+            {showFullImage && submittedScreenshot && (
+                <div
+                    style={{ ...styles.overlay, zIndex: 10000, cursor: 'zoom-out' }}
+                    onClick={() => setShowFullImage(false)}
+                >
+                    <img
+                        src={submittedScreenshot}
+                        alt="Full screenshot"
+                        style={{ maxWidth: '95vw', maxHeight: '95vh', borderRadius: '4px', boxShadow: '0 0 20px rgba(0,0,0,0.8)' }}
+                    />
                 </div>
             )}
         </>
