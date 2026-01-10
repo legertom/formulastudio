@@ -125,8 +125,13 @@ const CoachMark = ({ targetSelector, message, placement = 'top' }) => {
     }
 
 
+
     return createPortal(
-        <div style={style} className="coach-mark">
+        <div
+            style={{ ...style, pointerEvents: 'auto', cursor: 'pointer' }}
+            className="coach-mark"
+            onClick={() => setVisible(false)}
+        >
             {message}
             <div style={arrowStyle} />
         </div>,

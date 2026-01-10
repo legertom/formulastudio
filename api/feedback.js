@@ -12,16 +12,11 @@ export default async function handler(req, res) {
             return res.status(500).json({ error: 'Server configuration error' });
         }
 
-        // 1. Prepare the payload boundary
-        const boundary = '----WebKitFormBoundary7MA4YWxkTrZu0gW';
-
-        // 2. Decode the Base64 screenshot (remove data:image/png;base64, prefix)
+        // 1. Decode the Base64 screenshot (remove data:image/png;base64, prefix)
         const base64Data = screenshot.replace(/^data:image\/png;base64,/, "");
         const imageBuffer = Buffer.from(base64Data, 'base64');
 
-        // 3. Construct the multipart body manually (to avoid adding more dependencies like 'form-data' if possible, though 'form-data' or 'busboy' is safer for complex apps. 
-        // For a simple Vercel function, using 'fetch' with FormData from 'undici' (built-in in Node 18+) or constructing manually is common.
-        // Let's use the standard fetch API which is available in Node 18+ Vercel environments.
+        // 2. Construct the multipart body using standard FormData (Node 18+)
 
         const formData = new FormData();
 

@@ -43,7 +43,7 @@ const styles = {
         backgroundColor: '#000',
         flex: 1, // Take available height
         minHeight: '200px',
-        cursor: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><circle cx="20" cy="20" r="15" fill="yellow" opacity="0.4"/><circle cx="20" cy="20" r="15" fill="none" stroke="orange" stroke-width="2"/></svg>') 20 20, crosshair`,
+        cursor: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"><circle cx="30" cy="30" r="25" fill="yellow" opacity="0.4"/><circle cx="30" cy="30" r="25" fill="none" stroke="orange" stroke-width="2"/></svg>') 30 30, crosshair`,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'flex-start',
@@ -120,7 +120,6 @@ const FeedbackWidget = ({ location = 'Unknown' }) => {
     // Canvas Refs
     const canvasRef = useRef(null);
     const isDrawing = useRef(false);
-    const lastPos = useRef({ x: 0, y: 0 });
     const screenshotImageRef = useRef(null); // Keep reference to original image
 
     // Function to grab screenshot
@@ -203,42 +202,88 @@ const FeedbackWidget = ({ location = 'Unknown' }) => {
         };
     };
 
+    // Drawing State
+    const strokes = useRef([]); // Array of completed strokes (paths)
+    const currentPoints = useRef([]); // Points for the current stroke being drawn
+
+    const renderCanvas = () => {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d');
+        const img = screenshotImageRef.current;
+
+        // 1. Clear and Draw Background
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (img) {
+            ctx.drawImage(img, 0, 0);
+        }
+
+        // Common Brush Settings
+        // Highlighter style: thick, semi-transparent yellow with diffuse edges
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.lineWidth = 50;
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = 'rgba(255, 255, 0, 0.4)';
+        ctx.strokeStyle = 'rgba(255, 255, 0, 0.3)';
+
+        // 2. Draw Completed Strokes
+        strokes.current.forEach(strokePoints => {
+            if (strokePoints.length < 2) return;
+
+            ctx.beginPath();
+            ctx.moveTo(strokePoints[0].x, strokePoints[0].y);
+
+            // Draw smooth curve through points
+            for (let i = 1; i < strokePoints.length; i++) {
+                const point = strokePoints[i];
+                // Simple lineTo for now, but drawing the whole path avoids segment overlaps
+                ctx.lineTo(point.x, point.y);
+            }
+            ctx.stroke();
+        });
+
+        // 3. Draw Current Stroke
+        if (currentPoints.current.length > 0) {
+            const points = currentPoints.current;
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+            for (let i = 1; i < points.length; i++) {
+                ctx.lineTo(points[i].x, points[i].y);
+            }
+            ctx.stroke();
+        }
+    };
+
     const startDrawing = (e) => {
         isDrawing.current = true;
-        lastPos.current = getMousePos(e);
+        const pos = getMousePos(e);
+        currentPoints.current = [pos];
+        renderCanvas();
     };
 
     const draw = (e) => {
-        if (!isDrawing.current || !canvasRef.current) return;
-        const ctx = canvasRef.current.getContext('2d');
+        if (!isDrawing.current) return;
         const pos = getMousePos(e);
-
-        // Highlighter style: thick, semi-transparent yellow with diffuse edges
-        ctx.strokeStyle = 'rgba(255, 255, 0, 0.4)'; // Semi-transparent yellow
-        ctx.lineWidth = 30; // Match cursor diameter (radius 15 = diameter 30)
-        ctx.lineCap = 'round'; // Round brush
-        ctx.lineJoin = 'round';
-
-        // Add diffuse/soft edges
-        ctx.shadowBlur = 8;
-        ctx.shadowColor = 'rgba(255, 255, 0, 0.3)';
-
-        ctx.beginPath();
-        ctx.moveTo(lastPos.current.x, lastPos.current.y);
-        ctx.lineTo(pos.x, pos.y);
-        ctx.stroke();
-
-        lastPos.current = pos;
+        currentPoints.current.push(pos);
+        renderCanvas();
     };
 
     const stopDrawing = () => {
+        if (!isDrawing.current) return;
         isDrawing.current = false;
+
+        // Save the current stroke to history
+        if (currentPoints.current.length > 0) {
+            strokes.current.push([...currentPoints.current]);
+        }
+        currentPoints.current = [];
+        renderCanvas();
     };
 
     const handleClear = () => {
-        if (!canvasRef.current || !screenshotImageRef.current) return;
-        const ctx = canvasRef.current.getContext('2d');
-        ctx.drawImage(screenshotImageRef.current, 0, 0);
+        strokes.current = [];
+        currentPoints.current = [];
+        renderCanvas();
     };
 
     const handleSubmit = async () => {

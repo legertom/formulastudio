@@ -110,7 +110,7 @@ export const chapter1 = {
             coachMark: {
                 target: ".ref-avatar-1",
                 text: "Click here to see Beverly's data.",
-                placement: "left"
+                placement: "top"
             },
             referenceDataPlacement: "top",
             testCases: [
@@ -129,7 +129,7 @@ export const chapter1 = {
             coachMark: {
                 target: ".ref-avatar-1",
                 text: "See the Senior's grade.",
-                placement: "left"
+                placement: "top"
             },
             referenceDataPlacement: "top",
             testCases: [
