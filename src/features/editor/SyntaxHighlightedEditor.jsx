@@ -262,9 +262,6 @@ const SyntaxHighlightedEditor = ({ value, onChange, placeholder, highlightRange,
                             <span className="tooltip-title" style={{ color: '#60a5fa' }}>{tokenText}</span>
                             <span className="tooltip-arity">Variable</span>
                         </div>
-                        <div className="tooltip-section" style={{ flexDirection: 'row', gap: '1rem' }}>
-                            <div className="tooltip-label">PART OF SPEECH: <span style={{ color: '#e2e8f0', fontWeight: 400 }}>Variable ({valType})</span></div>
-                        </div>
                     </div>
                 )
             });

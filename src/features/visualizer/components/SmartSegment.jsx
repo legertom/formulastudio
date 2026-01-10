@@ -79,6 +79,7 @@ const SmartSegment = ({ segment, index, targetLabel = "Target OU" }) => {
                             }
 
                             // CleanValue handles highlighting now
+                            const valNode = row.condition?.arguments?.[1];
                             return (
                                 <tr key={idx}>
                                     <td>

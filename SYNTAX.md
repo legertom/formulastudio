@@ -22,6 +22,16 @@ IDM (Identity Management) formulas use a logic template system similar to Handle
 | `or` | 2 | `val1`, `val2` | Returns `true` if either is truthy. |
 | `not` | 1 | `val` | Inverts boolean value (Implied support). |
 | `greater` | 2 | `val1`, `val2` | Returns `true` if `val1 > val2`. |
+| `less` | 2 | `val1`, `val2` | Returns `true` if `val1 < val2`. |
+| `geq` | 2 | `val1`, `val2` | Returns `true` if `val1 >= val2`. |
+| `leq` | 2 | `val1`, `val2` | Returns `true` if `val1 <= val2`. |
+| `in` | 2 | `needle`, `list_str` | Returns `true` if `needle` is in space-separated `list_str`. |
+
+### Math Operations
+| Function | Arity | Arguments | Description |
+| :--- | :--- | :--- | :--- |
+| `add` | 2 | `num1`, `num2` | Returns `num1 + num2`. |
+| `subtract` | 2 | `num1`, `num2` | Returns `num1 - num2`. |
 
 ### String Manipulation
 | Function | Arity | Arguments | Description |
@@ -29,9 +39,24 @@ IDM (Identity Management) formulas use a logic template system similar to Handle
 | `concat` | 2 | `str1`, `str2` | Joins two strings. |
 | `substr` | 3 | `str`, `start`, `len` | Extracts substring. |
 | `replace`| 3 | `str`, `find`, `replace` | Replaces occurrences of `find` with `replace`. |
-| `len` | 1 | `str` | Returns character count of `str`. |
+| `length` | 1 | `str` | Returns character count of `str`. |
 | `contains`| 2 | `str`, `needle` | Checks if `str` contains `needle`. |
 | `ignoreIfNull` | 1 | `val` | Returns `val` if not null, else empty string. |
+| `toUpper` | 1 | `str` | Converts to uppercase. |
+| `toLower` | 1 | `str` | Converts to lowercase. |
+| `trim` | 1 | `str` | Removes whitespace from both ends. |
+| `trimLeft` | 1 | `str` | Removes whitespace from start. |
+
+### Advanced String Functions
+| Function | Arity | Arguments | Description |
+| :--- | :--- | :--- | :--- |
+| `initials` | 1 | `name` | Extracts initials (e.g. "Tom Leger" -> "TL"). |
+| `alphanumeric`| 1 | `str` | Returns `true` if string contains only letters/numbers. |
+| `delimiterCapitalize`| 1 | `str` | Capitalizes words after space or hyphen. |
+| `textBefore` | 2 | `str`, `delim` | Returns text before first occurrence of `delim`. |
+| `textAfter` | 2 | `str`, `delim` | Returns text after first occurrence of `delim`. |
+| `textAfterLast`| 2 | `str`, `delim` | Returns text after last occurrence of `delim`. |
+| `formatDate` | 2 | `dateStr`, `format` | Formats date (DD, MM, YYYY, MMM, Do). |
 
 ## Variables & Literals
 
@@ -65,13 +90,13 @@ IDM (Identity Management) formulas use a logic template system similar to Handle
 ### Length Check (Question 5)
 **Goal**: "Long name" if length > 5, else "Short name".
 ```handlebars
-{{if greater len name.first 5 "Long name" "Short name"}}
+{{if greater length name.first 5 "Long name" "Short name"}}
 ```
 *How it parses:*
 1.  `if` takes 3 args:
     1.  `greater len name.first 5` (Condition)
         *   `greater` takes 2 args:
-            1.  `len name.first`
+            1.  `length name.first`
             2.  `5`
     2.  `"Long name"` (True Branch)
     3.  `"Short name"` (False Branch)

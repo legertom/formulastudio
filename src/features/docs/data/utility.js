@@ -99,5 +99,30 @@ export const UTILITY_OPS = [
                 translation: "Pad an ID number with a leading zero if it's too short."
             }
         ]
+    },
+    {
+        name: "forEach",
+        syntax: '{{forEach "variable" list "logic"}}',
+        arity: 3,
+        desc: "Loops over a list and applies logic to each item.",
+        returns: "Groups (one output per list item)",
+        args: [
+            { name: "variable", desc: "Name for each item in the loop (as a string)" },
+            { name: "list", desc: "The list/array to iterate over" },
+            { name: "logic", desc: "The logic to apply (URL-encoded if nested braces)" }
+        ],
+        examples: [
+            {
+                level: "Basic",
+                code: '{{forEach "s" schools "%7B%7Bs.name%7D%7D"}}',
+                argBreakdown: [
+                    { arg: "Arg 1", value: '"s"', meaning: "Variable name for each school" },
+                    { arg: "Arg 2", value: "schools", meaning: "The list to loop through" },
+                    { arg: "Arg 3", value: '"%7B%7Bs.name%7D%7D"', meaning: "URL-encoded {{s.name}}" }
+                ],
+                humanEnglish: "Loop through each school and output its name.",
+                result: '"School A", "School B", "School C"'
+            }
+        ]
     }
 ];

@@ -28,7 +28,7 @@ const NavBar = () => {
                     to="/docs"
                     className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
                 >
-                    Full Docs
+                    Documentation
                 </NavLink>
             </div>
         </nav>
