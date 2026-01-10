@@ -91,6 +91,20 @@
     color: #34d399;
 }
 
+/* Sync Highlighting (Visualizer hover) */
+.range-highlight {
+    background-color: rgba(234, 179, 8, 0.25);
+    border-radius: 2px;
+    box-shadow: 0 0 0 1px rgba(234, 179, 8, 0.1);
+}
+
+/* Ensure bottom scrolling is easy */
+.syntax-highlight-layer,
+.syntax-editor-input {
+    padding-bottom: 4rem;
+    /* Extra space at bottom */
+}
+
 /* Workbench layout adjustments */
 .training-layout-workbench .syntax-editor-wrapper {
     height: 100%;

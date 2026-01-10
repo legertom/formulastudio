@@ -1,10 +1,10 @@
-
 import React, { useContext } from 'react';
 import { FormulaContext } from '../FormulaContext';
 import { flattenOp } from '../logic/pathExpansion';
 import CleanValue from './CleanValue';
 import NodeView from './NodeView';
 import PortalTooltip from './PortalTooltip';
+import { useHighlight } from '../hooks/useHighlight';
 
 const ConditionView = ({ node }) => {
     const { onHoverNode } = useContext(FormulaContext);
@@ -14,6 +14,12 @@ const ConditionView = ({ node }) => {
         if (node?.range) onHoverNode(node.range);
     };
     const handleLeave = () => onHoverNode(null);
+
+    // Helpers for internal use
+    const FieldWithHighlight = ({ name }) => {
+        const { highlightClass } = useHighlight(name);
+        return <span className={`field-name ${highlightClass}`}>{name}</span>;
+    };
 
     // 0. Synthetic Default (Else) -> "Catch All"
     if (node?.type === 'Default') {
@@ -57,7 +63,7 @@ const ConditionView = ({ node }) => {
     if (node?.type === 'CallExpression' && node.name === 'equals') {
         return (
             <div className="condition-equals-inline" aria-label={`${node.arguments[0]?.value} equals ${node.arguments[1]?.value}`} onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
-                <span className="field-name">{node.arguments[0]?.value}</span>
+                <FieldWithHighlight name={node.arguments[0]?.value} />
                 <span className="op">=</span>
                 <CleanValue node={node.arguments[1]} />
             </div>
@@ -68,7 +74,7 @@ const ConditionView = ({ node }) => {
     if (node?.type === 'CallExpression' && (node.name === 'in' || node.name === 'contains')) {
         return (
             <div className="condition-equals-inline" style={{ maxWidth: '100%' }} onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
-                <span className="field-name">{node.arguments[0]?.value}</span>
+                <FieldWithHighlight name={node.arguments[0]?.value} />
                 <span className="op" style={{ color: 'var(--accent-secondary)' }}>IN</span>
                 <div style={{ display: 'inline-block', maxWidth: '150px', verticalAlign: 'middle', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     <CleanValue node={node.arguments[1]} />

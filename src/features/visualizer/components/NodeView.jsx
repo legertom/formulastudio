@@ -1,12 +1,16 @@
-
 import React, { useContext } from 'react';
 import { FormulaContext } from '../FormulaContext';
 import { hasNestedLogic } from '../logic/pathExpansion';
 import LogicScenariosView from './LogicScenariosView';
 import ConcatView from './ConcatView';
+import { useHighlight } from '../hooks/useHighlight';
 
 const NodeView = ({ node }) => {
     const { loopVariable, onHoverNode } = useContext(FormulaContext);
+
+    // We compute highlighting based on the node text value
+    const textValue = node?.type === 'StringLiteral' || node?.type === 'Identifier' ? node.value : null;
+    const { highlightClass } = useHighlight(textValue);
 
     const handleEnter = (e) => {
         e.stopPropagation();
@@ -20,13 +24,13 @@ const NodeView = ({ node }) => {
     if (!node) return null;
 
     if (node.type === 'StringLiteral') {
-        return <span className="node-string" onMouseEnter={handleEnter} onMouseLeave={handleLeave}>"{node.value}"</span>;
+        return <span className={`node-string ${highlightClass}`} onMouseEnter={handleEnter} onMouseLeave={handleLeave}>"{node.value}"</span>;
     }
 
     if (node.type === 'Identifier') {
         const isLoopVar = loopVariable && (node.value === loopVariable || node.value.startsWith(`${loopVariable}.`));
         return (
-            <span className={`node-ident ${isLoopVar ? 'node-loop-var' : ''}`} onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
+            <span className={`node-ident ${isLoopVar ? 'node-loop-var' : ''} ${highlightClass}`} onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
                 {node.value}
             </span>
         );

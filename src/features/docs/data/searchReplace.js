@@ -3,10 +3,8 @@ export const SEARCH_REPLACE_OPS = [
         name: "replace",
         syntax: '{{replace arg1 arg2 arg3}}',
         arity: 3,
-        note: {
-            title: "Common Use Cases",
-            content: "Perfect for cleaning phone numbers, fixing formatting issues, standardizing data, or swapping characters."
-        },
+        desc: "Perfect for cleaning phone numbers, fixing formatting issues, standardizing data, or swapping characters.",
+        returns: "String",
         args: [
             { name: "text", desc: "The text to search within" },
             { name: "searchFor", desc: "The substring to find" },

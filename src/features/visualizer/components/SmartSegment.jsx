@@ -7,20 +7,14 @@ import NodeView from './NodeView';
 
 const RuleCard = ({ row, targetLabel = "Target OU" }) => {
     const isCatchAll = row.condition.type === 'Default';
-    const { searchTerm } = useContext(FormulaContext);
-
-    // Simple highlighting check for card view
-    // We check the value representation for now
-    // TODO: Deep check of condition logic if needed
-    const valNode = row.condition.arguments?.[1];
-    const textVal = valNode?.type === 'StringLiteral' ? valNode.value : '';
-    const isMatch = searchTerm && textVal.toLowerCase().includes(searchTerm.toLowerCase());
+    // We rely on CleanValue/NodeView for internal highlighting now.
+    // The card border itself can still react if ANY content matches, but for strict granularity 
+    // we might just let the inner text highlight. 
+    // However, the requested feature is "Syntax Highlighting in matching windows". 
+    // Let's remove the card-level highlighting for now to align with BlockNode behavior (component level).
 
     return (
-        <article className="rule-card" style={{
-            border: isMatch ? '1px solid var(--warning)' : undefined,
-            background: isMatch ? 'rgba(234, 179, 8, 0.1)' : undefined
-        }}>
+        <article className="rule-card">
             <header className="rule-card-header">
                 <span className="rule-label">{targetLabel}</span>
                 <div className="rule-result">
@@ -41,7 +35,6 @@ const RuleCard = ({ row, targetLabel = "Target OU" }) => {
 };
 
 const SmartSegment = ({ segment, index, targetLabel = "Target OU" }) => {
-    const { searchTerm } = useContext(FormulaContext);
 
     if (segment.type === 'tree') {
         return (
@@ -85,11 +78,7 @@ const SmartSegment = ({ segment, index, targetLabel = "Target OU" }) => {
                                 );
                             }
 
-                            // Highlighting Logic for Table Row
-                            const valNode = row.condition.arguments[1];
-                            const textVal = valNode?.type === 'StringLiteral' ? valNode.value : '';
-                            const isMatch = searchTerm && textVal.toLowerCase().includes(searchTerm.toLowerCase());
-
+                            // CleanValue handles highlighting now
                             return (
                                 <tr key={idx}>
                                     <td>
@@ -97,9 +86,6 @@ const SmartSegment = ({ segment, index, targetLabel = "Target OU" }) => {
                                             width: 'fit-content',
                                             padding: '2px 4px',
                                             borderRadius: '4px',
-                                            background: isMatch ? 'rgba(234, 179, 8, 0.4)' : 'transparent',
-                                            color: isMatch ? '#fff' : 'inherit',
-                                            fontSize: '0.9rem',
                                             transition: 'all 0.2s'
                                         }}>
                                             <CleanValue node={valNode} />

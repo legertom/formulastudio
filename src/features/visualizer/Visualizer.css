@@ -21,6 +21,16 @@
   font-size: 0.9rem;
 }
 
+.highlight-match {
+  background-color: rgba(234, 179, 8, 0.4);
+  border-color: var(--warning);
+  color: white !important;
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px var(--warning);
+  transition: all 0.2s ease;
+}
+
+
 .visualizer-empty {
   color: var(--text-muted);
   font-style: italic;

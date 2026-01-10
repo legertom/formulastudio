@@ -5,11 +5,44 @@ import FormulaVisualizer from '../visualizer/FormulaVisualizer'
 import QuickReference from '../docs/QuickReference'
 import LogicEditor from './LogicEditor'
 import SyntaxHighlightedEditor from './SyntaxHighlightedEditor'
+import FeedbackWidget from '../../components/FeedbackWidget'
 import './Editor.css'
 // App.css is imported in App.jsx or main.jsx, so we might not need it here if styles are global, 
 // but if there are specific styles for the editor, they might be there. 
 // However, the import in App.jsx suggests it might be needed. Let's keep it safe or rely on global.
 // Given App.css is usually global, I'll rely on it being imported in App.jsx or main.jsx.
+
+// Mock Data for "Current Value" tooltips
+const MOCK_DATA = {
+    '0': {
+        staff: { title: "SECRETARY" }
+    },
+    '1': {
+        staff: { title: "NURSE" },
+        school: { name: "LOCUST ELEMENTARY" }
+    },
+    '2': {
+        school: {
+            sis_id: "138",
+            name: "Hellyer Elementary"
+        }
+    },
+    '3': {
+        staff: { department: "Math" }
+    },
+    '4': {
+        school: { name: "Central High" },
+        staff: { job_function: "Instructional" }
+    },
+    '5': {
+        staff: { department: "Business", title: "ACCOUNTANT" }
+    },
+    'default': {
+        staff: { title: "Unknown Title", department: "Unknown Dept", job_function: "Unknown Function" },
+        school: { name: "Demo School", sis_id: "000" },
+        user: { name: "Demo User", role: "Admin" }
+    }
+};
 
 function EditorView() {
     // Load examples immediately
@@ -28,6 +61,11 @@ function EditorView() {
     const [highlightRange, setHighlightRange] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [showSyntax, setShowSyntax] = useState(false);
+
+    // Get current data context for tooltips
+    const dataContext = useMemo(() => {
+        return MOCK_DATA[selectedExample] || MOCK_DATA['default'];
+    }, [selectedExample]);
 
     const { ast, error, stats } = useMemo(() => {
         try {
@@ -205,30 +243,20 @@ function EditorView() {
                         </div>
                     </div>
 
-                    <div className="editor-wrapper">
-                        {logicMode === 'EXPLORER' && showSyntax ? (
-                            <SyntaxHighlightedEditor
-                                value={formula}
-                                onChange={(e) => {
-                                    setFormula(e.target.value);
-                                    if (selectedExample) setSelectedExample('');
-                                }}
-                                placeholder="Type your IDM formula here..."
-                                className="main-editor-syntax"
-                            />
-                        ) : (
-                            <LogicEditor
-                                value={formula}
-                                showSyntax={logicMode !== 'EXPLORER' && showSyntax}
-                                onChange={(e) => {
-                                    setFormula(e.target.value);
-                                    if (selectedExample) setSelectedExample('');
-                                }}
-                                highlightRange={highlightRange}
-                                placeholder="Type your IDM formula here..."
-                                className="main-editor-logic"
-                            />
-                        )}
+                    <div className="editor-wrapper" style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, overflow: 'hidden' }}>
+                        <SyntaxHighlightedEditor
+                            value={formula}
+                            onChange={(e) => {
+                                setFormula(e.target.value);
+                                if (selectedExample) setSelectedExample('');
+                            }}
+                            placeholder="Type your IDM formula here..."
+                            highlightRange={highlightRange}
+                            enableSyntax={showSyntax}
+                            dataContext={dataContext}
+                            exampleName={selectedExample || 'default'}
+                            className="main-editor-syntax"
+                        />
                         <div style={{
                             padding: '0.5rem 1rem',
                             fontSize: '0.75rem',
@@ -286,6 +314,7 @@ function EditorView() {
             </main>
 
             {showQuickDocs && <QuickReference onClose={() => setShowQuickDocs(false)} />}
+            <FeedbackWidget location="Editor" />
         </>
     );
 }

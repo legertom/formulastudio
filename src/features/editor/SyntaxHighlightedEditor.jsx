@@ -27,28 +27,35 @@ const FUNCTIONS_SET = new Set(Object.keys(FUNCTION_MAP));
  * Syntax highlighter for IDM formulas
  * Highlights: {{ }}, strings, function names, field identifiers
  */
-const highlightFormula = (code) => {
+const highlightFormula = (code, highlightRange, enableSyntax = true) => {
     if (!code) return '';
 
     let highlighted = '';
     let i = 0;
 
+    const [hStart, hEnd] = highlightRange || [-1, -1];
+
     while (i < code.length) {
+        // Create helper for range highlighting
+        const isHighlighted = i >= hStart && i < hEnd;
+        const highlightClass = isHighlighted ? ' range-highlight' : '';
+
         // Check for formula wrappers {{ }}
-        if (code[i] === '{' && code[i + 1] === '{') {
-            highlighted += '<span class="token-wrapper">{{</span>';
+        if (enableSyntax && code[i] === '{' && code[i + 1] === '{') {
+            highlighted += `<span class="token-wrapper${highlightClass}">{{</span>`;
             i += 2;
             continue;
         }
-        if (code[i] === '}' && code[i + 1] === '}') {
-            highlighted += '<span class="token-wrapper">}}</span>';
+        if (enableSyntax && code[i] === '}' && code[i + 1] === '}') {
+            highlighted += `<span class="token-wrapper${highlightClass}">}}</span>`;
             i += 2;
             continue;
         }
 
         // Check for strings
-        if (code[i] === '"') {
+        if (enableSyntax && code[i] === '"') {
             let str = '"';
+            let strStart = i;
             i++;
             while (i < code.length && code[i] !== '"') {
                 if (code[i] === '\\' && i + 1 < code.length) {
@@ -63,45 +70,59 @@ const highlightFormula = (code) => {
                 str += '"';
                 i++;
             }
-            highlighted += `<span class="token-string">${escapeHtml(str)}</span>`;
+
+            const strHighlighted = strStart >= hStart && strStart < hEnd;
+            const strClass = strHighlighted ? ' range-highlight' : '';
+
+            highlighted += `<span class="token-string${strClass}">${escapeHtml(str)}</span>`;
             continue;
         }
 
         // Check for identifiers/functions
-        if (/[a-zA-Z_]/.test(code[i])) {
+        if (enableSyntax && /[a-zA-Z_]/.test(code[i])) {
             let word = '';
+            let wordStart = i;
             while (i < code.length && /[a-zA-Z0-9_.]/.test(code[i])) {
                 word += code[i];
                 i++;
             }
 
             const isFunctionName = FUNCTIONS_SET.has(word);
+            const wordHighlighted = wordStart >= hStart && wordStart < hEnd;
+            const wordClass = wordHighlighted ? ' range-highlight' : '';
 
             if (isFunctionName) {
-                highlighted += `<span class="token-function">${escapeHtml(word)}</span>`;
+                highlighted += `<span class="token-function${wordClass}">${escapeHtml(word)}</span>`;
             } else {
-                highlighted += `<span class="token-field">${escapeHtml(word)}</span>`;
+                highlighted += `<span class="token-field${wordClass}">${escapeHtml(word)}</span>`;
             }
             continue;
         }
 
         // Check for numbers
-        if (/[0-9]/.test(code[i])) {
+        if (enableSyntax && /[0-9]/.test(code[i])) {
             let num = '';
+            let numStart = i;
             while (i < code.length && /[0-9]/.test(code[i])) {
                 num += code[i];
                 i++;
             }
-            highlighted += `<span class="token-number">${num}</span>`;
+            const numHighlighted = numStart >= hStart && numStart < hEnd;
+            const numClass = numHighlighted ? ' range-highlight' : '';
+            highlighted += `<span class="token-number${numClass}">${num}</span>`;
             continue;
         }
 
-        // Regular character - escape and add directly
-        highlighted += escapeHtml(code[i]);
+        // Regular character
+        const charHighlighted = i >= hStart && i < hEnd;
+        if (charHighlighted) {
+            highlighted += `<span class="range-highlight">${escapeHtml(code[i])}</span>`;
+        } else {
+            highlighted += escapeHtml(code[i]);
+        }
         i++;
     }
 
-    // Add a trailing newline to match textarea behavior
     return highlighted + '\n';
 };
 
@@ -112,7 +133,18 @@ const escapeHtml = (text) => {
         .replace(/>/g, '&gt;');
 };
 
-const SyntaxHighlightedEditor = ({ value, onChange, placeholder, className = '' }) => {
+const resolvePath = (data, path) => {
+    if (!data || !path) return undefined;
+    const parts = path.split('.');
+    let current = data;
+    for (const part of parts) {
+        if (current === undefined || current === null) return undefined;
+        current = current[part];
+    }
+    return current;
+};
+
+const SyntaxHighlightedEditor = ({ value, onChange, placeholder, highlightRange, enableSyntax = true, dataContext = {}, exampleName = 'Example', className = '' }) => {
     const textareaRef = useRef(null);
     const highlightRef = useRef(null);
     const measureRef = useRef(null);
@@ -132,79 +164,73 @@ const SyntaxHighlightedEditor = ({ value, onChange, placeholder, className = '' 
     }, [value]);
 
     const handleMouseMove = (e) => {
-        if (!textareaRef.current || !measureRef.current) return;
+        if (!enableSyntax) return;
+        if (!textareaRef.current || !highlightRef.current) return;
 
-        // Measure char size
-        const charWidth = measureRef.current.getBoundingClientRect().width;
-        // Assume Line height is roughly 1.6 * 19.2 (1.2rem * 16px base)
-        // Better: measure a "line" div. But for now, let's use computed style or approximate.
-        const style = window.getComputedStyle(textareaRef.current);
-        const lineHeight = parseFloat(style.lineHeight) || (parseFloat(style.fontSize) * 1.6);
-        const padding = parseFloat(style.paddingLeft); // 1.5rem ~ 24px
+        // Use elementsFromPoint to "pierce" through the textarea and find the underlying syntax span
+        // We temporarily enable pointer-events on the highlight layer so elementsFromPoint can see it
+        highlightRef.current.style.pointerEvents = 'auto';
+        const elements = document.elementsFromPoint(e.clientX, e.clientY);
+        highlightRef.current.style.pointerEvents = 'none';
 
-        // Get mouse pos relative to text content area (ignoring padding for now if we subtract it)
-        const rect = textareaRef.current.getBoundingClientRect();
-        const x = e.clientX - rect.left - padding + textareaRef.current.scrollLeft;
-        const y = e.clientY - rect.top - padding + textareaRef.current.scrollTop;
+        const targetSpan = elements.find(el => el.tagName === 'SPAN' && highlightRef.current.contains(el));
 
-        if (x < 0 || y < 0) {
+        if (!targetSpan) {
             setTooltip(null);
             return;
         }
 
-        const col = Math.floor(x / charWidth);
-        const row = Math.floor(y / lineHeight);
+        const tokenText = targetSpan.textContent;
+        const classes = targetSpan.className;
+        let tokenType = 'unknown';
 
-        // Map row/col to token
-        // Use a simple scanner again? Or split lines?
-        // Let's split lines.
-        const lines = (value || '').split('\n');
-        if (row >= lines.length) {
+        if (classes.includes('token-function')) tokenType = 'function';
+        else if (classes.includes('token-field')) tokenType = 'variable';
+        else if (classes.includes('token-string')) tokenType = 'string';
+        else if (classes.includes('token-number')) tokenType = 'number';
+        else {
             setTooltip(null);
             return;
         }
 
-        const line = lines[row];
-        if (col >= line.length) {
-            setTooltip(null);
-            return;
-        }
+        // Smart Tooltip Positioning
+        const viewportWidth = window.innerWidth;
+        const mouseX = e.clientX;
+        const mouseY = e.clientY;
 
-        // Find word at col
-        // Scan backwards
-        let start = col;
-        while (start > 0 && /[a-zA-Z0-9_.]/.test(line[start - 1])) {
-            start--;
-        }
-        // Scan forwards
-        let end = col;
-        while (end < line.length && /[a-zA-Z0-9_.]/.test(line[end])) {
-            end++;
-        }
+        const hThreshold = 250;
+        let valX = '-50%';
+        if (mouseX < hThreshold) valX = '0%';
+        else if (mouseX > viewportWidth - hThreshold) valX = '-100%';
 
-        const word = line.slice(start, end);
-        if (FUNCTIONS_SET.has(word)) {
+        // Vertical Logic
+        const vThreshold = 300;
+        const isTop = mouseY < vThreshold;
+        let valY = isTop ? '0%' : '-100%';
+        let offY = isTop ? '24px' : '-12px';
+
+        const transform = `translate(${valX}, ${valY}) translateY(${offY})`;
+
+        if (tokenType === 'function') {
+            const word = tokenText;
             const funcData = FUNCTION_MAP[word];
-            // Format arguments
-            const argsText = funcData.args.map(a => `${a.name}${a.type ? ': ' + a.type : ''}`).join(', ');
+            if (!funcData) return;
 
             setTooltip({
                 x: e.clientX,
-                y: e.clientY - 20, // Slightly closer to cursor
+                y: e.clientY,
+                transform,
                 content: (
                     <div className="editor-tooltip">
                         <div className="tooltip-header">
                             <span className="tooltip-title">{funcData.name}</span>
                             <span className="tooltip-arity">({funcData.arity} arguments)</span>
                         </div>
-
                         <div className="tooltip-desc">{funcData.desc}</div>
-
                         <div className="tooltip-section">
                             <div className="tooltip-label">SYNTAX</div>
                             <div className="tooltip-code">{funcData.syntax}</div>
                         </div>
-
                         {funcData.args && funcData.args.length > 0 && (
                             <div className="tooltip-section">
                                 <div className="tooltip-label">ARGUMENTS</div>
@@ -221,6 +247,65 @@ const SyntaxHighlightedEditor = ({ value, onChange, placeholder, className = '' 
                     </div>
                 )
             });
+        } else if (tokenType === 'variable') {
+            // Resolve Type only (don't show value)
+            const val = resolvePath(dataContext, tokenText);
+            const valType = val === undefined ? 'Unknown' : (typeof val === 'object' ? 'Object' : typeof val);
+
+            setTooltip({
+                x: e.clientX,
+                y: e.clientY,
+                transform,
+                content: (
+                    <div className="editor-tooltip">
+                        <div className="tooltip-header">
+                            <span className="tooltip-title" style={{ color: '#60a5fa' }}>{tokenText}</span>
+                            <span className="tooltip-arity">Variable</span>
+                        </div>
+                        <div className="tooltip-section" style={{ flexDirection: 'row', gap: '1rem' }}>
+                            <div className="tooltip-label">PART OF SPEECH: <span style={{ color: '#e2e8f0', fontWeight: 400 }}>Variable ({valType})</span></div>
+                        </div>
+                    </div>
+                )
+            });
+        } else if (tokenType === 'string') {
+            const cleanText = tokenText.replace(/^"|"$/g, '');
+            setTooltip({
+                x: e.clientX,
+                y: e.clientY,
+                transform,
+                content: (
+                    <div className="editor-tooltip">
+                        <div className="tooltip-header">
+                            <span className="tooltip-title" style={{ color: '#fbbf24' }}>String Literal</span>
+                        </div>
+                        <div className="tooltip-desc">{tokenText}</div>
+                        <div className="tooltip-section">
+                            <div className="tooltip-label">METADATA</div>
+                            <div className="tooltip-row" style={{ fontSize: '0.85rem', color: '#cbd5e1' }}>
+                                Length: {cleanText.length} characters
+                            </div>
+                        </div>
+                    </div>
+                )
+            });
+        } else if (tokenType === 'number') {
+            setTooltip({
+                x: e.clientX,
+                y: e.clientY,
+                transform,
+                content: (
+                    <div className="editor-tooltip">
+                        <div className="tooltip-header">
+                            <span className="tooltip-title" style={{ color: '#34d399' }}>Number Literal</span>
+                        </div>
+                        <div className="tooltip-section">
+                            <div className="tooltip-label">VALUE</div>
+                            <div className="tooltip-code">{tokenText}</div>
+                        </div>
+                    </div>
+                )
+            });
         } else {
             setTooltip(null);
         }
@@ -230,7 +315,7 @@ const SyntaxHighlightedEditor = ({ value, onChange, placeholder, className = '' 
         setTooltip(null);
     };
 
-    const highlightedCode = highlightFormula(value || '');
+    const highlightedCode = highlightFormula(value || '', highlightRange, enableSyntax);
 
     return (
         <div
@@ -238,7 +323,7 @@ const SyntaxHighlightedEditor = ({ value, onChange, placeholder, className = '' 
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
         >
-            {/* Hidden measurement element */}
+            {/* Hidden measurement element - can remove if unnecessary now, but keeping for safety hooks */}
             <span ref={measureRef} className="measurement-char" aria-hidden="true" style={{
                 position: 'absolute',
                 visibility: 'hidden',
@@ -274,7 +359,8 @@ const SyntaxHighlightedEditor = ({ value, onChange, placeholder, className = '' 
                     className="syntax-tooltip"
                     style={{
                         top: tooltip.y,
-                        left: tooltip.x
+                        left: tooltip.x,
+                        transform: tooltip.transform
                     }}
                 >
                     {tooltip.content}

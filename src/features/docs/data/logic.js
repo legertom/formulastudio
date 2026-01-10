@@ -4,6 +4,7 @@ export const LOGIC_OPS = [
         syntax: '{{if condition "true" "false"}}',
         arity: 3,
         desc: "Returns one value if true, another if false.",
+        returns: "String",
         args: [
             { name: "condition", desc: "The condition to check (must be True/False)" },
             { name: "trueResult", desc: "Value to return if condition is True" },
@@ -51,6 +52,7 @@ export const LOGIC_OPS = [
         syntax: "{{equals val1 val2}}",
         arity: 2,
         desc: "Checks if two values are identical.",
+        returns: "Boolean",
         args: [
             { name: "value1", desc: "The first value to compare" },
             { name: "value2", desc: "The second value to compare" }
@@ -85,6 +87,7 @@ export const LOGIC_OPS = [
         syntax: "{{greater val1 val2}}",
         arity: 2,
         desc: "Checks if val1 > val2.",
+        returns: "Boolean",
         args: [
             { name: "value1", desc: "The value to check" },
             { name: "value2", desc: "The threshold to compare against" }
@@ -119,6 +122,7 @@ export const LOGIC_OPS = [
         syntax: "{{less val1 val2}}",
         arity: 2,
         desc: "Checks if val1 < val2.",
+        returns: "Boolean",
         args: [
             { name: "value1", desc: "The value to check" },
             { name: "value2", desc: "The threshold to compare against" }
@@ -153,6 +157,7 @@ export const LOGIC_OPS = [
         syntax: "{{geq val1 val2}}",
         arity: 2,
         desc: "Greater than or equal to.",
+        returns: "Boolean",
         args: [
             { name: "value1", desc: "The value to check" },
             { name: "value2", desc: "The threshold to compare against" }
@@ -187,6 +192,7 @@ export const LOGIC_OPS = [
         syntax: "{{leq val1 val2}}",
         arity: 2,
         desc: "Less than or equal to.",
+        returns: "Boolean",
         args: [
             { name: "value1", desc: "The value to check" },
             { name: "value2", desc: "The threshold to compare against" }
@@ -221,6 +227,7 @@ export const LOGIC_OPS = [
         syntax: "{{contains str sub}}",
         arity: 2,
         desc: "Checks if a string contains a substring.",
+        returns: "Boolean",
         args: [
             { name: "text", desc: "The text to search within" },
             { name: "substring", desc: "The text to look for" }
@@ -255,6 +262,7 @@ export const LOGIC_OPS = [
         syntax: '{{in val "item1 item2"}}',
         arity: 2,
         desc: "Checks if a value is in a list.",
+        returns: "Boolean",
         args: [
             { name: "value", desc: "The value to check" },
             { name: "list", desc: "A space-separated list of allowed values" }
@@ -289,6 +297,7 @@ export const LOGIC_OPS = [
         syntax: "{{not val}}",
         arity: 1,
         desc: "Inverts a boolean (True becomes False).",
+        returns: "Boolean",
         args: [
             { name: "value", desc: "The boolean value to invert" }
         ],
@@ -321,6 +330,7 @@ export const LOGIC_OPS = [
         syntax: "{{and val1 val2}}",
         arity: 2,
         desc: "True only if BOTH are true.",
+        returns: "Boolean",
         args: [
             { name: "condition1", desc: "First condition" },
             { name: "condition2", desc: "Second condition" }
@@ -355,6 +365,7 @@ export const LOGIC_OPS = [
         syntax: "{{or val1 val2}}",
         arity: 2,
         desc: "True if AT LEAST ONE is true.",
+        returns: "Boolean",
         args: [
             { name: "condition1", desc: "First condition" },
             { name: "condition2", desc: "Second condition" }

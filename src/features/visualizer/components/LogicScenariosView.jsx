@@ -80,7 +80,7 @@ const LogicScenariosView = ({ node }) => {
     const groups = groupPaths(rawPaths);
 
     // 3. Search Context & Target Label
-    const { searchTerm, targetLabel = 'Target OU' } = React.useContext(FormulaContext);
+    const { targetLabel = 'Target OU' } = React.useContext(FormulaContext);
 
     return (
         <div className="smart-table-wrapper">
@@ -105,15 +105,11 @@ const LogicScenariosView = ({ node }) => {
                                             </div>
                                             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', paddingLeft: '12px', borderLeft: '2px solid var(--glass-border)' }}>
                                                 {group.values.map((val, vIdx) => {
-                                                    // Highlighting Logic
-                                                    const textVal = val.type === 'StringLiteral' ? val.value : '';
-                                                    const isMatch = searchTerm && textVal.toLowerCase().includes(searchTerm.toLowerCase());
-
                                                     return (
                                                         <div key={vIdx} style={{
                                                             padding: '2px 4px',
                                                             borderRadius: '4px',
-                                                            background: isMatch ? 'rgba(234, 179, 8, 0.4)' : 'transparent',
+                                                            background: 'transparent',
                                                             color: 'var(--text-secondary)',
                                                             fontSize: '0.9rem',
                                                             transition: 'background 0.2s'

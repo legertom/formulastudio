@@ -4,6 +4,7 @@ export const UTILITY_OPS = [
         syntax: "{{concat val1 val2}}",
         arity: 2,
         desc: "Joins two strings together.",
+        returns: "String",
         args: [
             { name: "text1", desc: "First string" },
             { name: "text2", desc: "Second string" }
@@ -38,6 +39,7 @@ export const UTILITY_OPS = [
         syntax: "{{ignoreIfNull [field]}}",
         arity: 1,
         desc: "Skips the field if it has no data. Prevents Traffic Errors.",
+        returns: "String",
         args: [
             { name: "value", desc: "The field to check" }
         ],
@@ -70,6 +72,7 @@ export const UTILITY_OPS = [
         syntax: "{{length [field]}}",
         arity: 1,
         desc: "Returns the character count of a string.",
+        returns: "Number",
         args: [
             { name: "text", desc: "The text to measure" }
         ],

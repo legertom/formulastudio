@@ -4,7 +4,7 @@ import { CURRICULUM } from '../../lib/curriculum';
 import './TrainingLayout.css';
 import './TrainingSidebar.css';
 import QuizLevel from './QuizLevel';
-import FeedbackWidget from './FeedbackWidget';
+import FeedbackWidget from '../../components/FeedbackWidget';
 
 const TRAINING_SIDEBAR_COLLAPSED_KEY = 'fs_training_sidebar_collapsed';
 

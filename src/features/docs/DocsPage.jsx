@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'; // Added useEffect for scrolling later if needed
 import { useParams, useNavigate } from 'react-router-dom';
 import DocsIntro from './content/DocsIntro';
+import FeedbackWidget from '../../components/FeedbackWidget';
 import './Docs.css';
 import DocsSyntax from './content/DocsSyntax';
 import DocsVariables from './content/DocsVariables';
@@ -44,12 +45,12 @@ const NAV_STRUCTURE = [
     {
         title: "Core Concepts",
         items: [
+            { id: 'literals', label: 'Literals' },
             { id: 'variables', label: 'Variables' },
             { id: 'arguments', label: 'Arguments' },
-            { id: 'booleans', label: 'Booleans' },
-            { id: 'literals', label: 'Literals' },
             { id: 'functions-concept', label: 'Functions' },
             { id: 'arity', label: 'Arity' },
+            { id: 'booleans', label: 'Booleans' },
             { id: 'nesting', label: 'Nesting Logic' },
         ]
     },
@@ -262,6 +263,7 @@ const DocsPage = () => {
                     {renderContent()}
                 </div>
             </main>
+            <FeedbackWidget location={`Docs - ${activeDoc}`} />
         </div>
     );
 };

@@ -31,6 +31,7 @@ const GroupLogicView = ({ ast }) => {
     // 2. Extract Logic AST
     let innerAst = null;
     let parseError = null;
+    let isVirtual = false;
 
     try {
         if (logicNode?.type === 'StringLiteral') {
@@ -38,6 +39,7 @@ const GroupLogicView = ({ ast }) => {
             const decoded = decodeURIComponent(logicNode.value);
             const tokens = tokenize(decoded);
             innerAst = parse(tokens);
+            isVirtual = true;
         } else if (logicNode?.type === 'CallExpression') {
             // Case B: Direct Expression (User Friendly / Pre-Encoded)
             innerAst = logicNode;
@@ -51,8 +53,20 @@ const GroupLogicView = ({ ast }) => {
 
     const segments = innerAst ? segmentLogicChain(innerAst) : [];
 
+    // Intercept hover to handle virtual AST ranges
+    const handleGroupHover = (range) => {
+        if (isVirtual && range && logicNode?.range) {
+            // If we are in a virtual AST (parsed from string), 
+            // exact mapping is impossible due to URI encoding.
+            // Map to the entire logic string block instead.
+            onHoverNode(logicNode.range);
+        } else {
+            onHoverNode(range);
+        }
+    };
+
     return (
-        <FormulaContext.Provider value={{ loopVariable, onHoverNode, searchTerm, targetLabel: 'Target Group' }}>
+        <FormulaContext.Provider value={{ loopVariable, onHoverNode: handleGroupHover, searchTerm, targetLabel: 'Target Group' }}>
             <div className="group-logic-container">
                 <div className="group-args-breakdown" style={{
                     display: 'flex',

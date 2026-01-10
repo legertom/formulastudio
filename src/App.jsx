@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import EditorView from './features/editor/EditorView'
 import DocsPage from './features/docs/DocsPage'
 import TrainingCenter from './features/training/TrainingCenter'
+import TrainingIntro from './features/training/TrainingIntro'
 import NavBar from './components/NavBar'
 import './App.css'
 
@@ -12,7 +13,7 @@ function App() {
       <div className="app-content">
         <Routes>
           <Route path="/" element={<EditorView />} />
-          <Route path="/training" element={<Navigate to="/training/1/1" replace />} />
+          <Route path="/training" element={<TrainingIntro />} />
           <Route path="/training/:chapterIndex/:stepIndex" element={<TrainingCenter />} />
           <Route path="/docs" element={<Navigate to="/docs/intro" replace />} />
           <Route path="/docs/:pageId" element={<DocsPage />} />
