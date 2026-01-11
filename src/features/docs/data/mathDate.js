@@ -1,7 +1,7 @@
 export const MATH_DATE_OPS = [
     {
         name: "add",
-        syntax: "{{add arg1 arg2}}",
+        syntax: "{{add number1 number2}}",
         arity: 2,
         desc: "Performs addition on numeric values. Works with grade levels, years, IDs, or any numeric field.",
         returns: "Number",
@@ -36,7 +36,7 @@ export const MATH_DATE_OPS = [
     },
     {
         name: "subtract",
-        syntax: "{{subtract arg1 arg2}}",
+        syntax: "{{subtract number1 number2}}",
         arity: 2,
         desc: "Performs subtraction on numeric values. Useful for calculating years ago, previous grades, or age calculations.",
         returns: "Number",
@@ -71,7 +71,7 @@ export const MATH_DATE_OPS = [
     },
     {
         name: "formatDate",
-        syntax: '{{formatDate arg1 arg2}}',
+        syntax: '{{formatDate date formatString}}',
         arity: 2,
         desc: "Converts dates from one format to another. Supports common patterns like MM/DD/YYYY, YYYY-MM-DD, DD-MM-YYYY.",
         returns: "String",

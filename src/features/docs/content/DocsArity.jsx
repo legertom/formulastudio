@@ -9,21 +9,49 @@ import {
 } from '../data';
 
 const DocsArity = () => {
-    // Combine all functions into a single sorted list
-    const allFunctions = [
-        ...LOGIC_OPS,
-        ...TEXT_TRANSFORM_OPS,
-        ...MATH_DATE_OPS,
-        ...UTILITY_OPS,
-        ...TEXT_EXTRACTION_OPS,
-        ...SEARCH_REPLACE_OPS
-    ].sort((a, b) => a.name.localeCompare(b.name));
+    // State for sorting
+    const [sortConfig, setSortConfig] = React.useState({ key: 'name', direction: 'asc' });
+
+    // Combine all functions
+    const allFunctions = React.useMemo(() => {
+        const list = [
+            ...LOGIC_OPS,
+            ...TEXT_TRANSFORM_OPS,
+            ...MATH_DATE_OPS,
+            ...UTILITY_OPS,
+            ...TEXT_EXTRACTION_OPS,
+            ...SEARCH_REPLACE_OPS
+        ];
+
+        return list.sort((a, b) => {
+            if (a[sortConfig.key] < b[sortConfig.key]) {
+                return sortConfig.direction === 'asc' ? -1 : 1;
+            }
+            if (a[sortConfig.key] > b[sortConfig.key]) {
+                return sortConfig.direction === 'asc' ? 1 : -1;
+            }
+            return 0;
+        });
+    }, [sortConfig]);
+
+    const handleSort = (key) => {
+        let direction = 'asc';
+        if (sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+        setSortConfig({ key, direction });
+    };
+
+    const getSortIndicator = (key) => {
+        if (sortConfig.key !== key) return <span style={{ opacity: 0.3, marginLeft: '0.5rem' }}>↕</span>;
+        return <span style={{ marginLeft: '0.5rem' }}>{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>;
+    };
 
     return (
         <div className="docs-page">
             <header className="docs-page-header">
                 <h3>Arity</h3>
-                <p>Understanding how functions consume arguments in Polish notation.</p>
+                <p>Understanding how functions consume arguments in Prefix notation.</p>
             </header>
 
             <section className="docs-section">
@@ -37,14 +65,14 @@ const DocsArity = () => {
                 }}>
                     <p style={{ fontSize: '1.1rem', margin: 0, lineHeight: 1.7 }}>
                         <strong>Arity</strong> is the number of arguments a function expects.
-                        In Polish notation, knowing each function's arity is critical because it tells the parser
+                        In Prefix notation, knowing each function's arity is critical because it tells the parser
                         <em> exactly how many tokens to consume</em> after encountering a function name.
                     </p>
                 </div>
 
                 <h5>Why Arity Matters</h5>
                 <p>
-                    Polish notation doesn't use parentheses. Instead, the parser relies on arity to determine
+                    Prefix notation doesn't use parentheses. Instead, the parser relies on arity to determine
                     where one function's arguments end and the next begins. This makes formulas unambiguous
                     and elegant — but you need to know the arity of each function you use.
                 </p>
@@ -53,14 +81,35 @@ const DocsArity = () => {
             <hr className="docs-divider" />
 
             <section className="docs-section">
-                <h4>Common Function Arities</h4>
-                <p>Here are the arities for all available functions:</p>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                    <h4>Common Function Arities</h4>
+                    <span style={{
+                        background: 'var(--bg-tertiary)',
+                        padding: '0.2rem 0.6rem',
+                        borderRadius: '12px',
+                        fontSize: '0.85rem',
+                        border: '1px solid var(--glass-border)'
+                    }}>
+                        Showing {allFunctions.length} Functions
+                    </span>
+                </div>
+                <p>Click headers to sort table:</p>
 
                 <table className="docs-table">
                     <thead>
                         <tr>
-                            <th>Function</th>
-                            <th>Arity</th>
+                            <th
+                                onClick={() => handleSort('name')}
+                                style={{ cursor: 'pointer', userSelect: 'none' }}
+                            >
+                                Function {getSortIndicator('name')}
+                            </th>
+                            <th
+                                onClick={() => handleSort('arity')}
+                                style={{ cursor: 'pointer', userSelect: 'none' }}
+                            >
+                                Arity {getSortIndicator('arity')}
+                            </th>
                             <th>Arguments</th>
                             <th>Example</th>
                         </tr>

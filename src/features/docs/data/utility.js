@@ -1,13 +1,13 @@
 export const UTILITY_OPS = [
     {
         name: "concat",
-        syntax: "{{concat val1 val2}}",
+        syntax: "{{concat string1 string2}}",
         arity: 2,
         desc: "Joins two strings together.",
         returns: "String",
         args: [
-            { name: "text1", desc: "First string" },
-            { name: "text2", desc: "Second string" }
+            { name: "string1", desc: "First string" },
+            { name: "string2", desc: "Second string" }
         ],
         examples: [
             {
@@ -36,12 +36,12 @@ export const UTILITY_OPS = [
     },
     {
         name: "ignoreIfNull",
-        syntax: "{{ignoreIfNull [field]}}",
+        syntax: "{{ignoreIfNull field}}",
         arity: 1,
         desc: "Skips the field if it has no data. Prevents Traffic Errors.",
         returns: "String",
         args: [
-            { name: "value", desc: "The field to check" }
+            { name: "field", desc: "The field to check" }
         ],
         examples: [
             {
@@ -69,7 +69,7 @@ export const UTILITY_OPS = [
     },
     {
         name: "length",
-        syntax: "{{length [field]}}",
+        syntax: "{{length text}}",
         arity: 1,
         desc: "Returns the character count of a string.",
         returns: "Number",

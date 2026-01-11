@@ -116,7 +116,7 @@ export const TEXT_TRANSFORM_OPS = [
     },
     {
         name: "alphanumeric",
-        syntax: "{{alphanumeric arg1}}",
+        syntax: "{{alphanumeric text}}",
         arity: 1,
         desc: "Removes all special characters, keeping only letters (A-Z, a-z) and numbers (0-9).",
         returns: "String",
@@ -149,7 +149,7 @@ export const TEXT_TRANSFORM_OPS = [
     },
     {
         name: "initials",
-        syntax: "{{initials arg1}}",
+        syntax: "{{initials text}}",
         arity: 1,
         desc: "Extracts the first letter of each word and converts them to Uppercase (Standard IDM Format).",
         returns: "String",
@@ -182,7 +182,7 @@ export const TEXT_TRANSFORM_OPS = [
     },
     {
         name: "trimLeft",
-        syntax: "{{trimLeft arg1}}",
+        syntax: "{{trimLeft text}}",
         arity: 1,
         desc: "Removes any leading whitespace (spaces, tabs) from the beginning of text.",
         returns: "String",
@@ -215,7 +215,7 @@ export const TEXT_TRANSFORM_OPS = [
     },
     {
         name: "delimiterCapitalize",
-        syntax: "{{delimiterCapitalize arg1}}",
+        syntax: "{{delimiterCapitalize text}}",
         arity: 1,
         desc: "Capitalizes the first letter of each word, treating spaces and hyphens as word delimiters.",
         returns: "String",

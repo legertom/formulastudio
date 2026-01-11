@@ -4,11 +4,13 @@ import DocsPage from './features/docs/DocsPage'
 import TrainingCenter from './features/training/TrainingCenter'
 import TrainingIntro from './features/training/TrainingIntro'
 import NavBar from './components/NavBar'
+import ScrollToTop from './components/ScrollToTop'
 import './App.css'
 
 function App() {
   return (
     <div className="app-container">
+      <ScrollToTop />
       <NavBar />
       <div className="app-content">
         <Routes>

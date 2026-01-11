@@ -7,8 +7,8 @@ export const LOGIC_OPS = [
         returns: "String",
         args: [
             { name: "condition", desc: "The condition to check (must be True/False)" },
-            { name: "trueResult", desc: "Value to return if condition is True" },
-            { name: "falseResult", desc: "Value to return if condition is False" }
+            { name: "trueValue", desc: "Value to return if condition is True" },
+            { name: "falseValue", desc: "Value to return if condition is False" }
         ],
         examples: [
             {

@@ -122,6 +122,11 @@ const DocsPage = () => {
 
     // Auto-scroll when subId changes (or on mount if present)
     useEffect(() => {
+        // Reset scroll to top when switching main pages (e.g. intro -> syntax)
+        if (contentRef.current) {
+            contentRef.current.scrollTop = 0;
+        }
+
         if (subId) {
             // Expand the category
             setExpandedItems(prev => ({
@@ -203,7 +208,29 @@ const DocsPage = () => {
                         </button>
                     </div>
 
-                    <nav className="docs-nav-full">
+                    {/* Collapsed Navigation Rail */}
+                    {sidebarCollapsed && (
+                        <nav className="docs-nav-rail">
+                            {NAV_STRUCTURE.map((section, idx) => {
+                                // Check if any item in this section is active
+                                const isActiveSection = section.items.some(item => item.id === activeDoc);
+                                const firstItem = section.items[0];
+                                return (
+                                    <button
+                                        key={idx}
+                                        className={`nav-rail-dot ${isActiveSection ? 'active' : ''}`}
+                                        onClick={() => handleNavClick(firstItem)}
+                                        title={section.title}
+                                    >
+                                        <span className="nav-rail-tooltip">{section.title}</span>
+                                    </button>
+                                );
+                            })}
+                        </nav>
+                    )}
+
+                    {/* Full Navigation */}
+                    <nav className={`docs-nav-full ${sidebarCollapsed ? 'hidden' : ''}`}>
                         {NAV_STRUCTURE.map((section, idx) => (
                             <div key={idx} className="docs-nav-section">
                                 <div className="docs-nav-section-title">{section.title}</div>

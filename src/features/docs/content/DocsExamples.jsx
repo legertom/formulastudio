@@ -14,8 +14,8 @@ const EXAMPLES_DATA = [
     {
         title: "Full Name with Space",
         goal: "Create a template for first name + last name with a space in between.",
-        formula: '{{concat name.first " "}}{{name.last}}',
-        explanation: "Uses `concat` to add a space after the first name, then directly appends the last name using a second template expression.",
+        formula: '{{concat name.first concat " " name.last}}',
+        explanation: "Uses nested `concat` calls: the inner concat joins the space with the last name, then the outer concat joins the first name with that result.",
         sampleData: { "name": { "first": "Jean-O'Luc", "last": "Picard" } },
         result: "Jean-O'Luc Picard",
         difficulty: "beginner"

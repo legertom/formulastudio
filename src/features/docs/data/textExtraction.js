@@ -1,7 +1,7 @@
 export const TEXT_EXTRACTION_OPS = [
     {
         name: "textBefore",
-        syntax: '{{textBefore arg1 arg2}}',
+        syntax: '{{textBefore text delimiter}}',
         arity: 2,
         desc: "Extracts all text that appears before a specific character or substring.",
         returns: "String",
@@ -36,7 +36,7 @@ export const TEXT_EXTRACTION_OPS = [
     },
     {
         name: "textAfter",
-        syntax: '{{textAfter arg1 arg2}}',
+        syntax: '{{textAfter text delimiter}}',
         arity: 2,
         desc: "Extracts all text that appears after a specific character or substring.",
         returns: "String",
@@ -71,7 +71,7 @@ export const TEXT_EXTRACTION_OPS = [
     },
     {
         name: "textAfterLast",
-        syntax: '{{textAfterLast arg1 arg2}}',
+        syntax: '{{textAfterLast text delimiter}}',
         arity: 2,
         desc: "Extracts text after the LAST occurrence of a character (useful when multiple matches exist).",
         returns: "String",

@@ -29,7 +29,7 @@ const DocsNesting = () => {
             <section className="docs-section">
                 <h4>No Parentheses Needed</h4>
                 <p>
-                    In Polish notation, nesting works automatically based on function <strong>arity</strong>
+                    In Prefix notation, nesting works automatically based on function <strong>arity</strong>
                     (how many arguments each function takes). No parentheses required!
                 </p>
 
@@ -343,7 +343,7 @@ const DocsNesting = () => {
                         <div style={{ fontSize: '2rem' }}>💡</div>
                         <div>
                             <strong style={{ fontSize: '1.1rem', display: 'block', marginBottom: '0.5rem' }}>
-                                The Power of Polish Notation
+                                The Power of Prefix Notation
                             </strong>
                             <p style={{ margin: 0, lineHeight: 1.6 }}>
                                 Because each function declares its arity (number of arguments), the parser

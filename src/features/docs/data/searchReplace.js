@@ -1,14 +1,14 @@
 export const SEARCH_REPLACE_OPS = [
     {
         name: "replace",
-        syntax: '{{replace arg1 arg2 arg3}}',
+        syntax: '{{replace text searchString replacement}}',
         arity: 3,
         desc: "Perfect for cleaning phone numbers, fixing formatting issues, standardizing data, or swapping characters.",
         returns: "String",
         args: [
             { name: "text", desc: "The text to search within" },
-            { name: "searchFor", desc: "The substring to find" },
-            { name: "replaceWith", desc: "The replacement text" }
+            { name: "searchString", desc: "The substring to find" },
+            { name: "replacement", desc: "The replacement text" }
         ],
         examples: [
             {
