@@ -1,2 +1,2 @@
 
-{{ if and geq age "18" equals country "US" "Eligible" "Not Eligible" }}
+{{ if and geq student.grade "09" equals school.district "Riverside Unified School District" "High School Eligible" "Not Eligible" }}
