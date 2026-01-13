@@ -32,7 +32,7 @@ export const chapter3 = {
             type: "challenge",
             title: "New Tool: Initials",
             goal: "Get the initials of the first name",
-            description: "Meet your new favorite tool: `initials`.\n\nIt has an **Arity of 1**.\n\n`{{ initials text }}`\n\nIt automatically grabs the first letter of every word (separating by **spaces** or **hyphens**).\n\n**Challenge:**\nGet the initials for `name.first`.",
+            description: "Meet your new favorite tool.\n\n**New Tool: `initials`** (Arity 1)\n\n`{{ initials text }}`\n\nIt automatically grabs the first letter of every word (separating by **spaces** or **hyphens**).\n\n**Challenge:**\nGet the initials for `name.first`.",
             testCases: [
                 { name: "Hyphenated", data: { "name": { "first": "Jean-Luc" } }, expected: "JL" },
                 { name: "Space Separated", data: { "name": { "first": "Mary Jane" } }, expected: "MJ" }
@@ -58,7 +58,7 @@ export const chapter3 = {
             type: "challenge",
             title: "New Tool: Substring",
             goal: "Extract the first letter of First Name",
-            description: "Sometimes you need more control than `initials` gives you.\n\nEnter `substr` (Substring). It has an **Arity of 3**:\n\n`{{ substr text start length }}`\n\nIt works by counting **Positions** starting at **0**:\n\n| Position | 0 | 1 | 2 | 3 |\n|----------|---|---|---|---|\n| Letter   | J | e | a | n |\n\n**Challenge:**\nGet just the first letter (Start at **0**, take **1**) of `name.first`.",
+            description: "Sometimes you need more control than `initials` gives you.\n\n**New Tool: `substr`** (Arity 3)\n\n`{{ substr text start length }}`\n\nIt works by counting **Positions** starting at **0**:\n\n| Position | 0 | 1 | 2 | 3 |\n|----------|---|---|---|---|\n| Letter   | J | e | a | n |\n\n**Challenge:**\nGet just the first letter (Start at **0**, take **1**) of `name.first`.",
             testCases: [
                 { name: "Jean", data: { "name": { "first": "Jean" } }, expected: "J" }
             ],

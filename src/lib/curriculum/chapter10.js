@@ -138,6 +138,23 @@ export const chapter10 = {
             prefill: "{{}}"
         },
         {
+            id: "c10-s7-initials",
+            type: "challenge",
+            title: "Practice: Report Header Initials",
+            goal: "Create a compact report header",
+            description: "In reports, we often use initials to save space while still identifying people.\n\n**Refresher: `initials`** (Arity 1)\n`{{ initials text }}` → extracts the first letter of each word.\n\n*Example:* `{{ initials \"John Doe\" }}` → `\"JD\"`\n\n**Challenge:**\nCreate a report header that shows the `analyst.name` as initials.\nOutput should be: `\"Report by: \"` followed by the initials.",
+            testCases: [
+                { name: "Jean-Luc Picard", data: { "analyst": { "name": "Jean-Luc Picard" } }, expected: "Report by: JLP" },
+                { name: "Mary Jane Watson", data: { "analyst": { "name": "Mary Jane Watson" } }, expected: "Report by: MJW" }
+            ],
+            hints: [
+                "Get initials: {{ initials analyst.name }}",
+                "Combine with concat: {{ concat \"Report by: \" ... }}",
+                "{{ concat \"Report by: \" (initials analyst.name) }}"
+            ],
+            prefill: "{{}}"
+        },
+        {
             id: "c10-s8",
             type: "challenge",
             title: "Validation: Safe ID",

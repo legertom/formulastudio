@@ -62,7 +62,7 @@ export const chapter5 = {
         {
             id: "c5-s5",
             type: "challenge",
-            title: "Practice: Strict Comparisons",
+            title: "Concept: Greater Than",
             goal: "Pass if score is strictly greater than 50",
             description: "Logic isn't just about equality. It's about magnitude.\n\n**New Tool: `greater`** (Arity 2)\n\n`{{ greater number1 number2 }}`\n\nReturns `true` if number1 is strictly larger than number2.\n\n**Challenge:**\nIf the `score` is greater than `50`, output `\"Pass\"`. Otherwise, output `\"Fail\"`.\n\n(Note: A score of 50 is NOT greater than 50, so it should Fail).",
             testCases: [
@@ -90,7 +90,7 @@ export const chapter5 = {
         {
             id: "c5-s7",
             type: "challenge",
-            title: "Practice: Short Text",
+            title: "Concept: Less Than",
             goal: "Flag usernames that are too short",
             description: "Sometimes we need to check if a number is `less` than another.\n\n**New Tool: `less`** (Arity 2)\n\n`{{ less number1 number2 }}` - Returns true if number1 is strictly smaller than number2.\n\n**Tool Combo: `length`**\n`{{ length string }}` - Returns the number of characters in a string.\n\n**Challenge:**\nIf the `username` length is less than `5` characters, output `\"Too Short\"`. Otherwise, output `\"OK\"`.",
             testCases: [
@@ -107,7 +107,7 @@ export const chapter5 = {
         {
             id: "c5-s8",
             type: "challenge",
-            title: "Practice: Character Limit",
+            title: "Concept: Less or Equal",
             goal: "Verify code length is 3 or less",
             description: "We can also check for \"Less Than or Equal To\".\n\n**New Tool: `leq`** (Arity 2)\n\n`{{ leq number1 number2 }}`\n\n**Challenge:**\nThe `code` must be 3 characters or fewer.\nIf the length of `code` is **leq** `3`, output `\"Valid\"`. Otherwise, output `\"Invalid\"`.",
             testCases: [

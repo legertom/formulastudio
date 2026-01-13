@@ -8,6 +8,7 @@ import { chapter7 } from './chapter7';
 import { chapter8 } from './chapter8';
 import { chapter9 } from './chapter9';
 import { chapter10 } from './chapter10';
+import { chapter11 } from './chapter11';
 
 export const CURRICULUM = [
     chapter1,
@@ -19,5 +20,6 @@ export const CURRICULUM = [
     chapter7,
     chapter8,
     chapter9,
-    chapter10
+    chapter10,
+    chapter11
 ];

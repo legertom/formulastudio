@@ -174,6 +174,37 @@ export const chapter6 = {
         {
             id: "c6-s13",
             type: "challenge",
+            title: "Concept: List Membership",
+            goal: "Check if student is in High School",
+            description: "We just learned `contains` checks if text is INSIDE another text. But what if we want to check if a value MATCHES one of several options?\n\n**New Tool: `in`** (Arity 2)\n\n`{{ in value list }}`\n\nThe `list` is a **space-separated** string of options.\n\n**Example:** `{{ in \"apple\" \"apple banana cherry\" }}` → `true`\n\n**Challenge:**\nCheck if the `student.grade` is in High School grades `\"09 10 11 12\"`.",
+            testCases: [
+                { name: "Freshman", data: { "student": { "grade": "09" } }, expected: "true" },
+                { name: "Senior", data: { "student": { "grade": "12" } }, expected: "true" },
+                { name: "Middle School", data: { "student": { "grade": "07" } }, expected: "false" }
+            ],
+            hints: ["{{ in student.grade \"09 10 11 12\" }}"],
+            prefill: "{{}}"
+        },
+        {
+            id: "c6-s14",
+            type: "challenge",
+            title: "Practice: Grade Bands",
+            goal: "Classify students by school level",
+            description: "Let's put `in` to work inside an `if` statement.\n\n**Challenge:**\nIf the `student.grade` is in `\"09 10 11 12\"` (High School), output `\"High School\"`.\nOtherwise, output `\"Other\"`.",
+            testCases: [
+                { name: "Junior", data: { "student": { "grade": "11" } }, expected: "High School" },
+                { name: "8th Grade", data: { "student": { "grade": "08" } }, expected: "Other" },
+                { name: "Sophomore", data: { "student": { "grade": "10" } }, expected: "High School" }
+            ],
+            hints: [
+                "Check: (in student.grade \"09 10 11 12\")",
+                "{{ if (in student.grade \"09 10 11 12\") \"High School\" \"Other\" }}"
+            ],
+            prefill: "{{}}"
+        },
+        {
+            id: "c6-s15",
+            type: "challenge",
             title: "The Logic Chain",
             goal: "Complex Permission Check",
             description: "We can chain these logic gates together.\n\n**Pattern:** `{{ and condition1 (or condition2 condition3) }}`\n\n**Challenge:**\nA user can edit IF:\n\n• They are `\"Active\"`\n**AND**\n• They are EITHER `\"Editor\"` **OR** `\"Admin\"`\n\nOutput `\"Can Edit\"` or `\"View Only\"`.",
@@ -191,7 +222,7 @@ export const chapter6 = {
             prefill: "{{}}"
         },
         {
-            id: "c6-s14",
+            id: "c6-s16",
             type: "challenge",
             title: "Concept: The Triple And",
             goal: "Check if One AND Two AND Three",
@@ -205,7 +236,26 @@ export const chapter6 = {
             prefill: "{{}}"
         },
         {
-            id: "c6-s15",
+            id: "c6-s17",
+            type: "challenge",
+            title: "Practice: Range Check",
+            goal: "Check if score is in valid range",
+            description: "Let's practice combining `less` and `geq` to check a numeric range.\n\n**Refresher:**\n`geq` = Greater than or Equal (≥)\n`less` = Strictly Less Than (<)\n\n**Challenge:**\nCheck if `score` is **at least 50** AND **less than 100**.\nReturn `true` or `false`.",
+            testCases: [
+                { name: "Valid (50)", data: { "score": 50 }, expected: "true" },
+                { name: "Valid (75)", data: { "score": 75 }, expected: "true" },
+                { name: "Too Low", data: { "score": 49 }, expected: "false" },
+                { name: "Too High", data: { "score": 100 }, expected: "false" }
+            ],
+            hints: [
+                "Check lower bound: (geq score 50)",
+                "Check upper bound: (less score 100)",
+                "{{ and (geq score 50) (less score 100) }}"
+            ],
+            prefill: "{{}}"
+        },
+        {
+            id: "c6-s18",
             type: "challenge",
             title: "Practice: Length and Hash",
             goal: "Build Part 1 of Validator",
@@ -219,7 +269,7 @@ export const chapter6 = {
             prefill: "{{}}"
         },
         {
-            id: "c6-s16",
+            id: "c6-s19",
             type: "challenge",
             title: "Practice: The Forbidden Word",
             goal: "Build Part 2 of Validator",
@@ -232,7 +282,7 @@ export const chapter6 = {
             prefill: "{{}}"
         },
         {
-            id: "c6-s17",
+            id: "c6-s20",
             type: "challenge",
             title: "Practice: The Core Logic",
             goal: "Combine Part 1 and Part 2",
@@ -250,7 +300,7 @@ export const chapter6 = {
             prefill: "{{}}"
         },
         {
-            id: "c6-s18",
+            id: "c6-s21",
             type: "challenge",
             title: "Final Exam: Password Validator",
             goal: "Final Output",

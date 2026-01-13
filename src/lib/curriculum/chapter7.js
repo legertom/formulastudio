@@ -131,6 +131,23 @@ export const chapter7 = {
         {
             id: "c7-s9",
             type: "challenge",
+            title: "Practice: Age Check",
+            goal: "Classify students as Minor or Adult",
+            description: "Let's practice with numeric comparisons using `leq` (less than or equal to).\n\n**Refresher: `leq`** (Arity 2)\n`{{ leq number1 number2 }}` → returns `true` if number1 ≤ number2\n\n**Challenge:**\nIf `student.age` is **less than or equal to 18**, output `\"Minor\"`. Otherwise, output `\"Adult\"`.",
+            testCases: [
+                { name: "Minor (18)", data: { "student": { "age": 18 } }, expected: "Minor" },
+                { name: "Minor (15)", data: { "student": { "age": 15 } }, expected: "Minor" },
+                { name: "Adult (21)", data: { "student": { "age": 21 } }, expected: "Adult" }
+            ],
+            hints: [
+                "Use leq to check: (leq student.age 18)",
+                "{{ if (leq student.age 18) \"Minor\" \"Adult\" }}"
+            ],
+            prefill: "{{}}"
+        },
+        {
+            id: "c7-s10",
+            type: "challenge",
             title: "Final Exam: Graduation Status",
             goal: "Output \"New Student\" (2037), \"Former Student\" (2025), or \"Current Student\" (Checked in that order).",
             description: "Put it all together!\n\n**Challenge:**\nCheck `student.graduation_year` in this specific order:\n• If `\"2037\"` → `\"New Student\"`\n• Else if `\"2025\"` → `\"Former Student\"`\n• Else → `\"Current Student\"`",

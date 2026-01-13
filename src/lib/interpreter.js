@@ -37,25 +37,54 @@ export const evaluateAndTrace = (ast, data) => {
                 result = Number(node.value);
             }
             else if (node.type === 'Identifier') {
-                // Handle "dot.notation"
+                // Handle "dot.notation" and array indexing like "schools[0].name"
                 // Also handle "true"/"false"/"null" keywords if they are parsed as Identifiers
                 const val = node.value;
                 if (val === 'true') result = true;
                 else if (val === 'false') result = false;
                 else if (val === 'null') result = null;
                 else {
-                    // Data Lookup - throw error if field is missing
-                    const keys = val.split('.');
-                    let current = data;
+                    // Data Lookup with support for array indexing
+                    // Parse path: "student.schools[0].name" -> ["student", "schools", 0, "name"]
+                    const segments = [];
+                    const pathParts = val.split('.');
 
-                    for (let i = 0; i < keys.length; i++) {
+                    for (const part of pathParts) {
+                        // Check if part contains array indexing like "schools[0]"
+                        const bracketMatch = part.match(/^([a-zA-Z_][a-zA-Z0-9_]*)(\[(\d+)\])?$/);
+                        if (bracketMatch) {
+                            segments.push(bracketMatch[1]); // property name
+                            if (bracketMatch[3] !== undefined) {
+                                segments.push(parseInt(bracketMatch[3], 10)); // array index
+                            }
+                        } else {
+                            segments.push(part);
+                        }
+                    }
+
+                    let current = data;
+                    for (let i = 0; i < segments.length; i++) {
+                        const key = segments[i];
                         if (current === null || current === undefined) {
-                            throw new Error(`Cannot access property '${keys[i]}' of ${current}`);
+                            throw new Error(`Cannot access property '${key}' of ${current}`);
                         }
-                        if (!(keys[i] in current)) {
-                            throw new Error(`Field '${keys.slice(0, i + 1).join('.')}' does not exist in data`);
+                        if (typeof key === 'number') {
+                            // Array index access
+                            if (!Array.isArray(current)) {
+                                throw new Error(`Cannot use index [${key}] on non-array`);
+                            }
+                            if (key >= current.length) {
+                                throw new Error(`Array index [${key}] out of bounds (length: ${current.length})`);
+                            }
+                            current = current[key];
+                        } else {
+                            // Property access
+                            if (!(key in current)) {
+                                const pathSoFar = segments.slice(0, i + 1).map(s => typeof s === 'number' ? `[${s}]` : s).join('.');
+                                throw new Error(`Field '${pathSoFar}' does not exist in data`);
+                            }
+                            current = current[key];
                         }
-                        current = current[keys[i]];
                     }
 
                     result = current ?? "";
@@ -89,6 +118,46 @@ export const evaluateAndTrace = (ast, data) => {
                         // Field doesn't exist - return empty string
                         result = "";
                     }
+                }
+                // SPECIAL HANDLING FOR forEach
+                // forEach "varName" list logicExpression
+                else if (funcName === 'foreach') {
+                    // args[0] = variable name (StringLiteral)
+                    // args[1] = list path (Identifier)
+                    // args[2] = logic to evaluate for each item (any expression)
+
+                    const varName = args[0]?.value || 'item';
+                    const listValue = evalNode(args[1]); // Evaluate the list path
+
+                    if (!Array.isArray(listValue)) {
+                        throw new Error(`forEach expects an array, got: ${typeof listValue}`);
+                    }
+
+                    // For each item in the list, we need to evaluate args[2] with the loop variable bound
+                    const results = [];
+                    for (const item of listValue) {
+                        // Create a modified data context with the loop variable
+                        // We need to recursively evaluate args[2] with item bound to varName
+                        // This requires a modified evalNode that has access to the loop variable
+
+                        // Simple approach: temporarily add the variable to data
+                        const originalValue = data[varName];
+                        data[varName] = item;
+
+                        try {
+                            const itemResult = evalNode(args[2]);
+                            results.push(String(itemResult));
+                        } finally {
+                            // Restore original value (or delete if it wasn't there)
+                            if (originalValue === undefined) {
+                                delete data[varName];
+                            } else {
+                                data[varName] = originalValue;
+                            }
+                        }
+                    }
+
+                    result = results.join('');
                 }
                 else if (funcName === 'switch') {
                     // TODO: Implement switch tracing if needed

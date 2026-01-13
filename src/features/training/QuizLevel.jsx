@@ -232,24 +232,11 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep 
                 {/* Right Col: Results */}
                 <div className="focus-results" style={{ marginTop: 0 }}>
                     <div className="editor-label-row results-label-row">
-                        <label>Output / Test Results</label>
+                        <label>Live Evaluation</label>
+                        <div className="results-hint">Click row to switch inputs</div>
                     </div>
 
                     <div className="focus-validation-list">
-                        <div style={{
-                            fontSize: '0.75rem',
-                            textTransform: 'uppercase',
-                            color: 'var(--text-muted)',
-                            fontWeight: 600,
-                            letterSpacing: '0.05em',
-                            marginBottom: '0.5rem',
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            padding: '0 0.5rem'
-                        }}>
-                            <span>Test Results</span>
-                            <span style={{ opacity: 0.7 }}>Click row to view details</span>
-                        </div>
                         {level.testCases.map((testCase, idx) => {
                             const result = results[idx] || { computed: '', isCorrect: false };
                             const isSelected = idx === selectedCaseIndex;
@@ -259,15 +246,24 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep 
                                     className={`focus-test-item ${result.isCorrect ? 'pass' : 'fail'} ${isSelected ? 'selected' : ''}`}
                                     onClick={() => setSelectedCaseIndex(idx)}
                                 >
-                                    <div className="item-lhs">
-                                        <span className="case-name">{testCase.name} {isSelected && <span style={{ fontSize: '0.7rem', color: 'var(--accent-secondary)', marginLeft: '0.5rem' }}>(VIEWING)</span>}</span>
-                                        <span className="case-exp">Expects: {testCase.expected || '""'}</span>
-                                    </div>
-                                    <div className="item-rhs">
-                                        {result.isCorrect ? <span className="icon-check">✓</span> : <span className="icon-cross">×</span>}
-                                        <span className="result-val" style={{ color: result.error ? 'var(--error)' : 'inherit' }}>
-                                            {result.error ? String(result.error) : String(result.computed !== "" ? result.computed : '...')}
+                                    <div className="evaluation-row">
+                                        <span className="label-tiny">INPUT</span>
+                                        <span className="case-name">
+                                            {testCase.name} {isSelected && <span style={{ fontSize: '0.7rem', color: 'var(--accent-secondary)', marginLeft: '0.5rem' }}>(VIEWING)</span>}
                                         </span>
+                                    </div>
+                                    <div className="evaluation-row">
+                                        <span className="label-tiny">TARGET</span>
+                                        <span className="case-exp">{testCase.expected || '""'}</span>
+                                    </div>
+                                    <div className="evaluation-row evaluation-actual">
+                                        <span className="label-tiny">OUTPUT</span>
+                                        <div className="actual-row">
+                                            {result.isCorrect ? <span className="icon-check">✓</span> : <span className="icon-cross">×</span>}
+                                            <span className="result-val" style={{ color: result.error ? 'var(--error)' : 'inherit' }}>
+                                                {result.error ? String(result.error) : String(result.computed !== "" ? result.computed : '...')}
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             )

@@ -20,7 +20,7 @@ export const chapter4 = {
             type: "challenge",
             title: "Tool: Edge Cleaning",
             goal: "Remove the leading spaces",
-            description: "See? The length was 10, but \"Jean\" only has 4 letters! That means there are hidden spaces.\n\n**New Tool: `trimLeft`**\n\nThis function removes all empty spaces from the **start** (left side) of a string.\n\n**Challenge:**\nClean up the `name` field.",
+            description: "See? The length was 10, but \"Jean\" only has 4 letters! That means there are hidden spaces.\n\n**New Tool: `trimLeft`** (Arity 1)\n\n`{{ trimLeft text }}`\n\nThis function removes all empty spaces from the **start** (left side) of a string.\n\n**Challenge:**\nClean up the `name` field.",
             testCases: [
                 { name: "Dirty Name", data: { "name": "   Jean   " }, expected: "Jean   " }
             ],
@@ -32,11 +32,24 @@ export const chapter4 = {
             type: "challenge",
             title: "Tool: The Nuke",
             goal: "Remove symbols/spaces and convert to UPPERCASE",
-            description: "Sometimes you need to scrub EVERYTHING except the letters and numbers.\n\n**New Tool: `alphanumeric`**\n\nIt destroys spaces, punctuation, symbols—leaving only A-Z and 0-9.\n\n**Reinforcement:**\nLet's combine this with `toUpper` to create a standard, clean ID code.\n\n1. `alphanumeric` the `id_code`.\n2. `toUpper` the result.",
+            description: "Sometimes you need to scrub EVERYTHING except the letters and numbers.\n\n**New Tool: `alphanumeric`** (Arity 1)\n\n`{{ alphanumeric text }}`\n\nIt destroys spaces, punctuation, symbols—leaving only A-Z and 0-9.\n\n**Reinforcement:**\nLet's combine this with `toUpper` to create a standard, clean ID code.\n\n1. `alphanumeric` the `id_code`.\n2. `toUpper` the result.",
             testCases: [
                 { name: "Messy Code", data: { "id_code": "User #123 (active)" }, expected: "USER123ACTIVE" }
             ],
             hints: ["Type {{ toUpper alphanumeric id_code }}"],
+            prefill: "{{}}"
+        },
+        {
+            id: "c4-s3b",
+            type: "challenge",
+            title: "Practice: Normalize Email",
+            goal: "Lowercase the email address",
+            description: "Email addresses are case-insensitive, so it's best practice to normalize them to lowercase.\n\n**Reinforcement: `toLower`** (Arity 1)\n\n`{{ toLower text }}`\n\nConverts all letters to lowercase.\n\n**Challenge:**\nNormalize the `student.email` to lowercase.",
+            testCases: [
+                { name: "Mixed Case", data: { "student": { "email": "Jean.Picard@StarFleet.EDU" } }, expected: "jean.picard@starfleet.edu" },
+                { name: "All Caps", data: { "student": { "email": "ADMIN@SCHOOL.ORG" } }, expected: "admin@school.org" }
+            ],
+            hints: ["{{ toLower student.email }}"],
             prefill: "{{}}"
         },
         {

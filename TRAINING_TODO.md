@@ -96,7 +96,7 @@ These are the first functions introduced, before the pattern was established:
 
 ---
 
-### ⚠️ Chapter 3 Needs Minor Fixes
+### ✅ Chapter 3 Needs Minor Fixes
 
 These have "New Tool:" titles but are **missing the bold label and arity in the description body**:
 
@@ -116,7 +116,7 @@ These have "New Tool:" titles but are **missing the bold label and arity in the 
 
 ---
 
-### ⚠️ Chapter 4 Needs Minor Fixes
+### ✅ Chapter 4 Needs Minor Fixes
 
 These have bold labels but are **missing syntax and/or arity**:
 
@@ -136,7 +136,7 @@ These have bold labels but are **missing syntax and/or arity**:
 
 ---
 
-### ⚠️ Chapter 5 Title Fixes
+### ✅ Chapter 5 Title Fixes
 
 These steps introduce NEW functions but use misleading "Practice:" prefixes:
 
@@ -358,7 +358,63 @@ These steps introduce NEW functions but use misleading "Practice:" prefixes:
 
 ---
 
-## 📝 Notes
+## 📝 Function Reinforcement Analysis
 
-<!-- General notes and observations -->
+### 🔴 Under-Reinforced Functions (Need MORE Practice)
 
+These functions are taught once and rarely/never used again:
+
+| Function | Introduced | Later Uses | Gap | Recommendation |
+|----------|------------|------------|-----|----------------|
+| `leq` | Ch5 S8 | ❌ NEVER | ∞ | **Critical** - Add practice in Ch6 or Ch7 |
+| `toLower` | Ch2 S3 | Ch3 S1 only | 1 use | Add more uses in Ch3-4 |
+| `initials` | Ch3 S3 | Ch3 S4 only | 1 use | Add use case in Ch8 or Ch10 |
+| `alphanumeric` | Ch4 S3 | Ch10 S8 only | 6 chapters! | Add practice in Ch6-7 |
+| `geq` | Ch5 S6 | Ch6 S14 only | 1 use | Add more comparison practice |
+| `less` | Ch5 S7 | Ch10 S4 only | 5 chapters! | Add practice in Ch6-7 |
+| `textAfterLast` | Ch9 S7 | Immediate only | 0 | Add use in Ch10 |
+
+### Proposed Reinforcement Additions
+
+#### ✅ For `leq` (Never used after intro!) - DONE
+Added to **Chapter 7** (Nested Logic):
+- [x] S9: "Practice: Age Check" - `{{if (leq student.age 18) "Minor" "Adult"}}`
+
+#### For `toLower` (Only 1 later use)
+Add to **Chapter 4** (Cleaning Data):
+- S-NEW: "Normalize Email" - `{{toLower student.email}}`
+
+#### For `less` and `geq` (Big gaps)
+Add to **Chapter 6** (Advanced Logic):
+- S-NEW: "Range Check" - `{{and geq score 50 less score 100}}`
+
+#### For `alphanumeric` (6 chapter gap!)
+Add to **Chapter 6** (Password Validator section):
+- Combine with existing validation example
+
+#### ✅ For `initials` (Only 1 later use) - DONE
+Added to **Chapter 10** (The Analyst):
+- [x] S7-initials: "Practice: Report Header Initials" - `{{concat "Report by: " (initials analyst.name)}}`
+
+---
+
+### ✅ Well-Reinforced Functions (Good Examples)
+
+| Function | Uses After Intro | Notes |
+|----------|------------------|-------|
+| `if` | 30+ | Core logic, used everywhere ✅ |
+| `concat` | 15+ | Essential glue, great coverage ✅ |
+| `equals` | 15+ | Used in every logic chapter ✅ |
+| `ignoreIfNull` | 8 | Solid chapter coverage ✅ |
+| `and` | 7 | Good logic chain practice ✅ |
+| `toUpper` | 6+ | Nice spread across chapters ✅ |
+| `length` | 6+ | Used in validation examples ✅ |
+
+---
+
+### Reinforcement Principle
+
+**Target:** Every function should be used at least **3 times** after introduction:
+1. Immediate practice (same step or next)
+2. Combined with other functions (same chapter)
+3. Revisited in a later chapter (spaced repetition)

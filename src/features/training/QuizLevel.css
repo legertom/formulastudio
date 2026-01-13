@@ -295,6 +295,13 @@
     border: 1px solid rgba(16, 185, 129, 0.2);
 }
 
+.results-hint {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 400;
+    opacity: 0.8;
+}
+
 .focus-editor {
     width: 100%;
     min-height: 200px;
@@ -381,26 +388,24 @@
 
 .focus-test-item {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
+    flex-direction: column;
+    padding: 1rem 1.25rem;
     border-radius: 6px;
     background: var(--bg-secondary);
     border: 1px solid var(--glass-border);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .focus-test-item:hover {
     background: var(--bg-tertiary);
-    transform: translateY(-1px);
+    border-color: rgba(255, 255, 255, 0.15);
 }
 
 .focus-test-item.selected {
     border-color: var(--accent-primary);
-    box-shadow: 0 0 0 1px var(--accent-primary);
-    background: rgba(99, 102, 241, 0.08);
+    background: rgba(99, 102, 241, 0.06);
 }
 
 .focus-test-item.pass {
@@ -412,21 +417,56 @@
     /* Neutral until focused/error */
 }
 
-.item-lhs {
-    display: flex;
-    flex-direction: column;
-}
-
-.case-exp {
-    font-size: 0.8rem;
+.label-tiny {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
     color: var(--text-muted);
+    opacity: 0.4;
+    margin-right: 0.75rem;
+    min-width: 60px;
 }
 
-.item-rhs {
+.focus-test-item.selected .label-tiny {
+    opacity: 0.8;
+    color: var(--accent-secondary);
+}
+
+.evaluation-row {
+    display: flex;
+    align-items: flex-start;
+    padding: 0.25rem 0;
+}
+
+.evaluation-actual {
+    margin-top: 0.4rem;
+    padding-top: 0.6rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.actual-row {
     display: flex;
     align-items: center;
     gap: 0.75rem;
     font-family: var(--font-mono);
+    word-break: break-all;
+    flex: 1;
+}
+
+.case-name {
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.case-exp {
+    font-size: 0.850rem;
+    color: var(--text-muted);
+}
+
+.focus-test-item {
+    padding: 1rem 1.25rem;
 }
 
 .btn-focus-continue {
@@ -615,6 +655,14 @@
     display: flex;
     flex-direction: column;
     min-height: 300px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.training-layout-workbench .focus-editor-section .editor-label-row {
+    margin-top: -0.25rem;
 }
 
 .training-layout-workbench .focus-editor-section .syntax-editor-wrapper {
@@ -633,6 +681,15 @@
     gap: 0.75rem;
     min-height: 300px;
     align-self: stretch;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Adjust heading in the new padded container */
+.training-layout-workbench .focus-results .results-label-row {
+    margin-top: -0.25rem;
 }
 
 .training-layout-workbench .results-label-row {
@@ -651,14 +708,13 @@
 
 /* Default: compact rows when there are multiple test cases */
 .training-layout-workbench .focus-validation-list .focus-test-item {
-    min-height: 92px;
-    align-items: flex-start;
+    min-height: 0;
 }
 
-/* When there is only one test case, it can fill the editor height */
+/* When there is only one test case, it can fill the editor height if needed, 
+   but we remove the strict min-height to avoid empty gaps */
 .training-layout-workbench .focus-validation-list .focus-test-item:only-child {
-    flex: 1;
-    min-height: 200px;
+    min-height: 0;
 }
 
 .training-layout-workbench .focus-actions {

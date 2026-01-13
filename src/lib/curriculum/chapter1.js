@@ -76,7 +76,7 @@ export const chapter1 = {
             },
             referenceDataPlacement: "top",
             testCases: [{ name: "Test", data: { name: { first: "Jean-Luc" } }, expected: "" }], // Just a reading step
-            hints: ["Just hit Run to continue"],
+            hints: ["The code is empty - just observe the data panel!"],
             prefill: "{{}}"
         },
         {

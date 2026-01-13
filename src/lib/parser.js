@@ -121,9 +121,29 @@ export function tokenize(input) {
             let value = '';
             let start = current;
 
-            while (/[a-zA-Z0-9_.-]/.test(char) && current < input.length) {
-                value += char;
-                char = input[++current];
+            // Allow [a-zA-Z0-9_.-] plus bracket notation like [0], [12] etc.
+            while (current < input.length) {
+                char = input[current];
+                if (/[a-zA-Z0-9_.-]/.test(char)) {
+                    value += char;
+                    current++;
+                } else if (char === '[') {
+                    // Start of array index - consume [number]
+                    value += char;
+                    current++;
+                    // Consume digits
+                    while (current < input.length && /[0-9]/.test(input[current])) {
+                        value += input[current];
+                        current++;
+                    }
+                    // Expect closing bracket
+                    if (current < input.length && input[current] === ']') {
+                        value += input[current];
+                        current++;
+                    }
+                } else {
+                    break;
+                }
             }
 
             const type = KEYWORDS.has(value) ? TokenType.KEYWORD : TokenType.IDENTIFIER;
