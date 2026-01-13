@@ -6,6 +6,7 @@ import QuickReference from '../docs/QuickReference'
 import LogicEditor from './LogicEditor'
 import SyntaxHighlightedEditor from './SyntaxHighlightedEditor'
 import FeedbackWidget from '../../components/FeedbackWidget'
+import sampledata from '../../sampledata.json'
 import './Editor.css'
 // App.css is imported in App.jsx or main.jsx, so we might not need it here if styles are global, 
 // but if there are specific styles for the editor, they might be there. 
@@ -37,11 +38,7 @@ const MOCK_DATA = {
     '5': {
         staff: { department: "Business", title: "ACCOUNTANT" }
     },
-    'default': {
-        staff: { title: "Unknown Title", department: "Unknown Dept", job_function: "Unknown Function" },
-        school: { name: "Demo School", sis_id: "000" },
-        user: { name: "Demo User", role: "Admin" }
-    }
+    'default': sampledata
 };
 
 function EditorView() {

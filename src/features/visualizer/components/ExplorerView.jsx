@@ -2,11 +2,12 @@
 import React, { useState, useEffect } from 'react';
 import BlockNode from './BlockNode';
 import { evaluateAndTrace } from '../../../lib/interpreter';
+import sampledata from '../../../sampledata.json';
 
 const ExplorerView = ({ ast }) => {
     // Default test data
-    const [testDataInput, setTestDataInput] = useState('{\n  "pass": "secret"\n}');
-    const [testData, setTestData] = useState({ pass: "secret" });
+    const [testDataInput, setTestDataInput] = useState(JSON.stringify(sampledata, null, 2));
+    const [testData, setTestData] = useState(sampledata);
     const [traceMap, setTraceMap] = useState(new Map());
     const [isTestPanelOpen, setIsTestPanelOpen] = useState(true);
     const [jsonError, setJsonError] = useState(null);
