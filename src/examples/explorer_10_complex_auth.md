@@ -1,2 +1,2 @@
 
-{{ if and active not blocked if or admin editor "Full Access" "Read Only" "No Access" }}
+{{ if and equals staff.department "Administration" not equals staff.title "" if or equals staff.title "Principal" equals staff.title "Assistant Principal" "Full Access" "Limited Access" "No Access" }}
