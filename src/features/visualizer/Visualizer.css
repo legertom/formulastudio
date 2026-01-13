@@ -47,6 +47,92 @@
   border: 1px solid var(--error);
 }
 
+/* Friendly Error Display */
+.visualizer-error-friendly {
+  padding: 1.25rem;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(239, 68, 68, 0.02));
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  margin: 1rem;
+}
+
+.visualizer-error-friendly .error-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.visualizer-error-friendly .error-icon {
+  font-size: 1.5rem;
+}
+
+.visualizer-error-friendly .error-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--error);
+}
+
+.visualizer-error-friendly .error-message {
+  margin: 0 0 1rem 0;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.visualizer-error-friendly .error-suggestions {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.visualizer-error-friendly .suggestions-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.visualizer-error-friendly ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.visualizer-error-friendly li {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  margin-bottom: 0.35rem;
+  line-height: 1.4;
+}
+
+.visualizer-error-friendly .error-details {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.visualizer-error-friendly .error-details summary {
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.visualizer-error-friendly .error-details summary:hover {
+  opacity: 1;
+}
+
+.visualizer-error-friendly .error-details code {
+  display: block;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.75rem;
+  overflow-x: auto;
+}
+
 .node-call {
   margin-left: 1rem;
   margin-top: 0.5rem;
@@ -954,7 +1040,8 @@
 }
 
 .block-leaf-arg {
-  /* Specific styles if it's an argument leaf */
+  /* Argument leaves have slightly different background */
+  background: rgba(255, 255, 255, 0.02);
 }
 
 /* Category Coloring for Guide Lines */
@@ -1031,4 +1118,168 @@
 .block-func-generic::before {
   background: var(--text-muted);
   opacity: 0.3;
+}
+
+/* === JSON Tree Editor Styles === */
+
+.json-tree-editor {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+.tree-controls {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.tree-btn {
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: 4px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tree-btn:hover {
+  background: var(--accent-primary);
+  color: white;
+  border-color: var(--accent-primary);
+}
+
+.tree-root {
+  padding-left: 0;
+}
+
+.tree-node {
+  line-height: 1.6;
+}
+
+.tree-node-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 0;
+  border-radius: 4px;
+  transition: background 0.15s ease;
+}
+
+.tree-node-row:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.tree-connector {
+  color: var(--text-muted);
+  opacity: 0.4;
+  font-size: 0.8em;
+  user-select: none;
+  width: 18px;
+  flex-shrink: 0;
+}
+
+.tree-toggle {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7em;
+  transition: color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.tree-toggle:hover {
+  color: var(--accent-primary);
+}
+
+.tree-toggle-placeholder {
+  width: 16px;
+  flex-shrink: 0;
+}
+
+.tree-key {
+  color: var(--accent-secondary);
+  font-weight: 600;
+}
+
+.tree-colon {
+  color: var(--text-muted);
+  margin-right: 4px;
+}
+
+.tree-type-badge {
+  font-size: 0.75em;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.tree-value-wrapper {
+  cursor: pointer;
+  padding: 1px 4px;
+  border-radius: 4px;
+  transition: background 0.15s ease;
+}
+
+.tree-value-wrapper:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.tree-value {
+  font-family: 'Fira Code', monospace;
+}
+
+.tree-string {
+  color: var(--success);
+}
+
+.tree-number {
+  color: #6ee7b7;
+}
+
+.tree-boolean {
+  color: var(--warning);
+  font-weight: 600;
+}
+
+.tree-null {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.tree-edit-input {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--accent-primary);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-family: 'Fira Code', monospace;
+  font-size: inherit;
+  padding: 2px 6px;
+  outline: none;
+  min-width: 100px;
+}
+
+.tree-children {
+  padding-left: 20px;
+  border-left: 1px solid var(--glass-border);
+  margin-left: 8px;
+}
+
+.tree-empty {
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 1rem;
+  text-align: center;
 }

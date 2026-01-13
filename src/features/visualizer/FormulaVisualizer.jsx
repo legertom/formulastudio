@@ -5,13 +5,32 @@ import './Visualizer.css';
 import GroupLogicView from './components/GroupLogicView';
 import NodeView from './components/NodeView';
 import ExplorerView from './components/ExplorerView';
+import { translateError } from '../../lib/errorMessages';
 
-export default function FormulaVisualizer({ ast, error, mode = 'OU', onHoverNode = () => { }, searchTerm = '', showTestData = true }) {
+export default function FormulaVisualizer({ ast, error, mode = 'OU', onHoverNode = () => { }, searchTerm = '', showTestData = true, testData = null }) {
     if (error) {
+        const friendly = translateError(error);
         return (
-            <div className="visualizer-error" role="alert">
-                <h3>Parse Error</h3>
-                <p>{error.message}</p>
+            <div className="visualizer-error-friendly" role="alert">
+                <div className="error-header">
+                    <span className="error-icon">{friendly.icon}</span>
+                    <h3 className="error-title">{friendly.title}</h3>
+                </div>
+                <p className="error-message">{friendly.message}</p>
+                {friendly.suggestions && friendly.suggestions.length > 0 && (
+                    <div className="error-suggestions">
+                        <span className="suggestions-label">💡 Try this:</span>
+                        <ul>
+                            {friendly.suggestions.map((suggestion, i) => (
+                                <li key={i}>{suggestion}</li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+                <details className="error-details">
+                    <summary>Technical details</summary>
+                    <code>{friendly.original}</code>
+                </details>
             </div>
         );
     }
@@ -22,7 +41,7 @@ export default function FormulaVisualizer({ ast, error, mode = 'OU', onHoverNode
                 <FormulaContext.Provider value={{ loopVariable: null, onHoverNode, searchTerm, mode: 'EXPLORER' }}>
                     <div className="visualizer-scroll">
                         <div className="visualizer-content">
-                            <ExplorerView ast={ast} showTestData={showTestData} />
+                            <ExplorerView ast={ast} showTestData={showTestData} testData={testData} />
                         </div>
                     </div>
                 </FormulaContext.Provider>

@@ -40,26 +40,34 @@ const BlockNode = ({ node, isArg = false, argLabel = null, traceMap = null }) =>
     const TracePill = () => {
         if (!traceData || !isExecuted) return null;
         let valDisplay = String(traceData.value);
-        if (valDisplay.length > 20) valDisplay = valDisplay.substring(0, 17) + '...';
+        if (valDisplay.length > 30) valDisplay = valDisplay.substring(0, 27) + '...';
         if (traceData.value === true) valDisplay = 'true';
         if (traceData.value === false) valDisplay = 'false';
 
         let pillColor = 'var(--text-muted)';
-        if (traceData.value === true) pillColor = 'var(--success)';
-        if (traceData.value === false) pillColor = 'var(--warning)';
+        let pillBg = 'rgba(0,0,0,0.3)';
+        if (traceData.value === true) {
+            pillColor = 'var(--success)';
+            pillBg = 'rgba(34, 197, 94, 0.15)';
+        }
+        if (traceData.value === false) {
+            pillColor = 'var(--warning)';
+            pillBg = 'rgba(245, 158, 11, 0.15)';
+        }
 
         return (
             <span className="block-trace-pill" style={{
-                fontSize: '0.7em',
-                background: 'rgba(0,0,0,0.3)',
-                padding: '1px 6px',
-                borderRadius: '4px',
+                fontSize: '0.85em',
+                background: pillBg,
+                padding: '3px 10px',
+                borderRadius: '6px',
                 marginLeft: 'auto',
-                borderLeft: `2px solid ${pillColor}`,
-                color: 'var(--text-secondary)',
-                fontFamily: 'monospace'
+                borderLeft: `3px solid ${pillColor}`,
+                color: pillColor,
+                fontFamily: 'monospace',
+                fontWeight: 600
             }}>
-                ➜ {valDisplay}
+                → {valDisplay}
             </span>
         );
     };

@@ -1,54 +1,54 @@
 {
   "name": {
-    "first": "Jean-Luc",
-    "last": "Picard"
+    "first": "Maria",
+    "last": "Santos"
   },
-  "email": "jeanluc@example.com",
-  "school_name": "school name",
+  "email": "maria.santos@lincoln.k12.edu",
+  "school_name": "Lincoln Middle School",
   "student": {
     "credentials": {
-      "district_username": "username",
-      "district_password": "fake pw"
+      "district_username": "msantos_2027",
+      "district_password": "TempPass123"
     },
-    "dob": "2001-01-05t00:00:00z",
+    "dob": "2012-03-15T00:00:00Z",
     "ext": {
-      "extension_field_name": "field"
+      "extension_field_name": "iep_status_active"
     },
-    "grade": "11",
+    "grade": "7",
     "graduation_year": "2027",
-    "sis_id": "1111",
-    "state_id": "11111",
-    "student_number": "1111111"
+    "sis_id": "STU-847291",
+    "state_id": "NY-2024-00384",
+    "student_number": "10742"
   },
   "teacher": {
     "credentials": {
-      "district_username": "username",
-      "district_password": "fake pw"
+      "district_username": "jthompson_teach",
+      "district_password": "TeachPass456"
     },
     "ext": {
-      "extension_field_name": "field"
+      "extension_field_name": "certification_math"
     },
-    "sis_id": "1111",
-    "state_id": "11111",
-    "teacher_number": "1111111",
-    "title": "title"
+    "sis_id": "TCH-2847",
+    "state_id": "NY-CERT-58192",
+    "teacher_number": "T-156",
+    "title": "Ms."
   },
   "staff": {
     "credentials": {
-      "district_username": "username",
-      "district_password": "fake pw"
+      "district_username": "kpatel_admin",
+      "district_password": "AdminPass789"
     },
-    "department": "department",
+    "department": "Administration",
     "ext": {
-      "extension_field_name": "field"
+      "extension_field_name": "access_level_3"
     },
-    "staff_id": "1111",
-    "title": "title"
+    "staff_id": "ADM-0394",
+    "title": "Assistant Principal"
   },
   "school": {
-    "district": "district name",
-    "id": "111",
-    "name": "name",
-    "sis_id": "11111"
+    "district": "Riverside Unified School District",
+    "id": "SCH-042",
+    "name": "Lincoln Middle School",
+    "sis_id": "RUSD-LMS-042"
   }
 }

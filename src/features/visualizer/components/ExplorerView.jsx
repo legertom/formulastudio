@@ -1,36 +1,37 @@
 
 import React, { useState, useEffect } from 'react';
 import BlockNode from './BlockNode';
+import JsonTreeEditor from './JsonTreeEditor';
 import { evaluateAndTrace } from '../../../lib/interpreter';
 import sampledata from '../../../sampledata.json';
 
-const ExplorerView = ({ ast, showTestData }) => {
-    // Default test data
-    const [testDataInput, setTestDataInput] = useState(JSON.stringify(sampledata, null, 2));
-    const [testData, setTestData] = useState(sampledata);
+const ExplorerView = ({ ast, showTestData, testData: externalTestData }) => {
+    // Use external testData if provided, otherwise manage locally (for backward compatibility)
+    const [localTestData, setLocalTestData] = useState(sampledata);
+    const testData = externalTestData || localTestData;
+
     const [traceMap, setTraceMap] = useState(new Map());
     const [isTestPanelOpen, setIsTestPanelOpen] = useState(true);
-    const [jsonError, setJsonError] = useState(null);
 
     // Live Evaluation
     useEffect(() => {
         try {
-            const data = JSON.parse(testDataInput);
-            setTestData(data);
-            setJsonError(null);
-
             // Run Interpreter
             if (ast) {
-                const { trace } = evaluateAndTrace(ast, data);
+                const { trace } = evaluateAndTrace(ast, testData);
                 setTraceMap(trace);
             } else {
                 setTraceMap(new Map());
             }
-
         } catch (e) {
-            setJsonError(e.message);
+            // Silently handle evaluation errors
+            console.warn('Evaluation error:', e);
         }
-    }, [ast, testDataInput]);
+    }, [ast, testData]);
+
+    const handleDataChange = (newData) => {
+        setLocalTestData(newData);
+    };
 
     return (
         <div className="explorer-view-container" style={{ padding: '1rem' }}>
@@ -63,33 +64,15 @@ const ExplorerView = ({ ast, showTestData }) => {
                     </div>
 
                     {isTestPanelOpen && (
-                        <div className="explorer-test-body" style={{ padding: '0.5rem' }}>
-                            <textarea
-                                value={testDataInput}
-                                onChange={(e) => setTestDataInput(e.target.value)}
-                                style={{
-                                    width: '100%',
-                                    minHeight: '80px',
-                                    background: 'transparent',
-                                    border: 'none',
-                                    color: 'var(--text-primary)',
-                                    fontFamily: 'monospace',
-                                    fontSize: '0.85rem',
-                                    resize: 'vertical',
-                                    outline: 'none'
-                                }}
+                        <div className="explorer-test-body" style={{
+                            padding: '0.75rem',
+                            maxHeight: '350px',
+                            overflow: 'auto'
+                        }}>
+                            <JsonTreeEditor
+                                data={testData}
+                                onChange={handleDataChange}
                             />
-                            {jsonError && (
-                                <div style={{
-                                    fontSize: '0.75rem',
-                                    color: 'var(--error)',
-                                    marginTop: '4px',
-                                    paddingTop: '4px',
-                                    borderTop: '1px solid var(--glass-border)'
-                                }}>
-                                    Invalid JSON: {jsonError}
-                                </div>
-                            )}
                         </div>
                     )}
                 </div>
@@ -106,3 +89,4 @@ const ExplorerView = ({ ast, showTestData }) => {
 };
 
 export default ExplorerView;
+

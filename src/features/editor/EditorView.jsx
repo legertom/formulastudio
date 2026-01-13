@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { tokenize, parse, stringify, prettyStringify } from '../../lib/parser'
 import { getExamples } from '../../lib/examples'
 import FormulaVisualizer from '../visualizer/FormulaVisualizer'
@@ -7,6 +7,7 @@ import LogicEditor from './LogicEditor'
 import SyntaxHighlightedEditor from './SyntaxHighlightedEditor'
 import FeedbackWidget from '../../components/FeedbackWidget'
 import sampledata from '../../sampledata.json'
+import JsonTreeEditor from '../visualizer/components/JsonTreeEditor'
 import './Editor.css'
 // App.css is imported in App.jsx or main.jsx, so we might not need it here if styles are global, 
 // but if there are specific styles for the editor, they might be there. 
@@ -54,8 +55,28 @@ function EditorView() {
     const [showQuickDocs, setShowQuickDocs] = useState(false);
     const [highlightRange, setHighlightRange] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
-    const [showSyntax, setShowSyntax] = useState(false);
+    const [showSyntax, setShowSyntax] = useState(true);
     const [showTestData, setShowTestData] = useState(true);
+
+    // Panel visibility toggles
+    const [showEditorPanel, setShowEditorPanel] = useState(true);
+    const [showOutputPanel, setShowOutputPanel] = useState(true);
+
+    // Test data state for the standalone Data panel
+    const [testData, setTestData] = useState(sampledata);
+
+    // Hide Data panel by default in OU Logic and Group Logic modes
+    useEffect(() => {
+        if (logicMode === 'OU' || logicMode === 'GROUP') {
+            setShowTestData(false);
+        } else if (logicMode === 'EXPLORER') {
+            setShowTestData(true);
+        }
+    }, [logicMode]);
+
+    // Calculate visible panel count for grid layout
+    // Now showTestData is a TRUE separate panel
+    const visiblePanels = [showEditorPanel, showTestData, showOutputPanel].filter(Boolean).length;
 
     // Get current data context for tooltips
     const dataContext = useMemo(() => {
@@ -177,15 +198,68 @@ function EditorView() {
                     </div>
                 </div>
 
+                {/* Panel Toggle Buttons */}
+                <div className="panel-toggles" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginRight: '0.5rem' }}>Panels:</span>
+                    <button
+                        className={`panel-toggle-btn ${showEditorPanel ? 'active' : ''}`}
+                        onClick={() => setShowEditorPanel(!showEditorPanel)}
+                        style={{
+                            padding: '4px 10px',
+                            borderRadius: '4px',
+                            background: showEditorPanel ? 'var(--accent-primary)' : 'var(--bg-tertiary)',
+                            color: showEditorPanel ? 'white' : 'var(--text-muted)',
+                            border: '1px solid var(--glass-border)',
+                            fontSize: '0.75rem',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s'
+                        }}
+                    >
+                        📝 Editor
+                    </button>
+                    <button
+                        className={`panel-toggle-btn ${showTestData ? 'active' : ''}`}
+                        onClick={() => setShowTestData(!showTestData)}
+                        style={{
+                            padding: '4px 10px',
+                            borderRadius: '4px',
+                            background: showTestData ? 'var(--accent-primary)' : 'var(--bg-tertiary)',
+                            color: showTestData ? 'white' : 'var(--text-muted)',
+                            border: '1px solid var(--glass-border)',
+                            fontSize: '0.75rem',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s'
+                        }}
+                    >
+                        📊 Data
+                    </button>
+                    <button
+                        className={`panel-toggle-btn ${showOutputPanel ? 'active' : ''}`}
+                        onClick={() => setShowOutputPanel(!showOutputPanel)}
+                        style={{
+                            padding: '4px 10px',
+                            borderRadius: '4px',
+                            background: showOutputPanel ? 'var(--accent-primary)' : 'var(--bg-tertiary)',
+                            color: showOutputPanel ? 'white' : 'var(--text-muted)',
+                            border: '1px solid var(--glass-border)',
+                            fontSize: '0.75rem',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s'
+                        }}
+                    >
+                        🔍 Output
+                    </button>
+                </div>
+
                 <div className="header-actions" style={{ display: 'flex', gap: '1rem', marginLeft: 'auto' }}>
                     <button className="btn-secondary" onClick={() => setShowQuickDocs(true)}>Quick Reference</button>
                     <button className="btn-primary" onClick={handleNew}>New Formula</button>
                 </div>
             </header>
 
-            <main className="workspace">
+            <main className="workspace" style={{ gridTemplateColumns: `repeat(${visiblePanels}, 1fr)` }}>
                 {/* Editor Panel */}
-                <div className="panel">
+                {showEditorPanel && <div className="panel">
                     <div className="panel-header">
                         <div className="panel-title">
                             <span>Raw Logic</span>
@@ -265,60 +339,69 @@ function EditorView() {
                             <span>{stats?.lines || 0} lines</span>
                         </div>
                     </div>
-                </div>
+                </div>}
 
-                {/* Visualizer Panel */}
-                <div className="panel">
-                    <div className="panel-header">
-                        <div className="panel-title">
-                            <span>Visualizer</span>
-                            <span style={{ fontSize: '0.8em', opacity: 0.5, fontWeight: 'normal' }}>Live Preview</span>
-                        </div>
-                        <div className="panel-controls" style={{ marginLeft: 'auto' }}>
-                            <div className="search-box" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ position: 'absolute', left: '8px', opacity: 0.5 }}>
-                                    <circle cx="11" cy="11" r="8"></circle>
-                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                </svg>
-                                <input
-                                    type="text"
-                                    placeholder="Search"
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                    style={{
-                                        background: 'rgba(0,0,0,0.2)',
-                                        border: '1px solid var(--glass-border)',
-                                        borderRadius: '4px',
-                                        padding: '4px 8px 4px 28px',
-                                        fontSize: '0.85rem',
-                                        color: 'var(--text-primary)',
-                                        width: '140px',
-                                        outline: 'none',
-                                        transition: 'width 0.2s'
-                                    }}
-                                    onFocus={(e) => e.target.style.width = '200px'}
-                                    onBlur={(e) => e.target.style.width = '140px'}
-                                />
+                {/* Data Panel - Now its own separate panel */}
+                {showTestData && (
+                    <div className="panel">
+                        <div className="panel-header">
+                            <div className="panel-title">
+                                <span>Test Data</span>
+                                <span style={{ fontSize: '0.8em', opacity: 0.5, fontWeight: 'normal' }}>Live Wire</span>
                             </div>
-                            <label className="toggle-label" style={{ display: 'flex', alignItems: 'center', fontSize: '0.8rem', marginLeft: '1rem', cursor: 'pointer', gap: '6px' }}>
-                                <input
-                                    type="checkbox"
-                                    checked={showTestData}
-                                    onChange={(e) => setShowTestData(e.target.checked)}
-                                    style={{ cursor: 'pointer' }}
-                                />
-                                Show Test Data
-                            </label>
+                        </div>
+                        <div className="data-panel-wrapper" style={{ padding: '1rem', overflow: 'auto', flex: 1 }}>
+                            <JsonTreeEditor
+                                data={testData}
+                                onChange={setTestData}
+                            />
                         </div>
                     </div>
-                    <div className="visualizer-wrapper">
-                        <FormulaVisualizer ast={ast} error={error} mode={logicMode} onHoverNode={setHighlightRange} searchTerm={searchTerm} showTestData={showTestData} />
-                    </div>
-                </div>
-            </main >
+                )}
 
-            {showQuickDocs && <QuickReference onClose={() => setShowQuickDocs(false)} />
-            }
+                {/* Output/Visualizer Panel */}
+                {showOutputPanel &&
+                    <div className="panel">
+                        <div className="panel-header">
+                            <div className="panel-title">
+                                <span>Visualizer</span>
+                                <span style={{ fontSize: '0.8em', opacity: 0.5, fontWeight: 'normal' }}>Live Preview</span>
+                            </div>
+                            <div className="panel-controls" style={{ marginLeft: 'auto' }}>
+                                <div className="search-box" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ position: 'absolute', left: '8px', opacity: 0.5 }}>
+                                        <circle cx="11" cy="11" r="8"></circle>
+                                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                    </svg>
+                                    <input
+                                        type="text"
+                                        placeholder="Search"
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        style={{
+                                            background: 'rgba(0,0,0,0.2)',
+                                            border: '1px solid var(--glass-border)',
+                                            borderRadius: '4px',
+                                            padding: '4px 8px 4px 28px',
+                                            fontSize: '0.85rem',
+                                            color: 'var(--text-primary)',
+                                            width: '140px',
+                                            outline: 'none',
+                                            transition: 'width 0.2s'
+                                        }}
+                                        onFocus={(e) => e.target.style.width = '200px'}
+                                        onBlur={(e) => e.target.style.width = '140px'}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="visualizer-wrapper">
+                            <FormulaVisualizer ast={ast} error={error} mode={logicMode} onHoverNode={setHighlightRange} searchTerm={searchTerm} showTestData={false} testData={testData} />
+                        </div>
+                    </div>}
+            </main>
+
+            {showQuickDocs && <QuickReference onClose={() => setShowQuickDocs(false)} />}
             <FeedbackWidget location="Editor" />
         </>
     );
