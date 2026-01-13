@@ -6,7 +6,7 @@ import GroupLogicView from './components/GroupLogicView';
 import NodeView from './components/NodeView';
 import ExplorerView from './components/ExplorerView';
 
-export default function FormulaVisualizer({ ast, error, mode = 'OU', onHoverNode = () => { }, searchTerm = '' }) {
+export default function FormulaVisualizer({ ast, error, mode = 'OU', onHoverNode = () => { }, searchTerm = '', showTestData = true }) {
     if (error) {
         return (
             <div className="visualizer-error" role="alert">
@@ -16,22 +16,22 @@ export default function FormulaVisualizer({ ast, error, mode = 'OU', onHoverNode
         );
     }
 
-    if (!ast) {
-        return <div className="visualizer-empty">No Formula Parsed</div>;
-    }
-
     if (mode === 'EXPLORER') {
         return (
             <div className="visualizer-container">
                 <FormulaContext.Provider value={{ loopVariable: null, onHoverNode, searchTerm, mode: 'EXPLORER' }}>
                     <div className="visualizer-scroll">
                         <div className="visualizer-content">
-                            <ExplorerView ast={ast} />
+                            <ExplorerView ast={ast} showTestData={showTestData} />
                         </div>
                     </div>
                 </FormulaContext.Provider>
             </div>
         );
+    }
+
+    if (!ast) {
+        return <div className="visualizer-empty">No Formula Parsed</div>;
     }
 
     if (mode === 'GROUP') {

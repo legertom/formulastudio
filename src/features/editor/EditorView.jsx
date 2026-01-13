@@ -46,18 +46,16 @@ function EditorView() {
     const examples = useMemo(() => getExamples(), []);
 
     // Initialize with Example 0
-    const defaultExample = examples.find(ex => ex.name === '0');
-
     // Editor State
-    const [logicMode, setLogicMode] = useState(defaultExample ? defaultExample.type : 'OU'); // 'OU', 'GROUP'
-    const [formula, setFormula] = useState(defaultExample ? defaultExample.formula : `{{if equals staff.title "SECRETARY" "Business" 
-  if equals staff.title "SPECIAL ED DIRECTOR" "Business" 
-  if equals staff.title "BUSINESS MANAGER" "Business" "Unknown"}}`)
-    const [selectedExample, setSelectedExample] = useState(defaultExample ? '0' : '');
+    // Default to Explorer mode with empty formula
+    const [logicMode, setLogicMode] = useState('EXPLORER');
+    const [formula, setFormula] = useState('{{}}');
+    const [selectedExample, setSelectedExample] = useState('');
     const [showQuickDocs, setShowQuickDocs] = useState(false);
     const [highlightRange, setHighlightRange] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [showSyntax, setShowSyntax] = useState(false);
+    const [showTestData, setShowTestData] = useState(true);
 
     // Get current data context for tooltips
     const dataContext = useMemo(() => {
@@ -302,15 +300,25 @@ function EditorView() {
                                     onBlur={(e) => e.target.style.width = '140px'}
                                 />
                             </div>
+                            <label className="toggle-label" style={{ display: 'flex', alignItems: 'center', fontSize: '0.8rem', marginLeft: '1rem', cursor: 'pointer', gap: '6px' }}>
+                                <input
+                                    type="checkbox"
+                                    checked={showTestData}
+                                    onChange={(e) => setShowTestData(e.target.checked)}
+                                    style={{ cursor: 'pointer' }}
+                                />
+                                Show Test Data
+                            </label>
                         </div>
                     </div>
                     <div className="visualizer-wrapper">
-                        <FormulaVisualizer ast={ast} error={error} mode={logicMode} onHoverNode={setHighlightRange} searchTerm={searchTerm} />
+                        <FormulaVisualizer ast={ast} error={error} mode={logicMode} onHoverNode={setHighlightRange} searchTerm={searchTerm} showTestData={showTestData} />
                     </div>
                 </div>
-            </main>
+            </main >
 
-            {showQuickDocs && <QuickReference onClose={() => setShowQuickDocs(false)} />}
+            {showQuickDocs && <QuickReference onClose={() => setShowQuickDocs(false)} />
+            }
             <FeedbackWidget location="Editor" />
         </>
     );
