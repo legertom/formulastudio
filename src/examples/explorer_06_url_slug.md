@@ -1,2 +1,2 @@
 
-{{ replace toLower title " " "-" }}
+{{ replace toLower staff.title " " "-" }}

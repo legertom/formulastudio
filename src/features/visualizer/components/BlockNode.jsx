@@ -2,6 +2,11 @@
 import React, { useContext } from 'react';
 import { FormulaContext } from '../FormulaContext';
 import CleanValue from './CleanValue';
+import InFunctionView from './InFunctionView';
+import EqualsFunctionView from './EqualsFunctionView';
+import IfFunctionView from './IfFunctionView';
+import ReplaceFunctionView from './ReplaceFunctionView';
+import TextTransformView from './TextTransformView';
 
 
 const BlockNode = ({ node, isArg = false, argLabel = null, traceMap = null }) => {
@@ -101,8 +106,59 @@ const BlockNode = ({ node, isArg = false, argLabel = null, traceMap = null }) =>
     if (node.type === 'CallExpression') {
         const funcName = node.name.toLowerCase();
 
+        // Special handling for 'in' function - use enhanced visualization
+        if (funcName === 'in' && node.arguments.length >= 2) {
+            return (
+                <div style={executionStyle}>
+                    {argLabel && <span className="block-arg-label-top">{argLabel}</span>}
+                    <InFunctionView node={node} traceMap={traceMap} onHoverNode={onHoverNode} />
+                </div>
+            );
+        }
+
+        // Special handling for 'equals' function - use enhanced visualization
+        if (funcName === 'equals' && node.arguments.length >= 2) {
+            return (
+                <div style={executionStyle}>
+                    {argLabel && <span className="block-arg-label-top">{argLabel}</span>}
+                    <EqualsFunctionView node={node} traceMap={traceMap} onHoverNode={onHoverNode} />
+                </div>
+            );
+        }
+
+        // Special handling for 'if' function - use enhanced visualization
+        if (funcName === 'if' && node.arguments.length >= 2) {
+            return (
+                <div style={executionStyle}>
+                    {argLabel && <span className="block-arg-label-top">{argLabel}</span>}
+                    <IfFunctionView node={node} traceMap={traceMap} onHoverNode={onHoverNode} />
+                </div>
+            );
+        }
+
+        // Special handling for 'replace' function - use enhanced visualization
+        if (funcName === 'replace' && node.arguments.length >= 3) {
+            return (
+                <div style={executionStyle}>
+                    {argLabel && <span className="block-arg-label-top">{argLabel}</span>}
+                    <ReplaceFunctionView node={node} traceMap={traceMap} onHoverNode={onHoverNode} />
+                </div>
+            );
+        }
+
+        // Special handling for text transform functions - use enhanced visualization
+        const textTransformFuncs = ['tolower', 'toupper', 'upper', 'lower', 'trim', 'initials', 'alphanumeric'];
+        if (textTransformFuncs.includes(funcName) && node.arguments.length >= 1) {
+            return (
+                <div style={executionStyle}>
+                    {argLabel && <span className="block-arg-label-top">{argLabel}</span>}
+                    <TextTransformView node={node} traceMap={traceMap} onHoverNode={onHoverNode} funcName={funcName} />
+                </div>
+            );
+        }
+
         // Simple Function Check (Inline)
-        const isSimple = ['len', 'upper', 'lower', 'trim', 'not', 'contains'].includes(funcName) &&
+        const isSimple = ['len', 'not', 'contains'].includes(funcName) &&
             node.arguments.every(arg => arg.type === 'StringLiteral' || arg.type === 'Identifier' || arg.type === 'NumberLiteral');
 
         if (isSimple) {

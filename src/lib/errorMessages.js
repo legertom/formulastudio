@@ -3,6 +3,30 @@
  */
 
 const errorPatterns = [
+    // Unterminated string - very specific match for the parser's error
+    {
+        pattern: /unterminated string/i,
+        icon: '💬',
+        title: 'Missing Closing Quote',
+        message: 'A string is missing its closing quote mark ( " ).',
+        suggestions: [
+            'Find the string that\'s missing its ending "',
+            'Each piece of text needs quotes on BOTH sides: "text"',
+            'Look for: "text here  ← needs a " at the end'
+        ]
+    },
+    // Unknown character - like stray parentheses or other symbols
+    {
+        pattern: /unknown character/i,
+        icon: '🚫',
+        title: 'Unexpected Character',
+        message: 'Your formula contains a character that isn\'t used in IDM syntax.',
+        suggestions: [
+            'IDM formulas don\'t use ( ) parentheses',
+            'Just use spaces between function name and arguments',
+            'Example: concat "A" "B" (not concat("A", "B"))'
+        ]
+    },
     // Missing closing brackets/parens
     {
         pattern: /unexpected.*end of input|unexpected token.*EOF/i,
@@ -11,20 +35,20 @@ const errorPatterns = [
         message: 'Your formula seems to be missing something at the end.',
         suggestions: [
             'Check that all {{ }} brackets are properly closed',
-            'Make sure all parentheses () are balanced',
-            'Verify all quotes are closed'
+            'Verify all quotes are closed (each " needs a matching ")',
+            'Make sure strings look like "text" or "1 2 3"'
         ]
     },
-    // Missing closing parenthesis
+    // Missing closing quote
     {
         pattern: /expected.*\)|unclosed.*\(|missing.*\)/i,
         icon: '🔧',
-        title: 'Missing Parenthesis',
-        message: 'A function is missing its closing parenthesis.',
+        title: 'Missing Quote',
+        message: 'A string is missing its closing quote mark.',
         suggestions: [
-            'Every ( needs a matching )',
-            'Count your parentheses - they should be equal',
-            'Check nested functions for missing closers'
+            'Every " needs a matching " at the end',
+            'Example: "hello" not "hello',
+            'Check the highlighted area in the editor'
         ]
     },
     // Unexpected token
@@ -34,9 +58,9 @@ const errorPatterns = [
         title: 'Quote Issue',
         message: 'There seems to be a problem with quotes in your formula.',
         suggestions: [
-            'Make sure all strings are wrapped in matching quotes',
-            'Check for unescaped quotes inside strings',
-            'Verify commas between function arguments'
+            'Make sure all text strings have quotes on both sides: "text"',
+            'Check for a missing opening or closing quote mark',
+            'Example: in list "a b c" (not "a b c or a b c")'
         ]
     },
     // Unexpected comma
@@ -46,9 +70,9 @@ const errorPatterns = [
         title: 'Comma Placement',
         message: 'There\'s an unexpected comma in your formula.',
         suggestions: [
-            'Commas separate function arguments',
-            'Remove any trailing commas before )',
-            'Check for double commas'
+            'IDM syntax uses spaces, not commas, between arguments',
+            'Example: concat "A" "B" (not concat "A", "B")',
+            'Remove any commas between values'
         ]
     },
     // Unknown function
@@ -70,9 +94,9 @@ const errorPatterns = [
         title: 'Missing Argument',
         message: 'A function is missing required arguments.',
         suggestions: [
-            'Most functions need at least one argument',
-            'Check syntax: functionName(arg1, arg2)',
-            'Empty parentheses () are usually invalid'
+            'Most functions need at least one argument after the name',
+            'Example: upper "text" or concat "a" "b"',
+            'Use Quick Reference to see what each function needs'
         ]
     },
     // Generic bracket error
@@ -94,9 +118,9 @@ const errorPatterns = [
         title: 'Syntax Error',
         message: 'There\'s a syntax issue in your formula.',
         suggestions: [
-            'Look carefully at the characters near the indicated position',
-            'Check for missing commas between arguments',
-            'Verify function syntax: name(arg1, arg2)'
+            'Look for missing or mismatched quote marks',
+            'Check that {{ }} brackets are balanced',
+            'Example syntax: functionName argument1 argument2'
         ]
     }
 ];
@@ -108,7 +132,7 @@ const defaultError = {
     message: 'Something isn\'t quite right with your formula.',
     suggestions: [
         'Check that {{ }} brackets are balanced',
-        'Verify function syntax: name(arg1, arg2)',
+        'Make sure all quotes are closed: "text"',
         'Use Quick Reference for function examples'
     ]
 };

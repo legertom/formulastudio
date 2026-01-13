@@ -1,2 +1,2 @@
 
-{{ if geq grade "09" "High School" "Middle School" }}
+{{ if geq student.grade "09" "High School" "Middle School" }}
