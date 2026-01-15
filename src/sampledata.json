@@ -3,8 +3,8 @@
     "first": "Maria",
     "last": "Santos"
   },
-  "email": "maria.santos@lincoln.k12.edu",
-  "school_name": "Lincoln Middle School",
+  "email": "maria.santos@sweetvalley.k12.edu",
+  "school_name": "Sweet Valley Middle",
   "student": {
     "credentials": {
       "district_username": "msantos_2027",
@@ -43,12 +43,12 @@
       "extension_field_name": "access_level_3"
     },
     "staff_id": "ADM-0394",
-    "title": "Assistant Principal"
+    "title": "Deputy Head"
   },
   "school": {
-    "district": "Riverside Unified School District",
+    "district": "Wonderland District",
     "id": "SCH-042",
-    "name": "Lincoln Middle School",
+    "name": "Sweet Valley Middle",
     "sis_id": "RUSD-LMS-042"
   }
 }

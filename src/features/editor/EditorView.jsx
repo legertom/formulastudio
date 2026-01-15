@@ -17,27 +17,27 @@ import './Editor.css'
 // Mock Data for "Current Value" tooltips
 const MOCK_DATA = {
     '0': {
-        staff: { title: "SECRETARY" }
+        staff: { title: "REGISTRAR" }
     },
     '1': {
-        staff: { title: "NURSE" },
-        school: { name: "LOCUST ELEMENTARY" }
+        staff: { title: "MATRON" },
+        school: { name: "Walkerville Elementary" }
     },
     '2': {
         school: {
             sis_id: "138",
-            name: "Hellyer Elementary"
+            name: "Pippi Pursuit Elementary"
         }
     },
     '3': {
-        staff: { department: "Math" }
+        staff: { department: "Administration" }
     },
     '4': {
-        school: { name: "Central High" },
+        school: { name: "Rydell High" },
         staff: { job_function: "Instructional" }
     },
     '5': {
-        staff: { department: "Business", title: "ACCOUNTANT" }
+        staff: { department: "Administration", title: "BURSAR" }
     },
     'default': sampledata
 };
