@@ -2,6 +2,7 @@ export const chapter3 = {
     id: "chapter-3",
     title: "Chapter 3: Advanced Strings",
     description: "Substrings and more complex operations.",
+    functions: ["initials", "substr"],
     steps: [
         {
             id: "c3-s1",

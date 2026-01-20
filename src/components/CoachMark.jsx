@@ -4,9 +4,21 @@ import { createPortal } from 'react-dom';
 const CoachMark = ({ targetSelector, message, placement = 'top' }) => {
     const [position, setPosition] = useState(null);
     const [visible, setVisible] = useState(false);
+    const dismissed = useRef(false);
+
+    const dismiss = () => {
+        dismissed.current = true;
+        setVisible(false);
+    };
 
     useEffect(() => {
+        // Reset dismissed state when coach mark changes
+        dismissed.current = false;
+
         const updatePosition = () => {
+            // Don't show again if user dismissed it
+            if (dismissed.current) return;
+
             const target = document.querySelector(targetSelector);
             if (!target) {
                 setVisible(false);
@@ -46,7 +58,7 @@ const CoachMark = ({ targetSelector, message, placement = 'top' }) => {
         // Auto-dismiss logic: Add click listener to the target element
         const targetEl = document.querySelector(targetSelector);
         const handleTargetClick = () => {
-            setVisible(false);
+            dismiss();
         };
 
         if (targetEl) {
@@ -64,7 +76,7 @@ const CoachMark = ({ targetSelector, message, placement = 'top' }) => {
             window.removeEventListener('resize', updatePosition);
             window.removeEventListener('scroll', updatePosition);
         };
-    }, [targetSelector, placement]);
+    }, [targetSelector, placement, message]);
 
     if (!visible || !position) return null;
 
@@ -81,11 +93,11 @@ const CoachMark = ({ targetSelector, message, placement = 'top' }) => {
         borderRadius: '8px',
         maxWidth: '250px',
         zIndex: 9999,
-        boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
+        boxShadow: '0 0 20px rgba(108, 92, 231, 0.6), 0 4px 15px rgba(0,0,0,0.3)',
         fontSize: '0.9rem',
         fontWeight: 500,
         pointerEvents: 'none', // Critical: Let clicks pass through so user can actually click the target!
-        animation: 'fadeIn 0.3s ease-out',
+        animation: 'coachMarkPulse 2s ease-in-out infinite',
         whiteSpace: 'normal',
         textAlign: 'center',
         lineHeight: '1.4'
@@ -126,12 +138,42 @@ const CoachMark = ({ targetSelector, message, placement = 'top' }) => {
 
 
 
+    const closeButtonStyle = {
+        position: 'absolute',
+        top: '4px',
+        right: '6px',
+        background: 'rgba(255, 255, 255, 0.2)',
+        border: 'none',
+        color: 'white',
+        width: '18px',
+        height: '18px',
+        borderRadius: '50%',
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: '12px',
+        fontWeight: 'bold',
+        lineHeight: 1,
+        padding: 0,
+        transition: 'background 0.15s ease',
+    };
+
     return createPortal(
         <div
-            style={{ ...style, pointerEvents: 'auto', cursor: 'pointer' }}
+            style={{ ...style, pointerEvents: 'auto', cursor: 'pointer', paddingTop: '1.2rem' }}
             className="coach-mark"
-            onClick={() => setVisible(false)}
+            onClick={dismiss}
         >
+            <button
+                style={closeButtonStyle}
+                onClick={(e) => { e.stopPropagation(); dismiss(); }}
+                onMouseEnter={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.35)'}
+                onMouseLeave={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.2)'}
+                aria-label="Close"
+            >
+                ×
+            </button>
             {message}
             <div style={arrowStyle} />
         </div>,

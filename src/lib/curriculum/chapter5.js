@@ -2,6 +2,7 @@ export const chapter5 = {
     id: "chapter-5",
     title: "Chapter 5: Basic Logic",
     description: "Master the art of decision making with if, equals, and comparison logic.",
+    functions: ["equals", "if", "greater", "geq", "less", "leq"],
     steps: [
         {
             id: "c5-s1",

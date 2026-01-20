@@ -2,6 +2,7 @@ export const chapter6 = {
     id: "chapter-6",
     title: "Chapter 6: Advanced Logic",
     description: "Combine decisions with and, or, not, and contains.",
+    functions: ["and", "or", "not", "contains", "in"],
     steps: [
         {
             id: "c6-s1",

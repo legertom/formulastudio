@@ -39,8 +39,10 @@ The AST allows the application to render a **Visual Node Graph**. Instead of jus
 
 ## Features
 
+-   **Interactive Training Curriculum**: A gamified, 11-chapter learning path to take users from "Zero to Hero" in formula writing.
 -   **Live Syntax Validation**: Errors are highlighted immediately if you miss a quote or a parenthesis.
 -   **One-Click Formatting**: Automatically indents and structures your code for maximum readability.
+-   **Integrated Documentation**: Instant access to definitions and examples for every supported function.
 -   **Example Library**: A built-in collection of common logic patterns to learn from and adapt.
 -   **Stats**: Real-time character and line counts to keep your formulas concise.
 
@@ -66,19 +68,30 @@ Run the test suite:
 npm run test
 ```
 
+## Architecture
+
+Formula Studio is architected as a static **Single Page Application (SPA)**. This design choice highlights a commitment to security, speed, and reliability.
+
+### 1. Zero-Latency Execution
+Logic is parsed and evaluated entirely within the client's browser using a custom recursive descent parser. There are no server round-trips for syntax checking. This ensures that visual feedback is instantaneous—key to a "flow state" developer experience. 
+
+### 2. "Air-Gapped" Security
+Because the application requires no active backend, it is effectively air-gapped from the perspective of data storage. 
+- **No Database**: There is no central database to breach.
+- **No Data Exfiltration**: User data (formulas and test inputs) never leaves the browser session.
+- **Enterprise Ready**: This "static asset" model is the gold standard for secure internal tooling, as it eliminates entire classes of server-side vulnerabilities.
+
+### 3. Distributed Computing
+By offloading the computational work of traversing ASTs (Abstract Syntax Trees) to the client, the application scales effortlessly. Whether one user or ten thousand users are debugging complex formulas simultaneously, performance remains constant and degradation-free.
+
 ## License
 
-### Léger Equity & Attribution License (LEAL) v1.0
+### MIT License
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, subject to the following conditions:
+Copyright (c) 2026 Tom Léger
 
-**1. The Attribution Clause**
-Any substantial use, reproduction, or distribution of this Software must distinctly and publicly attribute the work to **Tom Léger**. This attribution must be prominent and visible to end-users.
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, subject to the following conditions:
 
-**2. The Compensation Clause**
-If this Software is utilized by the current employer of Tom Léger, said employer is logically and ethically bound to provide Tom Léger with:
-*   (a) A significant raise in compensation, AND/OR
-*   (b) An impressive title bump reflecting his obvious mastery of software engineering.
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-**3. No Warranty**
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

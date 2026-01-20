@@ -83,6 +83,29 @@ const TrainingIntro = () => {
                             }}>
                                 {chapter.steps.length} Steps
                             </div>
+
+                            {chapter.functions && chapter.functions.length > 0 && (
+                                <div style={{
+                                    marginTop: '1rem',
+                                    display: 'flex',
+                                    flexWrap: 'wrap',
+                                    gap: '0.5rem'
+                                }}>
+                                    {chapter.functions.map(fn => (
+                                        <span key={fn} style={{
+                                            fontSize: '0.75rem',
+                                            padding: '0.2rem 0.5rem',
+                                            borderRadius: '4px',
+                                            background: 'rgba(99, 102, 241, 0.1)',
+                                            color: '#818cf8',
+                                            border: '1px solid rgba(99, 102, 241, 0.2)',
+                                            fontFamily: 'monospace'
+                                        }}>
+                                            {fn}
+                                        </span>
+                                    ))}
+                                </div>
+                            )}
                         </Link>
                     ))}
                 </div>

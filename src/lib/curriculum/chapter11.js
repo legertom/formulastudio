@@ -2,6 +2,7 @@ export const chapter11 = {
     id: "chapter-11",
     title: "Chapter 11: Working with Lists",
     description: "Master the art of loops with forEach to process multiple items.",
+    functions: ["forEach"],
     steps: [
         // === Part 1: The "Box" vs The "Folders" (S1-6) ===
         {

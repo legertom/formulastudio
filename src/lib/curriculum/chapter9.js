@@ -2,6 +2,7 @@ export const chapter9 = {
     id: "chapter-9",
     title: "Chapter 9: Messy Data",
     description: "Learn how to extract data when you don't know the exact position.",
+    functions: ["textBefore", "textAfter", "textAfterLast"],
     steps: [
         {
             id: "c9-s1",

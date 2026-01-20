@@ -2,6 +2,7 @@ export const chapter2 = {
     id: "chapter-2",
     title: "Chapter 2: String Manipulation",
     description: "Learn to join strings and manipulate text using functions.",
+    functions: ["toUpper", "toLower", "length", "concat"],
     steps: [
         // === toUpper Block (S1-4): OBSERVE → MODIFY → WRITE → PRACTICE ===
         {

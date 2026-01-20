@@ -2,15 +2,16 @@ export const chapter4 = {
     id: "chapter-4",
     title: "Chapter 4: Cleaning Data",
     description: "Master the art of the Data Janitor: trimming, replacing, and analyzing.",
+    functions: ["trimLeft", "alphanumeric", "replace", "add"],
     steps: [
         {
             id: "c4-s1",
             type: "challenge",
             title: "Refresher: Length",
-            goal: "Check the length of the dirty string",
-            description: "It's time to become a **Data Janitor**.\n\nData often comes in \"dirty\"—with extra spaces, weird symbols, or typos. Before we clean it, let's analyze it.\n\n**Challenge:**\nUse the `length` function (Arity 1) to count the characters in the `name` field.\n\n(It looks like \"Jean\", but is it?)",
+            goal: "Check the length of the raw string",
+            description: "It's time to become a **Data Janitor**.\n\nData often comes in \"raw\"—with extra spaces, weird symbols, or typos. Before we clean it, let's analyze it.\n\n**Challenge:**\nUse the `length` function (Arity 1) to count the characters in the `name` field.\n\n(It looks like \"Jean\", but is it?)",
             testCases: [
-                { name: "Dirty Name", data: { "name": "   Jean   " }, expected: "10" }
+                { name: "Raw Name", data: { "name": "   Jean   " }, expected: "10" }
             ],
             hints: ["Type {{ length name }}"],
             prefill: "{{}}"
@@ -22,7 +23,7 @@ export const chapter4 = {
             goal: "Remove the leading spaces",
             description: "See? The length was 10, but \"Jean\" only has 4 letters! That means there are hidden spaces.\n\n**New Tool: `trimLeft`** (Arity 1)\n\n`{{ trimLeft text }}`\n\nThis function removes all empty spaces from the **start** (left side) of a string.\n\n**Challenge:**\nClean up the `name` field.",
             testCases: [
-                { name: "Dirty Name", data: { "name": "   Jean   " }, expected: "Jean   " }
+                { name: "Raw Name", data: { "name": "   Jean   " }, expected: "Jean   " }
             ],
             hints: ["Type {{ trimLeft name }}"],
             prefill: "{{}}"

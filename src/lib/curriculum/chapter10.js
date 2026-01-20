@@ -2,6 +2,7 @@ export const chapter10 = {
     id: "chapter-10",
     title: "Chapter 10: The Analyst",
     description: "Master dates, math, and data reporting.",
+    functions: ["subtract", "formatDate", "delimiterCapitalize"],
     steps: [
         {
             id: "c10-s1",

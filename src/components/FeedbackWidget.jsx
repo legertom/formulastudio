@@ -221,6 +221,18 @@ const FeedbackWidget = ({ location = 'Unknown' }) => {
         };
     };
 
+    // Touch support for iPad/mobile
+    const getTouchPos = (e) => {
+        const touch = e.touches[0] || e.changedTouches[0];
+        const rect = canvasRef.current.getBoundingClientRect();
+        const scaleX = canvasRef.current.width / rect.width;
+        const scaleY = canvasRef.current.height / rect.height;
+        return {
+            x: (touch.clientX - rect.left) * scaleX,
+            y: (touch.clientY - rect.top) * scaleY
+        };
+    };
+
     const renderCanvas = () => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
@@ -293,6 +305,27 @@ const FeedbackWidget = ({ location = 'Unknown' }) => {
         }
         currentPoints.current = [];
         renderCanvas();
+    };
+
+    // Touch event handlers for iPad/mobile
+    const handleTouchStart = (e) => {
+        e.preventDefault(); // Prevent scrolling while drawing
+        isDrawing.current = true;
+        const pos = getTouchPos(e);
+        currentPoints.current = [pos];
+        renderCanvas();
+    };
+
+    const handleTouchMove = (e) => {
+        if (!isDrawing.current) return;
+        e.preventDefault();
+        const pos = getTouchPos(e);
+        currentPoints.current.push(pos);
+        renderCanvas();
+    };
+
+    const handleTouchEnd = (e) => {
+        stopDrawing();
     };
 
     const handleClear = () => {
@@ -386,7 +419,11 @@ const FeedbackWidget = ({ location = 'Unknown' }) => {
                                 onMouseMove={draw}
                                 onMouseUp={stopDrawing}
                                 onMouseLeave={stopDrawing}
-                                style={{ maxWidth: '100%', display: 'block' }}
+                                onTouchStart={handleTouchStart}
+                                onTouchMove={handleTouchMove}
+                                onTouchEnd={handleTouchEnd}
+                                onTouchCancel={handleTouchEnd}
+                                style={{ maxWidth: '100%', display: 'block', touchAction: 'none' }}
                             />
                         </div>
 

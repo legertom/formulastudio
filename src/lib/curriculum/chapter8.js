@@ -2,6 +2,7 @@ export const chapter8 = {
     id: "chapter-8",
     title: "Chapter 8: Handling Missing Data",
     description: "Safely work with optional fields using ignoreIfNull.",
+    functions: ["ignoreIfNull"],
     steps: [
         {
             id: "c8-s1",
