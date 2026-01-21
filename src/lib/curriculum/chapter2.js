@@ -4,18 +4,18 @@ export const chapter2 = {
     description: "Learn to join strings and manipulate text using functions.",
     functions: ["toUpper", "toLower", "length", "concat"],
     steps: [
-        // === toUpper Block (S1-4): OBSERVE → MODIFY → WRITE → PRACTICE ===
+        // === toUpper Block (S1-5): INTRO → PATTERN → PRACTICE → PRACTICE → VARIABLES ===
         {
             id: "c2-s1",
             type: "challenge",
             title: "Meet Your First Function",
-            goal: "See what toUpper does",
-            description: "Functions are the **Verbs** of code. They are magic words that **DO** things to your data.\n\nThere are only 29 of them, and each one does a specific, unique job.\n\n**New Tool: `toUpper`** (Arity 1)\n\n`{{ toUpper text }}`\n\nConverts all letters to UPPERCASE. Think of it like the CAPS LOCK key.\n\n**Challenge:**\nThe code is already written below. Look at the output to see what `toUpper` does!",
+            goal: "Turn hello into HELLO",
+            description: "Functions are the **Verbs** of code—magic words that **DO** things to your data.\n\nThere are only 29 of them, and each one does a specific, unique job.\n\n**New Function: `toUpper`** (Arity 1)\n\n`{{ toUpper text }}`\n\nConverts all letters to UPPERCASE. Think of it like the CAPS LOCK key.\n\n**Challenge:**\nThe **literal** text `\"hello\"` is already in the editor. Add `toUpper` before it to transform it.",
             testCases: [
                 { name: "Test", data: {}, expected: "HELLO" }
             ],
-            hints: ["The code is already written - just observe the result!"],
-            prefill: "{{ toUpper \"hello\" }}"
+            hints: ["Add toUpper before \"hello\"", "Type {{ toUpper \"hello\" }}"],
+            prefill: "{{ \"hello\" }}"
         },
         {
             id: "c2-s2",
@@ -32,48 +32,49 @@ export const chapter2 = {
         {
             id: "c2-s3",
             type: "challenge",
-            title: "Change the Input",
+            title: "Practice: Change the Input",
             goal: "Change \"hello\" to \"world\"",
-            description: "Great! You just saw your first function in action.\n\nThe text inside the quotes is called an **Argument**—it's the input you give to the function.\n\n**Challenge:**\nModify the code to uppercase the word `\"world\"` instead of `\"hello\"`.",
+            description: "Great! You just saw your first function in action.\n\nThe text inside the quotes is called an **Argument**—it's the input you give to the function.\n\n**Challenge:**\nChange the **literal** text from `\"hello\"` to `\"world\"` to uppercase a different word.",
             testCases: [
                 { name: "Test", data: {}, expected: "WORLD" }
             ],
-            hints: ["Change \"hello\" to \"world\""],
+            hints: ["Change the text inside the quotes", "Replace \"hello\" with \"world\""],
             prefill: "{{ toUpper \"hello\" }}"
         },
         {
             id: "c2-s4",
             type: "challenge",
-            title: "Write It Yourself",
+            title: "Practice: Write It Yourself",
             goal: "Uppercase the word \"goodbye\"",
-            description: "Now try writing the whole thing from scratch!\n\n**Pattern:** `{{ function argument }}`\n\n**Challenge:**\nUse `toUpper` to uppercase the word `\"goodbye\"`.",
+            description: "Now try writing the whole thing from scratch!\n\n**Pattern:** `{{ function argument }}`\n\n**Challenge:**\nWrite a formula using `toUpper` on the **literal** `\"goodbye\"`.",
             testCases: [
                 { name: "Test", data: {}, expected: "GOODBYE" }
             ],
-            hints: ["Type {{ toUpper \"goodbye\" }}"],
+            hints: ["Remember: function first, then the text", "Type {{ toUpper \"goodbye\" }}"],
             prefill: "{{}}"
         },
         {
             id: "c2-s5",
             type: "challenge",
             title: "Functions on Variables",
-            goal: "Uppercase the first name",
-            description: "Arguments can also be **Variables** (Fields from your data).\n\nInstead of typing `\"Jean\"`, you can use `name.first` to reference the data.\n\n**Challenge:**\nUse `toUpper` on the `name.first` variable.",
+            goal: "Uppercase the department name",
+            description: "So far you've used `toUpper` on **literals**—text you typed directly.\n\nNow let's use it on a **variable**—data that changes per person!\n\n**Challenge:**\nWrite a formula to uppercase `staff.department`.",
+            referenceDataPlacement: "top",
             testCases: [
-                { name: "Jean", data: { "name": { "first": "Jean" } }, expected: "JEAN" },
-                { name: "William", data: { "name": { "first": "William" } }, expected: "WILLIAM" }
+                { name: "Engineering", data: { "staff": { "department": "engineering" } }, expected: "ENGINEERING" },
+                { name: "Sales", data: { "staff": { "department": "sales" } }, expected: "SALES" }
             ],
-            hints: ["Type {{ toUpper name.first }}"],
+            hints: ["Instead of \"text\", use the variable staff.department", "Type {{ toUpper staff.department }}"],
             prefill: "{{}}"
         },
 
-        // === toLower Block (S5-7): NEW TOOL → PRACTICE → COMPARE ===
+        // === toLower Block (S6-8): NEW FUNCTION → PRACTICE → COMPARE ===
         {
             id: "c2-s6",
             type: "challenge",
             title: "The Opposite: toLower",
             goal: "Lowercase the first name",
-            description: "Every CAPS LOCK has an opposite.\n\n**New Tool: `toLower`** (Arity 1)\n\n`{{ toLower text }}`\n\nConverts all letters to lowercase. The mirror image of `toUpper`.\n\n**Challenge:**\nUse `toLower` on the `name.first` variable.",
+            description: "Every CAPS LOCK has an opposite.\n\n**New Function: `toLower`** (Arity 1)\n\n`{{ toLower text }}`\n\nConverts all letters to lowercase. The mirror image of `toUpper`.\n\n**Challenge:**\nUse `toLower` on the `name.first` variable.",
             testCases: [
                 { name: "JEAN", data: { "name": { "first": "JEAN" } }, expected: "jean" },
                 { name: "Mixed", data: { "name": { "first": "JeAn" } }, expected: "jean" }
@@ -85,13 +86,14 @@ export const chapter2 = {
             id: "c2-s7",
             type: "challenge",
             title: "Practice: toLower",
-            goal: "Lowercase the department name",
-            description: "Let's practice with a different variable.\n\n**Challenge:**\nUse `toLower` on the `department` variable.",
+            goal: "Lowercase the district username",
+            description: "Let's practice with a nested variable.\n\nRemember **dot notation** from Chapter 1? You can chain dots to access deeply nested data.\n\n**Challenge:**\nUse `toLower` on `teacher.credentials.district_username`.",
+            referenceDataPlacement: "top",
             testCases: [
-                { name: "Engineering", data: { "department": "ENGINEERING" }, expected: "engineering" },
-                { name: "Sales", data: { "department": "Sales" }, expected: "sales" }
+                { name: "Teacher 1", data: { "teacher": { "credentials": { "district_username": "JSMITH" } } }, expected: "jsmith" },
+                { name: "Teacher 2", data: { "teacher": { "credentials": { "district_username": "APatel" } } }, expected: "apatel" }
             ],
-            hints: ["Type {{ toLower department }}"],
+            hints: ["Chain the dots: teacher.credentials.district_username", "Type {{ toLower teacher.credentials.district_username }}"],
             prefill: "{{}}"
         },
         {
@@ -114,7 +116,7 @@ export const chapter2 = {
             type: "challenge",
             title: "Counting Characters",
             goal: "Count the letters in \"argument\"",
-            description: "Not all functions transform text—some analyze it.\n\n**New Tool: `length`** (Arity 1)\n\n`{{ length text }}`\n\nCounts the number of characters in text. Like counting letters on a Scrabble board.\n\n**Challenge:**\nUse `length` to count the letters in `\"argument\"`.",
+            description: "Not all functions transform text—some analyze it.\n\n**New Function: `length`** (Arity 1)\n\n`{{ length text }}`\n\nCounts the number of characters in text. Like counting letters on a Scrabble board.\n\n**Challenge:**\nUse `length` to count the letters in `\"argument\"`.",
             testCases: [
                 { name: "Test", data: {}, expected: "8" }
             ],
@@ -125,26 +127,28 @@ export const chapter2 = {
             id: "c2-s10",
             type: "challenge",
             title: "Practice: length",
-            goal: "Count the characters in the first name",
-            description: "Let's apply `length` to a variable.\n\n**Challenge:**\nCount the characters in `name.first`.",
+            goal: "Count the characters in the state ID",
+            description: "Let's apply `length` to a nested variable.\n\nThe `student.state_id` field contains an ID like `\"NY-2024-00384\"`.\n\n**Challenge:**\nCount the characters in `student.state_id`.",
+            referenceDataPlacement: "top",
             testCases: [
-                { name: "Jean", data: { "name": { "first": "Jean" } }, expected: "4" },
-                { name: "Jean-Luc", data: { "name": { "first": "Jean-Luc" } }, expected: "8" }
+                { name: "NY Student", data: { "student": { "state_id": "NY-2024-00384" } }, expected: "13" },
+                { name: "CA Student", data: { "student": { "state_id": "CA-991" } }, expected: "6" }
             ],
-            hints: ["Type {{ length name.first }}"],
+            hints: ["Use dot notation: student.state_id", "Type {{ length student.state_id }}"],
             prefill: "{{}}"
         },
         {
             id: "c2-s11",
             type: "challenge",
             title: "Why Length Matters",
-            goal: "Check the length of the username",
-            description: "Real-world use case: Validating input length.\n\nUsernames often have character limits. The first step is knowing how long they are.\n\n**Challenge:**\nGet the `length` of the `username` field.",
+            goal: "Check the length of the district username",
+            description: "Real-world use case: Validating input length.\n\nUsernames often have character limits. Getting the length is the first step to validation.\n\n**Challenge:**\nGet the `length` of `student.credentials.district_username`.",
+            referenceDataPlacement: "top",
             testCases: [
-                { name: "Short", data: { "username": "jdoe" }, expected: "4" },
-                { name: "Long", data: { "username": "captain_picard" }, expected: "14" }
+                { name: "Maria", data: { "student": { "credentials": { "district_username": "msantos_2027" } } }, expected: "12" },
+                { name: "Jean-Luc", data: { "student": { "credentials": { "district_username": "jpicard_2030" } } }, expected: "12" }
             ],
-            hints: ["Type {{ length username }}"],
+            hints: ["Chain the dots: student.credentials.district_username", "Type {{ length student.credentials.district_username }}"],
             prefill: "{{}}"
         },
 
@@ -154,7 +158,7 @@ export const chapter2 = {
             type: "challenge",
             title: "Joining Text",
             goal: "Join \"Super\" and \"Man\"",
-            description: "Some functions need more than one argument.\n\n**New Tool: `concat`** (Arity 2)\n\n`{{ concat text1 text2 }}`\n\nShort for \"concatenate\"—it glues two pieces of text together. Like taping two pieces of paper end-to-end.\n\n**Challenge:**\nUse `concat` to join `\"Super\"` and `\"Man\"`.",
+            description: "Some functions need more than one argument.\n\n**New Function: `concat`** (Arity 2)\n\n`{{ concat text1 text2 }}`\n\nShort for \"concatenate\"—it glues two pieces of text together. Like taping two pieces of paper end-to-end.\n\n**Challenge:**\nUse `concat` to join `\"Super\"` and `\"Man\"`.",
             testCases: [
                 { name: "Test", data: {}, expected: "SuperMan" }
             ],
@@ -189,7 +193,7 @@ export const chapter2 = {
             id: "c2-s15",
             type: "challenge",
             title: "Mixed Arguments",
-            goal: "Add a prefix to the last name",
+            goal: "Add a title before the last name",
             description: "You can mix **Strings** and **Variables**.\n\n**Challenge:**\nJoin the text `\"Agent \"` (notice the space!) with the `name.last` variable.",
             testCases: [
                 { name: "Bond", data: { "name": { "last": "Bond" } }, expected: "Agent Bond" }
@@ -197,50 +201,64 @@ export const chapter2 = {
             hints: ["Type {{ concat \"Agent \" name.last }}"],
             prefill: "{{}}"
         },
+        // === Nesting Block (S16-19): CONCEPT → PRACTICE → FULL NAME → OUTER ===
         {
             id: "c2-s16",
             type: "challenge",
-            title: "Exam: Full Name",
-            goal: "Output First + Space + Last",
-            description: "Combine everything you've learned to build a Full Name.\n\n**The Goal:** Join the `name.first` and `name.last` fields with a **space** in the middle.\n\n💡 **HINT:** You'll need to nest a `concat` inside another `concat`.\n\nThink of it as: `First + (Space + Last)`",
+            title: "Functions Inside Functions",
+            goal: "Make the name UPPERCASE",
+            description: "Functions can be used inside other functions. This is called **Nesting**.\n\nThe code below outputs `\"Hello, Jean\"`. But we want `\"Hello, JEAN\"`!\n\n**Challenge:**\nReplace `name.first` with `toUpper name.first` to uppercase just the name.",
             testCases: [
-                { name: "Standard User", data: { "name": { "first": "Jean", "last": "Picard" } }, expected: "Jean Picard" }
+                { name: "Jean", data: { "name": { "first": "Jean", "last": "Picard" } }, expected: "Hello, JEAN" }
             ],
-            hints: [
-                "First: concat \" \" name.last → \" Picard\"",
-                "Then: concat name.first (result) → \"Jean Picard\"",
-                "{{ concat name.first (concat \" \" name.last) }}"
-            ],
-            prefill: "{{}}"
+            hints: ["Replace name.first with toUpper name.first", "{{ concat \"Hello, \" toUpper name.first }}"],
+            prefill: "{{ concat \"Hello, \" name.first }}"
         },
-
-        // === Nesting Block (S16-18): CONCEPT → PRACTICE → EXAM ===
         {
             id: "c2-s17",
             type: "challenge",
-            title: "Functions Inside Functions",
-            goal: "Shout a greeting to Jean",
-            description: "Functions can be used inside other functions. This is called **Nesting**.\n\nThink of it in steps:\n1. The **inner** function runs first: `toUpper` turns `name.first` into \"JEAN\".\n2. The **outer** function runs next: `concat` joins \"HELLO \" with that result.\n\n**Challenge:**\nCreate the output `\"HELLO JEAN\"` by nesting `toUpper` inside `concat`.",
+            title: "Practice: Nesting",
+            goal: "Shout the last name in a greeting",
+            description: "Same pattern, different data.\n\nThis time, uppercase the **last name** instead.\n\n**Challenge:**\nUse `concat` to join `\"Hello, \"` with `toUpper name.last`.\n\nExpected output: `\"Hello, PICARD\"`",
             testCases: [
-                { name: "Jean", data: { "name": { "first": "Jean" } }, expected: "HELLO JEAN" }
+                { name: "Jean", data: { "name": { "first": "Jean", "last": "Picard" } }, expected: "Hello, PICARD" },
+                { name: "Beverly", data: { "name": { "first": "Beverly", "last": "Crusher" } }, expected: "Hello, CRUSHER" }
             ],
-            hints: ["Type {{ concat \"HELLO \" (toUpper name.first) }}"],
+            hints: ["Same pattern as before, just use name.last", "{{ concat \"Hello, \" toUpper name.last }}"],
             prefill: "{{}}"
         },
         {
             id: "c2-s18",
             type: "challenge",
-            title: "Outer Nesting",
-            goal: "Shout the whole greeting",
-            description: "You can also transform the **result** of a function.\n\nThis time, let's build the greeting first, THEN uppercase the whole thing.\n\n**Challenge:**\n1. Use `concat` to join `\"Hello \"` and `name.first`.\n2. Wrap the WHOLE thing in `toUpper`.",
+            title: "Full Name",
+            goal: "Output First + Space + Last",
+            description: "Now let's nest `concat` inside another `concat`.\n\n**The Goal:** Join `name.first` and `name.last` with a **space** in the middle.\n\nThink of it as: `First + (Space + Last)`\n\n**Challenge:**\nCreate the output `\"Jean Picard\"`.",
             testCases: [
-                { name: "Jean", data: { "name": { "first": "Jean" } }, expected: "HELLO JEAN" }
+                { name: "Jean", data: { "name": { "first": "Jean", "last": "Picard" } }, expected: "Jean Picard" },
+                { name: "Beverly", data: { "name": { "first": "Beverly", "last": "Crusher" } }, expected: "Beverly Crusher" }
             ],
-            hints: ["Type {{ toUpper (concat \"Hello \" name.first) }}"],
+            hints: [
+                "First: concat \" \" name.last → \" Picard\"",
+                "Then: concat name.first [that result] → \"Jean Picard\"",
+                "{{ concat name.first concat \" \" name.last }}"
+            ],
             prefill: "{{}}"
         },
         {
             id: "c2-s19",
+            type: "challenge",
+            title: "Outer Nesting",
+            goal: "Shout the whole greeting",
+            description: "You can also transform the **result** of a function.\n\nThis time, build the greeting first, THEN uppercase **everything**.\n\n**Challenge:**\n1. Use `concat` to join `\"Hello \"` and `name.first`.\n2. Wrap the WHOLE thing in `toUpper`.\n\nExpected output: `\"HELLO JEAN\"`",
+            testCases: [
+                { name: "Jean", data: { "name": { "first": "Jean", "last": "Picard" } }, expected: "HELLO JEAN" },
+                { name: "Beverly", data: { "name": { "first": "Beverly", "last": "Crusher" } }, expected: "HELLO BEVERLY" }
+            ],
+            hints: ["Build the greeting first, then uppercase it", "{{ toUpper concat \"Hello \" name.first }}"],
+            prefill: "{{}}"
+        },
+        {
+            id: "c2-s20",
             type: "challenge",
             title: "Chapter 2 Final Exam",
             goal: "Create a formatted greeting",
@@ -258,10 +276,10 @@ export const chapter2 = {
                 }
             ],
             hints: [
-                "Start with the full name: concat name.first (concat \" \" name.last)",
-                "Add the prefix: concat \"Welcome, \" (fullname)",
-                "Add the suffix: concat (...) \"!\"",
-                "Uppercase everything: toUpper (...)"
+                "Start with the full name: concat name.first concat \" \" name.last",
+                "Add the text before: concat \"Welcome, \" [fullname]",
+                "Add the exclamation after: concat [result] \"!\"",
+                "Uppercase everything: toUpper [entire formula]"
             ],
             prefill: "{{}}"
         }
