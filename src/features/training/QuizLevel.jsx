@@ -14,6 +14,8 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep 
     const [results, setResults] = useState([]);
     const [visibleHints, setVisibleHints] = useState(0);
     const [selectedCaseIndex, setSelectedCaseIndex] = useState(0);
+    const [selectedAnswer, setSelectedAnswer] = useState(null);
+    const [answerStatus, setAnswerStatus] = useState(null); // null, 'correct', 'incorrect'
 
     // Initialize/Reset
     useEffect(() => {
@@ -22,6 +24,8 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep 
         setResults([]);
         setVisibleHints(0);
         setSelectedCaseIndex(0);
+        setSelectedAnswer(null);
+        setAnswerStatus(null);
     }, [level]);
 
     // Challenge Logic
@@ -121,6 +125,169 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep 
         );
     }
 
+    // ---- RENDER MULTIPLE CHOICE ----
+    if (level.type === 'multiple-choice') {
+        const handleOptionClick = (option) => {
+            setSelectedAnswer(option);
+            if (option === level.correctAnswer) {
+                setAnswerStatus('correct');
+                onComplete();
+            } else {
+                setAnswerStatus('incorrect');
+            }
+        };
+
+        const isCorrect = answerStatus === 'correct';
+
+        return (
+            <div className={`quiz-level layout-focus training-style-${UI_STYLE} training-layout-${LAYOUT}`}>
+                <div className="focus-container">
+                    <div className="focus-header">
+                        <button className="btn-back-simple" onClick={onPrev} disabled={isFirstStep}>← Back</button>
+                        <div className="focus-breadcrumbs">{level.title}</div>
+                    </div>
+
+                    <h1 className="focus-title">{level.title}</h1>
+
+                    <div className="focus-content">
+                        {renderMarkdownText(level.description)}
+                    </div>
+
+                    {/* Reference Data for context */}
+                    {level.referenceData && (
+                        <div className="focus-reference-card" style={{ width: '100%', marginBottom: '1.5rem' }}>
+                            <div className="card-header" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                                <span className="icon">🗂️</span>
+                                <span>Reference Data (JSON)</span>
+                            </div>
+                            <pre className="json-content" style={{ maxHeight: '200px', overflow: 'auto' }}>
+                                {JSON.stringify(level.referenceData, null, 2)}
+                            </pre>
+                        </div>
+                    )}
+
+                    {/* Question */}
+                    <div className="focus-goal-card" style={{ marginBottom: '1.5rem' }}>
+                        <div className="card-label">QUESTION</div>
+                        <div className="card-text" style={{ fontSize: '1.1rem' }}>{renderMarkdownText(level.question)}</div>
+                    </div>
+
+                    {/* Options */}
+                    <div className="mc-options" style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                        gap: '0.75rem',
+                        marginBottom: '2rem'
+                    }}>
+                        {level.options.map((option, idx) => {
+                            const letter = String.fromCharCode(65 + idx); // A, B, C, D
+                            const isSelected = selectedAnswer === option;
+                            const isThisCorrect = option === level.correctAnswer;
+
+                            let bgColor = 'var(--bg-secondary)';
+                            let borderColor = 'var(--glass-border)';
+                            let textColor = 'var(--text-primary)';
+
+                            if (isSelected) {
+                                if (isThisCorrect) {
+                                    bgColor = 'rgba(76, 175, 80, 0.15)';
+                                    borderColor = 'var(--success)';
+                                    textColor = 'var(--success)';
+                                } else {
+                                    bgColor = 'rgba(244, 67, 54, 0.15)';
+                                    borderColor = 'var(--error)';
+                                    textColor = 'var(--error)';
+                                }
+                            }
+
+                            return (
+                                <button
+                                    key={idx}
+                                    onClick={() => handleOptionClick(option)}
+                                    disabled={isCorrect}
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '0.75rem',
+                                        padding: '1rem 1.25rem',
+                                        background: bgColor,
+                                        border: `2px solid ${borderColor}`,
+                                        borderRadius: '8px',
+                                        cursor: isCorrect ? 'default' : 'pointer',
+                                        textAlign: 'left',
+                                        fontSize: '1rem',
+                                        color: textColor,
+                                        transition: 'all 0.2s ease',
+                                        opacity: isCorrect && !isSelected ? 0.5 : 1
+                                    }}
+                                >
+                                    <span style={{
+                                        width: '28px',
+                                        height: '28px',
+                                        borderRadius: '50%',
+                                        background: isSelected ? borderColor : 'var(--bg-tertiary)',
+                                        color: isSelected ? '#fff' : 'var(--text-muted)',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        fontWeight: 700,
+                                        fontSize: '0.85rem',
+                                        flexShrink: 0
+                                    }}>
+                                        {isSelected && isThisCorrect ? '✓' : letter}
+                                    </span>
+                                    <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 500 }}>{option}</span>
+                                </button>
+                            );
+                        })}
+                    </div>
+
+                    {/* Hints */}
+                    {level.hints && level.hints.length > 0 && !isCorrect && (
+                        <div className="focus-hints" style={{ marginBottom: '1.5rem' }}>
+                            {level.hints.slice(0, visibleHints).map((h, i) => (
+                                <div key={i} className="hint-text" style={{ marginBottom: '0.5rem' }}>
+                                    {renderMarkdownText(h)}
+                                </div>
+                            ))}
+                            {visibleHints < level.hints.length && (
+                                <button className="btn-hint-link" onClick={() => setVisibleHints(prev => prev + 1)}>
+                                    {visibleHints === 0 ? "Need a hint?" : "Show next hint"}
+                                </button>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Success banner */}
+                    {isCorrect && (
+                        <div className="success-banner-fixed">
+                            <div className="success-icon">🎉</div>
+                            <div className="success-message">
+                                <strong>Correct!</strong> Great observation.
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="focus-actions">
+                        {isCorrect ? (
+                            <button className="btn-focus-continue" onClick={onNext}>✓ Continue →</button>
+                        ) : (
+                            <button className="btn-focus-skip" onClick={onNext}>Skip →</button>
+                        )}
+                    </div>
+
+                    {level.coachMark && (
+                        <CoachMark
+                            targetSelector={level.coachMark.target}
+                            message={level.coachMark.text}
+                            placement={level.coachMark.placement || 'top'}
+                        />
+                    )}
+                </div>
+            </div>
+        );
+    }
+
     // ---- RENDER CHALLENGE (FOCUS FLOW - GLOBAL) ----
     const isAllCorrect = results.length > 0 && results.every(r => r.isCorrect);
 
@@ -202,7 +369,7 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep 
                 {/* Workbench Area: Implied Grid via CSS 'training-layout-workbench' */}
 
                 {/* Left Col: Editor */}
-                <div className="focus-editor-section" style={{ marginTop: 0 }}>
+                <div className={`focus-editor-section ${isAllCorrect ? 'success' : ''}`} style={{ marginTop: 0 }}>
                     <div className="editor-label-row">
                         <label>Formula Editor</label>
                         <div className="live-tag">Live Preview</div>
@@ -271,11 +438,21 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep 
                     </div>
                 </div>
 
+                {/* Fixed success banner at top of screen */}
+                {isAllCorrect && (
+                    <div className="success-banner-fixed">
+                        <div className="success-icon">🎉</div>
+                        <div className="success-message">
+                            <strong>Great job!</strong> Your formula is correct.
+                        </div>
+                    </div>
+                )}
+
                 <div className="focus-actions">
                     {isAllCorrect ? (
-                        <button className="btn-focus-continue" onClick={onNext}>Continue →</button>
+                        <button className="btn-focus-continue" onClick={onNext}>✓ Continue →</button>
                     ) : (
-                        <button className="btn-focus-continue disabled" disabled>Continue →</button>
+                        <button className="btn-focus-skip" onClick={onNext}>Skip →</button>
                     )}
                 </div>
 

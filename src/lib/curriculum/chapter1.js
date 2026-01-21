@@ -27,10 +27,10 @@ export const chapter1 = {
             id: "c1-s3",
             type: "challenge",
             title: "The Space Rule",
-            goal: "Output the phrase: \"The global identity platform for education\"",
-            description: "Computers are very strict.\n\nSpaces **inside** the quotes matter.\n\n`\" A \"` is different from `\"A\"`.\n\n**Challenge:**\nOutput the exact phrase below (don't forget the spaces!).",
-            testCases: [{ name: "Test", data: {}, expected: "The global identity platform for education" }],
-            hints: ["Type {{ \"The global identity platform for education\" }}"],
+            goal: "Output the phrase: \"A B C\"",
+            description: "Computers are very strict.\n\nSpaces **inside** the quotes matter.\n\n`\"Cat Dog\"` is different from `\"CatDog\"`.\n\n**Challenge:**\nOutput the exact phrase below (don't forget the spaces!).",
+            testCases: [{ name: "Test", data: {}, expected: "A B C" }],
+            hints: ["Type {{ \"A B C\" }}"],
             prefill: "{{}}"
         },
         {
@@ -48,7 +48,7 @@ export const chapter1 = {
             type: "challenge",
             title: "The Quote Rule (Part 2)",
             goal: "Fix it by adding quotes",
-            description: "The previous step gave an **Error**.\n\nThat's because the computer looked for a variable named `Hello`, couldn't find it, and panicked.\n\n**Fix it:**\nAdd quotes around `\"Hello\"` to tell the computer: \"Relax, it's just text.\"",
+            description: "The previous step gave an **Error**.\n\nThat's because the computer looked for a variable named `Hello`, couldn't find it, and panicked.\n\n**Fix it:**\nAdd quotes around `\"Hello\"` to tell the computer: \"Relax, it's just text.\"\n\n**Note:** The quotes wrap just the text—no extra spaces needed.",
             testCases: [{ name: "Test", data: {}, expected: "Hello" }],
             hints: ["Type {{ \"Hello\" }}"],
             prefill: "{{ Hello }}"
@@ -65,26 +65,22 @@ export const chapter1 = {
         },
         {
             id: "c1-s7",
-            type: "challenge",
+            type: "multiple-choice",
             title: "The Reference Panel",
-            goal: "Locate the Reference Data panel below",
-            description: "So far, we've just typed text.\n\nBut the real power of IDM is using **Data** that already exists.\n\nLook at the **Reference Data** panel below.\n\nThis is the \"Brain\" of the computer—everything it knows about the current user.",
-            coachMark: {
-                target: ".focus-reference-card",
-                text: "This panel shows all available data.",
-                placement: "top"
-            },
-            referenceDataPlacement: "top",
-            testCases: [{ name: "Test", data: { name: { first: "Jean-Luc" } }, expected: "" }], // Just a reading step
-            hints: ["The code is empty - just observe the data panel!"],
-            prefill: "{{}}"
+            goal: "Find the value stored in the data",
+            description: "So far, we've just typed text.\n\nBut the real power of IDM is using **Data** that already exists.\n\nLook at the **Reference Data** panel below. This is the \"Brain\" of the computer—everything it knows about the current user.",
+            question: "What is the value of `first`?",
+            options: ["Jean-Luc", "name", "first", "Picard"],
+            correctAnswer: "Jean-Luc",
+            referenceData: { name: { first: "Jean-Luc", last: "Picard" } },
+            hints: ["Look at the JSON data in the Reference Data panel", "Find the key called `first` and look at its value"]
         },
         {
             id: "c1-s8",
             type: "challenge",
             title: "Your First Variable",
             goal: "Output the user's name",
-            description: "Data is like a Locker Room. Every locker has a **Name** and something inside.\n\n```\nName        Inside\n\"name\"  -> \"Jean-Luc\"\n```\n\nWe call the Name a **Key** because it **unlocks** the data.\n\nTo get the value `Jean-Luc`, use the Key: `name`.",
+            description: "Data is like a Locker Room. Every locker has a **Key** (the label) and a **Value** (what's inside).\n\n```\nKey         Value\n\"name\"  ->  \"Jean-Luc\"\n```\n\nThe **Key** unlocks the data. To get the value `Jean-Luc`, use the key: `name`.",
             referenceDataPlacement: "top",
             testCases: [{ name: "User", data: { "name": "Jean-Luc" }, expected: "Jean-Luc" }],
             hints: ["Type {{ name }}"],
@@ -106,7 +102,7 @@ export const chapter1 = {
             type: "challenge",
             title: "Variables (The Value)",
             goal: "Output the data inside name",
-            description: "Now remove the quotes: `{{ name }}`.\n\nThis is a **Variable**. You are telling the computer: \"Go look up the value for `name`.\"\n\n**Key Concept:**\nThe Variable `name` changes for every person. Checks the different users above to see it change!",
+            description: "**Fix the formula** by removing the quotation marks around `name`.\n\nWithout quotes, `name` becomes a **Variable**. The computer will look up the value for that key.\n\n**Key Concept:**\nThe Variable `name` changes for every person. Click the different users above to see it change!",
             coachMark: {
                 target: ".ref-avatar-1",
                 text: "Click here to see Beverly's data.",
@@ -117,14 +113,14 @@ export const chapter1 = {
                 { name: "Jean-Luc", data: { "name": "Jean-Luc" }, expected: "Jean-Luc" },
                 { name: "Beverly", data: { "name": "Beverly" }, expected: "Beverly" }
             ],
-            hints: ["Type {{ name }}"],
+            hints: ["Remove the quotes around name", "Type {{ name }}"],
             prefill: "{{ \"name\" }}"
         },
         {
             id: "c1-s11",
             type: "challenge",
             title: "Practice: Literal vs Variable",
-            goal: "Output the student's grade value (11)",
+            goal: "Output the student's grade",
             description: "Look at the data: `\"grade\": \"11\"`.\n\n*   `{{ \"grade\" }}` -> Prints \"grade\" (Always)\n*   `{{ grade }}` -> Prints \"11\" (or \"12\", or \"10\"... it depends!)\n\n**Challenge:**\nOutput the student's grade. Check both students to see the value change.",
             coachMark: {
                 target: ".ref-avatar-1",
@@ -166,7 +162,7 @@ export const chapter1 = {
             type: "challenge",
             title: "Groups",
             goal: "Type {{ student }} to see what happens",
-            description: "Often, data is organized into **Groups** (or Folders).\n\nIn the data below, `student` is not just one text value. It's a Group that contains `grade`, `graduation_year`, etc.\n\n**Challenge:**\nTry to output the `student` variable directly.",
+            description: "Look at the data below. The key `student` doesn't have a simple value like `\"11\"`. Instead, it contains **more keys inside it**.\n\nWhen a key contains other keys, we call it a **Group** (programmers call it an **Object**).\n\n**Challenge:**\nTry to output `student` directly and see what happens.",
             referenceDataPlacement: "top",
             testCases: [{ name: "Student", data: { "student": { "grade": "11", "graduation_year": "2027" } }, matchRegex: "\\[object Object\\]", expected: "[object Object]" }],
             hints: ["Type {{ student }}"],
@@ -177,7 +173,7 @@ export const chapter1 = {
             type: "challenge",
             title: "Fixing the Error",
             goal: "Get the student's grade",
-            description: "You got `[object Object]` because you asked for the whole folder.\n\nTo look **inside** a Group, we use a **Dot** `.`\n\n`{{ Group.Item }}`\n\n**Fix it:**\nType `{{ student.grade }}` to get the grade.",
+            description: "You got `[object Object]}` — that's the computer saying: \"This is a Group, not a simple value. I don't know how to display it as text.\"\n\nWe need to tell the computer **which key inside the Group** we want.\n\nTo look inside a Group, use a **Dot** `.`\n\n**Fix it:**\nType `{{ student.grade }}` to get the grade.",
             referenceDataPlacement: "top",
             testCases: [{ name: "Student", data: { "student": { "grade": "11", "graduation_year": "2027" } }, expected: "11" }],
             hints: ["Type {{ student.grade }}"],
@@ -188,7 +184,7 @@ export const chapter1 = {
             type: "challenge",
             title: "Practice: Dot Notation",
             goal: "Get the school's name",
-            description: "Let's practice again.\n\nThe `school` group contains details about the school.\n\nUse dot notation to find the school's **name**.",
+            description: "Let's practice again.\n\nLook at the data: `school` is a Group (notice the `{ }` curly braces — that's how you spot an Object).\n\nUse dot notation to find the school's **name**.",
             referenceDataPlacement: "top",
             testCases: [{ name: "School", data: { "school": { "name": "Formula High" } }, expected: "Formula High" }],
             hints: ["Type {{ school.name }}"],
@@ -199,10 +195,24 @@ export const chapter1 = {
             type: "challenge",
             title: "Deep Nesting",
             goal: "Get the district username",
-            description: "Groups can be inside other Groups!\n\nLook at the data path: `student` -> `credentials` -> `district_username`.\n\nWe just chain the dots together: `student.credentials.district_username`.",
+            description: "Objects can contain other Objects, which can contain more Objects — it can go as deep as you want!\n\nHow do we access values nested deep inside? **More dots!**\n\nLook at the path: `student` → `credentials` → `district_username`\n\nJust chain the dots: `student.credentials.district_username`",
             referenceDataPlacement: "top",
             testCases: [{ name: "Student", data: { "student": { "credentials": { "district_username": "username" } } }, expected: "username" }],
             hints: ["Type {{ student.credentials.district_username }}"],
+            prefill: "{{}}"
+        },
+        {
+            id: "c1-s18b",
+            type: "challenge",
+            title: "Practice: Deep Nesting",
+            goal: "Get the teacher's preferred first name",
+            description: "Your turn! Use dot notation to dig into the nested data.\n\nFind the path: `teacher` → `ext` → `preferredfirstname`",
+            referenceDataPlacement: "top",
+            testCases: [
+                { name: "Teacher 1", data: { "teacher": { "ext": { "preferredfirstname": "Joanne" } } }, expected: "Joanne" },
+                { name: "Teacher 2", data: { "teacher": { "ext": { "preferredfirstname": "Ali" } } }, expected: "Ali" }
+            ],
+            hints: ["Chain the dots together", "Type {{ teacher.ext.preferredfirstname }}"],
             prefill: "{{}}"
         },
         {

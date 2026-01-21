@@ -104,6 +104,8 @@ const TrainingCenter = () => {
                 navigate(`/training/${activeChapterIndex + 1 + 1}/1`);
             }
         }
+        // Scroll the main content area to top
+        document.querySelector('.training-main')?.scrollTo(0, 0);
     };
 
     const handlePrev = () => {
@@ -114,6 +116,8 @@ const TrainingCenter = () => {
             const prevChapter = CURRICULUM[activeChapterIndex - 1];
             navigate(`/training/${activeChapterIndex - 1 + 1}/${prevChapter.steps.length}`);
         }
+        // Scroll the main content area to top
+        document.querySelector('.training-main')?.scrollTo(0, 0);
     };
 
     return (

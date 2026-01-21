@@ -10,7 +10,7 @@ export const chapter2 = {
             type: "challenge",
             title: "Meet Your First Function",
             goal: "See what toUpper does",
-            description: "Functions are the **Verbs** of code. They are magic words that **DO** things to your data.\n\nThere are only about 30 of them, and each one does a specific, unique job.\n\n**New Tool: `toUpper`** (Arity 1)\n\n`{{ toUpper text }}`\n\nConverts all letters to UPPERCASE. Think of it like the CAPS LOCK key.\n\n**Challenge:**\nThe code is already written below. Look at the output to see what `toUpper` does!",
+            description: "Functions are the **Verbs** of code. They are magic words that **DO** things to your data.\n\nThere are only 29 of them, and each one does a specific, unique job.\n\n**New Tool: `toUpper`** (Arity 1)\n\n`{{ toUpper text }}`\n\nConverts all letters to UPPERCASE. Think of it like the CAPS LOCK key.\n\n**Challenge:**\nThe code is already written below. Look at the output to see what `toUpper` does!",
             testCases: [
                 { name: "Test", data: {}, expected: "HELLO" }
             ],
@@ -19,6 +19,18 @@ export const chapter2 = {
         },
         {
             id: "c2-s2",
+            type: "challenge",
+            title: "Prefix Notation",
+            goal: "Understand the syntax pattern",
+            description: "Notice something interesting about the syntax:\n\n`{{ toUpper \"hello\" }}`\n\nThe **function name** comes **FIRST**, then its input. This is called **Prefix Notation**—the action word leads!\n\nIn everyday English we say \"make 'hello' uppercase\".\nIn formulas we write `toUpper \"hello\"`—**action first!**\n\nThis pattern applies to ALL 29 functions. The verb always comes before the noun.\n\n**Challenge:**\nThe code shows `toLower` instead—another function that makes text lowercase. Observe the same pattern: function first, then input.",
+            testCases: [
+                { name: "Test", data: {}, expected: "hello" }
+            ],
+            hints: ["Just observe the pattern: function name comes first!"],
+            prefill: "{{ toLower \"HELLO\" }}"
+        },
+        {
+            id: "c2-s3",
             type: "challenge",
             title: "Change the Input",
             goal: "Change \"hello\" to \"world\"",
@@ -30,7 +42,7 @@ export const chapter2 = {
             prefill: "{{ toUpper \"hello\" }}"
         },
         {
-            id: "c2-s3",
+            id: "c2-s4",
             type: "challenge",
             title: "Write It Yourself",
             goal: "Uppercase the word \"goodbye\"",
@@ -42,7 +54,7 @@ export const chapter2 = {
             prefill: "{{}}"
         },
         {
-            id: "c2-s4",
+            id: "c2-s5",
             type: "challenge",
             title: "Functions on Variables",
             goal: "Uppercase the first name",
@@ -57,7 +69,7 @@ export const chapter2 = {
 
         // === toLower Block (S5-7): NEW TOOL → PRACTICE → COMPARE ===
         {
-            id: "c2-s5",
+            id: "c2-s6",
             type: "challenge",
             title: "The Opposite: toLower",
             goal: "Lowercase the first name",
@@ -70,7 +82,7 @@ export const chapter2 = {
             prefill: "{{}}"
         },
         {
-            id: "c2-s6",
+            id: "c2-s7",
             type: "challenge",
             title: "Practice: toLower",
             goal: "Lowercase the department name",
@@ -83,7 +95,7 @@ export const chapter2 = {
             prefill: "{{}}"
         },
         {
-            id: "c2-s7",
+            id: "c2-s8",
             type: "challenge",
             title: "toUpper vs toLower",
             goal: "Choose the right function",
@@ -98,7 +110,7 @@ export const chapter2 = {
 
         // === length Block (S8-10): NEW TOOL → PRACTICE → USE CASE ===
         {
-            id: "c2-s8",
+            id: "c2-s9",
             type: "challenge",
             title: "Counting Characters",
             goal: "Count the letters in \"argument\"",
@@ -110,7 +122,7 @@ export const chapter2 = {
             prefill: "{{}}"
         },
         {
-            id: "c2-s9",
+            id: "c2-s10",
             type: "challenge",
             title: "Practice: length",
             goal: "Count the characters in the first name",
@@ -123,7 +135,7 @@ export const chapter2 = {
             prefill: "{{}}"
         },
         {
-            id: "c2-s10",
+            id: "c2-s11",
             type: "challenge",
             title: "Why Length Matters",
             goal: "Check the length of the username",
@@ -138,7 +150,7 @@ export const chapter2 = {
 
         // === concat Block (S11-15): NEW TOOL → 4 progressive practices ===
         {
-            id: "c2-s11",
+            id: "c2-s12",
             type: "challenge",
             title: "Joining Text",
             goal: "Join \"Super\" and \"Man\"",
@@ -150,7 +162,7 @@ export const chapter2 = {
             prefill: "{{}}"
         },
         {
-            id: "c2-s12",
+            id: "c2-s13",
             type: "challenge",
             title: "Variable Concatenation",
             goal: "Join first and last name",
@@ -162,7 +174,7 @@ export const chapter2 = {
             prefill: "{{}}"
         },
         {
-            id: "c2-s13",
+            id: "c2-s14",
             type: "challenge",
             title: "The Space Problem",
             goal: "Add a space before the last name",
@@ -174,7 +186,7 @@ export const chapter2 = {
             prefill: "{{}}"
         },
         {
-            id: "c2-s14",
+            id: "c2-s15",
             type: "challenge",
             title: "Mixed Arguments",
             goal: "Add a prefix to the last name",
@@ -186,7 +198,7 @@ export const chapter2 = {
             prefill: "{{}}"
         },
         {
-            id: "c2-s15",
+            id: "c2-s16",
             type: "challenge",
             title: "Exam: Full Name",
             goal: "Output First + Space + Last",
@@ -204,7 +216,7 @@ export const chapter2 = {
 
         // === Nesting Block (S16-18): CONCEPT → PRACTICE → EXAM ===
         {
-            id: "c2-s16",
+            id: "c2-s17",
             type: "challenge",
             title: "Functions Inside Functions",
             goal: "Shout a greeting to Jean",
@@ -216,7 +228,7 @@ export const chapter2 = {
             prefill: "{{}}"
         },
         {
-            id: "c2-s17",
+            id: "c2-s18",
             type: "challenge",
             title: "Outer Nesting",
             goal: "Shout the whole greeting",
@@ -228,7 +240,7 @@ export const chapter2 = {
             prefill: "{{}}"
         },
         {
-            id: "c2-s18",
+            id: "c2-s19",
             type: "challenge",
             title: "Chapter 2 Final Exam",
             goal: "Create a formatted greeting",

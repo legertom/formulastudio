@@ -116,16 +116,105 @@
 }
 
 .success-banner {
-    background: var(--success);
+    background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
     color: white;
-    padding: 1rem;
-    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    justify-content: center;
     gap: 1rem;
     text-align: center;
-    animation: slideIn 0.3s ease-out;
+    animation: successSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4), 0 0 40px rgba(16, 185, 129, 0.2);
+    margin-bottom: 1rem;
+}
+
+/* Fixed banner at top of viewport */
+.success-banner-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    text-align: center;
+    animation: successSlideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 4px 30px rgba(16, 185, 129, 0.5), 0 0 60px rgba(16, 185, 129, 0.3);
+}
+
+.success-banner-fixed .success-icon {
+    font-size: 1.8rem;
+    animation: successBounce 0.6s ease-out 0.2s;
+}
+
+.success-banner-fixed .success-message {
+    font-size: 1.1rem;
+    line-height: 1.4;
+}
+
+.success-banner-fixed .success-message strong {
+    margin-right: 0.5rem;
+}
+
+@keyframes successSlideDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.success-banner .success-icon {
+    font-size: 2rem;
+    animation: successBounce 0.6s ease-out 0.2s;
+}
+
+.success-banner .success-message {
+    font-size: 1.1rem;
+    line-height: 1.4;
+}
+
+.success-banner .success-message strong {
+    display: block;
+    font-size: 1.2rem;
+    margin-bottom: 0.1rem;
+}
+
+@keyframes successSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes successBounce {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
 }
 
 .check-icon {
@@ -491,6 +580,26 @@
     opacity: 0.6;
 }
 
+/* Skip button - clickable but less prominent */
+.btn-focus-skip {
+    width: 100%;
+    padding: 1rem;
+    background: transparent;
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-focus-skip:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--text-muted);
+    color: var(--text-primary);
+}
+
 
 .focus-reference-card {
     background: var(--bg-tertiary);
@@ -659,6 +768,27 @@
     border-radius: 12px;
     padding: 1.5rem;
     border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+}
+
+/* Success glow effect on editor */
+.training-layout-workbench .focus-editor-section.success {
+    border-color: var(--success);
+    background: rgba(16, 185, 129, 0.08);
+    animation: successGlowFade 2s ease-out forwards;
+}
+
+@keyframes successGlowFade {
+    0% {
+        box-shadow:
+            0 0 30px rgba(16, 185, 129, 0.5),
+            0 0 60px rgba(16, 185, 129, 0.3),
+            inset 0 0 30px rgba(16, 185, 129, 0.1);
+    }
+
+    100% {
+        box-shadow: none;
+    }
 }
 
 .training-layout-workbench .focus-editor-section .editor-label-row {
