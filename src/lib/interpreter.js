@@ -179,7 +179,14 @@ export const evaluateAndTrace = (ast, data) => {
                         case 'length': result = String(evalArgs[0]).length; break;
                         case 'contains': result = String(evalArgs[0]).includes(String(evalArgs[1])); break;
                         case 'replace': result = String(evalArgs[0]).replaceAll(String(evalArgs[1]), String(evalArgs[2])); break;
-                        case 'substr': result = String(evalArgs[0]).substring(Number(evalArgs[1]), Number(evalArgs[2])); break;
+                        case 'substr': {
+                            // substr text start length - extracts 'length' characters starting at 'start'
+                            const str = String(evalArgs[0]);
+                            const start = Number(evalArgs[1]);
+                            const length = Number(evalArgs[2]);
+                            result = str.substring(start, start + length);
+                            break;
+                        }
                         case 'trim': result = String(evalArgs[0]).trim(); break;
                         case 'trimleft': result = String(evalArgs[0]).trimStart(); break; // Added trimLeft
 
@@ -205,15 +212,15 @@ export const evaluateAndTrace = (ast, data) => {
                             break;
                         }
                         case 'alphanumeric': {
-                            // Check if string contains only letters and numbers
-                            result = /^[a-z0-9]+$/i.test(String(evalArgs[0]));
+                            // Remove all non-alphanumeric characters, keeping only A-Z and 0-9
+                            result = String(evalArgs[0]).replace(/[^a-z0-9]/gi, '');
                             break;
                         }
                         case 'initials': {
                             // "Tom Leger" -> "TL"
-                            // "Mary-Anne" -> "MA" (if we treat hyphen as separator)
-                            // Simple version: split by space, take first char
-                            result = String(evalArgs[0]).split(' ').map(w => w[0] || '').join('').toUpperCase();
+                            // "Mary-Anne" -> "MA" (hyphen is also a word separator)
+                            // Split by space or hyphen, take first char of each word
+                            result = String(evalArgs[0]).split(/[\s-]+/).map(w => w[0] || '').join('').toUpperCase();
                             break;
                         }
                         case 'tolower': result = String(evalArgs[0]).toLowerCase(); break;

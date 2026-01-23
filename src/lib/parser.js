@@ -191,13 +191,18 @@ export function parse(tokens) {
         // We might allow parsing fragments without {{ }}
     }
 
+    // Track current function context for better error messages
+    let currentFunctionContext = null;
+
     function parseExpression() {
         const token = peek();
 
         if (!token || token.type === TokenType.CLOSE_BRACE) {
-            // Implicit empty string at end of formula for missing arguments
-            // We don't have a real token here, so range is ambiguous.
-            // Let's use the current token's index if available.
+            // Strict mode: throw error for missing arguments
+            if (currentFunctionContext) {
+                throw new Error(`Missing argument for function '${currentFunctionContext.name}'. Expected ${currentFunctionContext.arity} arguments.`);
+            }
+            // If we're not in a function context, return empty string (handles empty {{}} case)
             const idx = token ? token.index : 0;
             return { type: 'StringLiteral', value: '', range: [idx, idx] };
         }
@@ -260,9 +265,16 @@ export function parse(tokens) {
                 default: throw new Error(`Unknown function '${name}'`);
             }
 
+            // Save previous context and set new context for this function
+            const previousContext = currentFunctionContext;
+            currentFunctionContext = { name, arity };
+
             for (let i = 0; i < arity; i++) {
                 args.push(parseExpression());
             }
+
+            // Restore previous context
+            currentFunctionContext = previousContext;
 
             // Determine end of function call
             // It ends where the last argument ends.

@@ -148,7 +148,7 @@ export const chapter4 = {
         {
             id: "c4-s8",
             type: "challenge",
-            title: "Master Challenge: The Clean Sweep",
+            title: "Bonus Challenge: The Clean Sweep",
             goal: "Sanitize, Replace, and Finalize the First Name",
             description: "Put all your skills together for the Final Exam.\n\nThe input name is messy: `\"  Jean-Luc  \"`.\n\n**Your Mission:**\n1. `trimLeft` to clean the start.\n2. `replace` the hyphen `-` with a space ` `.\n3. Output the clean result: `\"Jean Luc  \"` (Don't worry about the trailing spaces for now).",
             testCases: [
@@ -156,11 +156,6 @@ export const chapter4 = {
                     name: "Messy Hyphen",
                     data: { "name": { "first": "  Jean-Luc  " } },
                     expected: "Jean Luc  "
-                },
-                {
-                    name: "Messy Standard",
-                    data: { "name": { "first": "  William  " } },
-                    expected: "William  "
                 }
             ],
             hints: [
