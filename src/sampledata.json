@@ -1,26 +1,92 @@
 {
+  "_id": "usr_7f3a9b2c1d4e5f6a",
+  "created": "2024-08-15T09:23:47Z",
+  "district": "dist_4a8b2c1d3e5f",
   "name": {
     "first": "Maria",
-    "last": "Santos"
+    "last": "Santos",
+    "middle": "Elena"
   },
   "email": "maria.santos@sweetvalley.k12.edu",
+  "last_modified": "2025-01-10T14:32:19Z",
   "school_name": "Sweet Valley Middle",
   "student": {
+    "_ell_code": "ELL-2",
+    "_id": "stu_7f3a9b2c1d4e5f6a",
+    "_meta": {
+      "is_demo_data": true,
+      "sis_email": "maria.santos@sweetvalley.k12.edu",
+      "source": "PowerSchool"
+    },
     "credentials": {
       "district_username": "msantos_2027",
       "district_password": "TempPass123"
     },
+    "disability_type": "None",
+    "disability_status": false,
     "dob": "2012-03-15T00:00:00Z",
+    "ell_status": "Active",
+    "enrollments": [
+      {
+        "end_date": "2027-06-15",
+        "school": "sch_4a8b2c1d",
+        "start_date": "2024-08-20"
+      }
+    ],
     "ext": {
       "extension_field_name": "iep_status_active"
     },
+    "fcat_reading_level": "3",
+    "frl_status": "Reduced",
+    "gender": "Female",
+    "gifted_status": false,
     "grade": "7",
     "graduation_year": "2027",
+    "hispanic_ethnicity": true,
+    "home_language": "Spanish",
+    "home_language_code": "ES",
+    "home_language_name": "Spanish",
+    "iep_status": false,
+    "location": {
+      "address": "456 Oak Street",
+      "city": "Sweet Valley",
+      "lat": "40.7135",
+      "lon": "-74.0046",
+      "state": "NY",
+      "zip": "10002"
+    },
+    "native_language": "Spanish",
+    "race": "Hispanic or Latino",
+    "preferred_name": {
+      "first": "Mari",
+      "middle": "E",
+      "last": "Santos"
+    },
+    "rti_behavior": false,
+    "rti_communication": false,
+    "rti_ela": true,
+    "rti_gifted": false,
+    "rti_health": false,
+    "rti_math": false,
+    "rti_social": false,
+    "school": "sch_4a8b2c1d",
+    "schools": [
+      "sch_4a8b2c1d"
+    ],
+    "section_504_status": false,
     "sis_id": "STU-847291",
     "state_id": "NY-2024-00384",
-    "student_number": "10742"
+    "student_number": "10742",
+    "unweighted_gpa": "3.45",
+    "weighted_gpa": "3.67"
   },
   "teacher": {
+    "_id": "tch_3b5d7f9a1c2e4g6h",
+    "_meta": {
+      "is_demo_data": true,
+      "sis_email": "jthompson@sweetvalley.k12.edu",
+      "source": "PowerSchool"
+    },
     "credentials": {
       "district_username": "jthompson_teach",
       "district_password": "TeachPass456"
@@ -28,12 +94,23 @@
     "ext": {
       "extension_field_name": "certification_math"
     },
+    "school": "sch_4a8b2c1d",
+    "schools": [
+      "sch_4a8b2c1d",
+      "sch_5b9c3d2e"
+    ],
     "sis_id": "TCH-2847",
     "state_id": "NY-CERT-58192",
     "teacher_number": "T-156",
     "title": "Ms."
   },
   "staff": {
+    "_id": "stf_9c2d4e6f8a1b3c5d",
+    "_meta": {
+      "is_demo_data": true,
+      "sis_email": "kpatel@sweetvalley.k12.edu",
+      "source": "PowerSchool"
+    },
     "credentials": {
       "district_username": "kpatel_admin",
       "district_password": "AdminPass789"
@@ -42,13 +119,129 @@
     "ext": {
       "extension_field_name": "access_level_3"
     },
+    "roles": [
+      "Administrator",
+      "IT Coordinator"
+    ],
+    "school_names": [
+      "Sweet Valley Middle",
+      "Sweet Valley High"
+    ],
+    "schools": [
+      "sch_4a8b2c1d",
+      "sch_5b9c3d2e"
+    ],
     "staff_id": "ADM-0394",
     "title": "Deputy Head"
   },
   "school": {
-    "district": "Wonderland District",
+    "created": "2020-06-15T08:00:00Z",
+    "district": "dist_4a8b2c1d3e5f",
+    "ext": {
+      "custom_field": "custom_value"
+    },
+    "high_grade": "8",
+    "low_grade": "6",
     "id": "SCH-042",
+    "last_modified": "2025-01-08T11:45:22Z",
+    "location": {
+      "address": "1234 Education Lane",
+      "city": "Sweet Valley",
+      "lat": "40.7128",
+      "lon": "-74.0060",
+      "state": "NY",
+      "zip": "10001"
+    },
+    "mdr_number": "MDR-789456",
+    "meta": {
+      "is_demo_data": true,
+      "sis_email": "admin@sweetvalley.k12.edu",
+      "source": "PowerSchool"
+    },
     "name": "Sweet Valley Middle",
-    "sis_id": "RUSD-LMS-042"
+    "nces_id": "360123456789",
+    "phone": "(555) 123-4567",
+    "principal": {
+      "email": "principal@sweetvalley.k12.edu",
+      "name": "Dr. Sarah Mitchell"
+    },
+    "school_number": "042",
+    "sis_id": "RUSD-LMS-042",
+    "state_id": "NY-SCH-2024-042"
+  },
+  "schools": [
+    {
+      "name": "Sweet Valley Middle",
+      "school_number": "042",
+      "sis_id": "RUSD-LMS-042",
+      "state_id": "NY-SCH-2024-042",
+      "high_grade": "8",
+      "low_grade": "6",
+      "ext": {
+        "custom_field": "middle_school_value"
+      }
+    },
+    {
+      "name": "Sweet Valley High",
+      "school_number": "043",
+      "sis_id": "RUSD-LMS-043",
+      "state_id": "NY-SCH-2024-043",
+      "high_grade": "12",
+      "low_grade": "9",
+      "ext": {
+        "custom_field": "high_school_value"
+      }
+    }
+  ],
+  "sections": [
+    {
+      "course_number": "MATH-101",
+      "name": "Pre-Algebra Period 3",
+      "section_number": "SEC-301",
+      "sis_id": "SECT-2024-0301",
+      "grade": "7",
+      "course_name": "Pre-Algebra",
+      "subject": "Mathematics",
+      "period": "3"
+    },
+    {
+      "course_number": "ENG-102",
+      "name": "English Literature Period 5",
+      "section_number": "SEC-502",
+      "sis_id": "SECT-2024-0502",
+      "grade": "7",
+      "course_name": "English Literature",
+      "subject": "English Language Arts",
+      "period": "5"
+    }
+  ],
+  "contact": {
+    "_id": "con_8d3e5f7a9b1c2d4e",
+    "_meta": {
+      "is_demo_data": true,
+      "sis_email": "rsantos@email.com",
+      "source": "PowerSchool"
+    },
+    "phone": "(555) 987-6543",
+    "phone_type": "Mobile",
+    "relationship": "Mother",
+    "sis_id": "CON-2024-8472",
+    "student_relationships": [
+      {
+        "relationship": "Mother",
+        "student": "stu_7f3a9b2c1d4e5f6a",
+        "type": "Primary"
+      },
+      {
+        "relationship": "Guardian",
+        "student": "stu_2b4c6d8e0f1a3b5c",
+        "type": "Emergency"
+      }
+    ],
+    "students": [
+      "stu_7f3a9b2c1d4e5f6a",
+      "stu_2b4c6d8e0f1a3b5c"
+    ],
+    "type": "Parent"
   }
 }

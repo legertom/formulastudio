@@ -58,12 +58,12 @@ export const chapter4 = {
             type: "challenge",
             title: "Concept: Intro to Replace",
             goal: "Replace the dots with exclamation points",
-            description: "Sometimes you don't want to destroy characters, you want to **swap** them.\n\n**New Tool: `replace`** (Arity 3)\n\n`{{ replace text string_to_find string_to_replace_with }}`\n\nThink of it like \"Find and Replace\" in a word processor.\n\n**Challenge:**\nChange the dots `...` to `!!!` in the `status` message.",
+            description: "Sometimes you don't want to destroy characters, you want to **swap** them.\n\n**New Tool: `replace`** (Arity 3)\n\n`{{ replace text string_to_find string_to_replace_with }}`\n\nThink of it like \"Find and Replace\" in a word processor.\n\n**Challenge:**\nThe formula below replaces dots with question marks. Fix it so dots become exclamation points instead!",
             testCases: [
                 { name: "Loading", data: { "status": "Loading..." }, expected: "Loading!!!" }
             ],
-            hints: ["Type {{ replace status \"...\" \"!!!\" }}"],
-            prefill: "{{}}"
+            hints: ["Change the third argument"],
+            prefill: "{{ replace status \".\" \"?\" }}"
         },
         {
             id: "c4-s5",
@@ -82,13 +82,13 @@ export const chapter4 = {
             type: "challenge",
             title: "Challenge: The Double Replace",
             goal: "Remove the brackets [ ] from the tag",
-            description: "What if you need to remove TWO different things?\n\nYou can **Nest** a replace inside another replace!\n\n1. Inner: Replace `[` with `\"\"` (empty string).\n2. Outer: Replace `]` with `\"\"` (empty string) **using the result of step 1**.\n\n**Challenge:**\nClean the `tag` field so `[Admin]` becomes just `Admin`.",
+            description: "What if you need to remove TWO different characters?\n\n**The Problem:**\nWe want to turn `[Admin]` into `Admin`. That means removing both `[` AND `]`.\n\n**The Solution:**\nYou need **two `replace` functions** — one for each bracket!\n\nBut how do you connect them? Use **Nesting**:\n1. First `replace`: Remove `[` → Result: `Admin]`\n2. Second `replace`: Take that result and remove `]` → Final: `Admin`\n\nThe second `replace` wraps around the first, using its output as input.\n\n**Challenge:**\nWrite a formula with two nested `replace` calls to clean the `tag` field.",
             testCases: [
                 { name: "Tagged", data: { "tag": "[Admin]" }, expected: "Admin" }
             ],
             hints: [
-                "Replace [ first.",
-                "Then wrap that whole formula in another replace for ].",
+                "Start with: replace tag \"[\" \"\"",
+                "Then wrap that in another replace: replace (...) \"]\" \"\"",
                 "{{ replace (replace tag \"[\" \"\") \"]\" \"\" }}"
             ],
             prefill: "{{}}"
@@ -96,9 +96,21 @@ export const chapter4 = {
         {
             id: "c4-s7",
             type: "challenge",
-            title: "Concept: Summing Up",
+            title: "Concept: Basic Addition",
+            goal: "Add two numbers together",
+            description: "Great cleanup work! Now let's do some math.\n\n**New Tool: `add`** (Arity 2)\n\n`{{ add number1 number2 }}`\n\nThis function takes two numbers and returns their sum.\n\n**Challenge:**\nAdd **5** and **3** together.",
+            testCases: [
+                { name: "Simple Sum", data: {}, expected: "8" }
+            ],
+            hints: ["{{ add 5 3 }}"],
+            prefill: "{{}}"
+        },
+        {
+            id: "c4-s7b",
+            type: "challenge",
+            title: "Practice: Summing Lengths",
             goal: "Calculate total length of First + Last",
-            description: "Great cleanup work! Now let's analyze the data.\n\n**New Tool: `add`** (Arity 2)\n\n`{{ add number1 number2 }}`\n\nWe want to know the **Total Character Count** of the user's full name.\n\n**Challenge:**\n1. Get `length` of `name.first`.\n2. Get `length` of `name.last`.\n3. `add` them together.",
+            description: "Now let's combine `add` with `length` to analyze data.\n\nWe want to know the **Total Character Count** of the user's full name.\n\n**Challenge:**\n1. Get `length` of `name.first`.\n2. Get `length` of `name.last`.\n3. `add` them together.",
             testCases: [
                 { name: "Jean Picard", data: { "name": { "first": "Jean", "last": "Picard" } }, expected: "10" }
             ],

@@ -21,13 +21,13 @@ export const chapter2 = {
             id: "c2-s2",
             type: "challenge",
             title: "Prefix Notation",
-            goal: "Understand the syntax pattern",
-            description: "Notice something interesting about the syntax:\n\n`{{ toUpper \"hello\" }}`\n\nThe **function name** comes **FIRST**, then its input. This is called **Prefix Notation**—the action word leads!\n\nIn everyday English we say \"make 'hello' uppercase\".\nIn formulas we write `toUpper \"hello\"`—**action first!**\n\nThis pattern applies to ALL 29 functions. The verb always comes before the noun.\n\n**Challenge:**\nThe code shows `toLower` instead—another function that makes text lowercase. Observe the same pattern: function first, then input.",
+            goal: "Apply toLower using prefix notation",
+            description: "Notice something interesting about the syntax:\n\n`{{ toUpper \"hello\" }}`\n\nThe **function name** comes **FIRST**, then its input. This is called **Prefix Notation**—the action word leads!\n\nIn everyday English we say \"make 'hello' lowercase\".\nIn formulas we write `toLower \"HELLO\"`—**action first!**\n\nThis pattern applies to ALL 29 functions. The verb always comes before the noun.\n\n**Challenge:**\nAdd `toLower` before `\"HELLO\"` to transform it to lowercase.",
             testCases: [
                 { name: "Test", data: {}, expected: "hello" }
             ],
-            hints: ["Just observe the pattern: function name comes first!"],
-            prefill: "{{ toLower \"HELLO\" }}"
+            hints: ["Add toLower before \"HELLO\"", "Type {{ toLower \"HELLO\" }}"],
+            prefill: "{{ \"HELLO\" }}"
         },
         {
             id: "c2-s3",
@@ -58,7 +58,7 @@ export const chapter2 = {
             type: "challenge",
             title: "Functions on Variables",
             goal: "Uppercase the department name",
-            description: "So far you've used `toUpper` on **literals**—text you typed directly.\n\nNow let's use it on a **variable**—data that changes per person!\n\n**Challenge:**\nWrite a formula to uppercase `staff.department`.",
+            description: "So far you've used `toUpper` on **literals**—text you typed directly.\n\nNow let's use it on a **variable**—data that changes per person!\n\nRemember **dot notation** from Chapter 1? Use dots to access data inside an object: `object.property`.\n\n**Challenge:**\nWrite a formula to uppercase `staff.department`.",
             referenceDataPlacement: "top",
             testCases: [
                 { name: "Engineering", data: { "staff": { "department": "engineering" } }, expected: "ENGINEERING" },
@@ -72,9 +72,9 @@ export const chapter2 = {
         {
             id: "c2-s6",
             type: "challenge",
-            title: "The Opposite: toLower",
+            title: "toLower on Variables",
             goal: "Lowercase the first name",
-            description: "Every CAPS LOCK has an opposite.\n\n**New Function: `toLower`** (Arity 1)\n\n`{{ toLower text }}`\n\nConverts all letters to lowercase. The mirror image of `toUpper`.\n\n**Challenge:**\nUse `toLower` on the `name.first` variable.",
+            description: "You've already used `toLower` on a **literal** in Step 2.\n\nNow let's apply it to a **variable**—just like we did with `toUpper` on `staff.department`.\n\n**Challenge:**\nUse `toLower` on the `name.first` variable.",
             testCases: [
                 { name: "JEAN", data: { "name": { "first": "JEAN" } }, expected: "jean" },
                 { name: "Mixed", data: { "name": { "first": "JeAn" } }, expected: "jean" }
@@ -128,7 +128,7 @@ export const chapter2 = {
             type: "challenge",
             title: "Practice: length",
             goal: "Count the characters in the state ID",
-            description: "Let's apply `length` to a nested variable.\n\nThe `student.state_id` field contains an ID like `\"NY-2024-00384\"`.\n\n**Challenge:**\nCount the characters in `student.state_id`.",
+            description: "Let's apply `length` to a nested variable.\n\nThe `student.state_id` field contains an ID like `\"NY-2024-00384\"`.\n\n**Important:** `length` counts **ALL** characters—letters, numbers, hyphens, spaces, everything!\n\n**Challenge:**\nCount the characters in `student.state_id`.",
             referenceDataPlacement: "top",
             testCases: [
                 { name: "NY Student", data: { "student": { "state_id": "NY-2024-00384" } }, expected: "13" },
@@ -140,7 +140,7 @@ export const chapter2 = {
         {
             id: "c2-s11",
             type: "challenge",
-            title: "Why Length Matters",
+            title: "Real-World: Validating Length",
             goal: "Check the length of the district username",
             description: "Real-world use case: Validating input length.\n\nUsernames often have character limits. Getting the length is the first step to validation.\n\n**Challenge:**\nGet the `length` of `student.credentials.district_username`.",
             referenceDataPlacement: "top",
@@ -170,7 +170,7 @@ export const chapter2 = {
             type: "challenge",
             title: "Variable Concatenation",
             goal: "Join first and last name",
-            description: "You can join two variables together.\n\n**Challenge:**\nCreate a format like `FirstLast` (e.g., \"JeanPicard\").",
+            description: "You can join two variables together.\n\n**Challenge:**\nUse `concat` to join `name.first` and `name.last` to output `\"JeanPicard\"`.",
             testCases: [
                 { name: "Picard", data: { "name": { "first": "Jean", "last": "Picard" } }, expected: "JeanPicard" }
             ],
@@ -232,7 +232,7 @@ export const chapter2 = {
             type: "challenge",
             title: "Full Name",
             goal: "Output First + Space + Last",
-            description: "Now let's nest `concat` inside another `concat`.\n\n**The Goal:** Join `name.first` and `name.last` with a **space** in the middle.\n\nThink of it as: `First + (Space + Last)`\n\n**Challenge:**\nCreate the output `\"Jean Picard\"`.",
+            description: "Here's a puzzle: we need to join **three** things—`name.first`, a space, and `name.last`.\n\nBut `concat` only takes **2 inputs** at a time!\n\n**The Solution:** Nest one `concat` inside another.\n1. First, join the space and last name: `concat \" \" name.last` → `\" Picard\"`\n2. Then, join that result to the first name: `concat name.first [result]` → `\"Jean Picard\"`\n\n**Challenge:**\nCreate the output `\"Jean Picard\"`.",
             testCases: [
                 { name: "Jean", data: { "name": { "first": "Jean", "last": "Picard" } }, expected: "Jean Picard" },
                 { name: "Beverly", data: { "name": { "first": "Beverly", "last": "Crusher" } }, expected: "Beverly Crusher" }
@@ -262,7 +262,7 @@ export const chapter2 = {
             type: "challenge",
             title: "Chapter 2 Final Exam",
             goal: "Create a formatted greeting",
-            description: "Put it ALL together!\n\n**The Goal:**\nCreate the output: `\"WELCOME, [FIRST] [LAST]!\"`\n\nFor example: `\"WELCOME, JEAN PICARD!\"`\n\n**Steps:**\n1. Build the full name (First + Space + Last).\n2. Add `\"WELCOME, \"` before and `\"!\"` after.\n3. Uppercase the whole thing.\n\n**Good luck!**",
+            description: "Put it ALL together!\n\n**The Goal:** Output `\"WELCOME, JEAN PICARD!\"`\n\nBuild it from the inside out:\n\n| Step | What to build | Result |\n|------|--------------|--------|\n| 1 | `concat \" \" name.last` | `\" Picard\"` |\n| 2 | `concat name.first [step 1]` | `\"Jean Picard\"` |\n| 3 | `concat \"Welcome, \" [step 2]` | `\"Welcome, Jean Picard\"` |\n| 4 | `concat [step 3] \"!\"` | `\"Welcome, Jean Picard!\"` |\n| 5 | `toUpper [step 4]` | `\"WELCOME, JEAN PICARD!\"` |\n\n**Challenge:**\nNest these together into one formula!",
             testCases: [
                 {
                     name: "Picard",
@@ -276,10 +276,11 @@ export const chapter2 = {
                 }
             ],
             hints: [
-                "Start with the full name: concat name.first concat \" \" name.last",
-                "Add the text before: concat \"Welcome, \" [fullname]",
-                "Add the exclamation after: concat [result] \"!\"",
-                "Uppercase everything: toUpper [entire formula]"
+                "Start from the innermost: concat \" \" name.last",
+                "Wrap it: concat name.first concat \" \" name.last",
+                "Add Welcome: concat \"Welcome, \" concat name.first concat \" \" name.last",
+                "Add exclamation: concat concat \"Welcome, \" concat name.first concat \" \" name.last \"!\"",
+                "Uppercase everything: toUpper concat concat \"Welcome, \" concat name.first concat \" \" name.last \"!\""
             ],
             prefill: "{{}}"
         }

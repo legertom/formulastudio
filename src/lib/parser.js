@@ -276,6 +276,19 @@ export function parse(tokens) {
             // Restore previous context
             currentFunctionContext = previousContext;
 
+            // Check for extra arguments (only at top level - when no parent function context)
+            if (!previousContext) {
+                const nextToken = peek();
+                if (nextToken &&
+                    nextToken.type !== TokenType.CLOSE_BRACE &&
+                    (nextToken.type === TokenType.STRING ||
+                        nextToken.type === TokenType.NUMBER ||
+                        nextToken.type === TokenType.IDENTIFIER ||
+                        nextToken.type === TokenType.KEYWORD)) {
+                    throw new Error(`Too many arguments for function '${name}'. Expected ${arity} argument${arity !== 1 ? 's' : ''}.`);
+                }
+            }
+
             // Determine end of function call
             // It ends where the last argument ends.
             // If no arguments (arity 0 - not possible here but theoretically), ends at keyword end.
