@@ -141,7 +141,6 @@ const IfFunctionView = ({ node, traceMap, onHoverNode }) => {
                     alignItems: 'center',
                     gap: '0.4rem'
                 }}>
-                    <span>🔍</span>
                     <span>Condition</span>
                     <span style={{
                         marginLeft: 'auto',
@@ -186,14 +185,14 @@ const IfFunctionView = ({ node, traceMap, onHoverNode }) => {
                     label="Then"
                     arg={thenArg}
                     isTaken={thenTaken}
-                    icon="✓"
+                    icon=""
                 />
                 {elseArg && (
                     <Branch
                         label="Else"
                         arg={elseArg}
                         isTaken={elseTaken}
-                        icon="✗"
+                        icon=""
                     />
                 )}
             </div>

@@ -231,7 +231,7 @@ export function classifyFormula(ast) {
             type: 'classifier',
             label: 'Decision Logic',
             description: 'Evaluates conditions and returns different values based on the result',
-            icon: '🔀'
+            icon: ''
         };
     }
 
@@ -240,7 +240,7 @@ export function classifyFormula(ast) {
             type: 'validator',
             label: 'Validator',
             description: 'Checks conditions and validates data',
-            icon: '✓'
+            icon: ''
         };
     }
 
@@ -249,7 +249,7 @@ export function classifyFormula(ast) {
             type: 'transformer',
             label: 'String Transformer',
             description: 'Transforms and formats string data',
-            icon: '⚙️'
+            icon: ''
         };
     }
 
@@ -258,7 +258,7 @@ export function classifyFormula(ast) {
             type: 'boolean_checker',
             label: 'Boolean Logic',
             description: 'Complex logical evaluation with multiple conditions',
-            icon: '🧮'
+            icon: ''
         };
     }
 
@@ -266,7 +266,7 @@ export function classifyFormula(ast) {
         type: 'generic',
         label: 'Generic Formula',
         description: 'Evaluates an expression',
-        icon: '📝'
+        icon: ''
     };
 }
 

@@ -5,7 +5,7 @@ import React, { useState, useCallback } from 'react';
  * Supports editing both keys and values
  */
 
-const TreeNode = ({ keyName, value, path, onValueChange, onKeyChange, expandedPaths, toggleExpand, isLast }) => {
+const TreeNode = ({ keyName, value, path, onValueChange, onKeyChange, onAddField, onDeleteField, expandedPaths, toggleExpand, isLast }) => {
     const [isEditingValue, setIsEditingValue] = useState(false);
     const [isEditingKey, setIsEditingKey] = useState(false);
     const [editValue, setEditValue] = useState('');
@@ -146,6 +146,26 @@ const TreeNode = ({ keyName, value, path, onValueChange, onKeyChange, expandedPa
                         {renderValue()}
                     </span>
                 )}
+
+                {/* Node Actions */}
+                <div className="tree-node-actions">
+                    {isObject && !isArray && (
+                        <button
+                            className="tree-action-btn"
+                            onClick={() => onAddField(path)}
+                            title="Add field"
+                        >
+                            +
+                        </button>
+                    )}
+                    <button
+                        className="tree-action-btn delete"
+                        onClick={() => onDeleteField(path)}
+                        title="Delete field"
+                    >
+                        ×
+                    </button>
+                </div>
             </div>
 
             {/* Children (if expanded) */}
@@ -162,6 +182,8 @@ const TreeNode = ({ keyName, value, path, onValueChange, onKeyChange, expandedPa
                             expandedPaths={expandedPaths}
                             toggleExpand={toggleExpand}
                             isLast={index === arr.length - 1}
+                            onAddField={onAddField}
+                            onDeleteField={onDeleteField}
                         />
                     ))}
                 </div>
@@ -236,6 +258,50 @@ const JsonTreeEditor = ({ data, onChange }) => {
         }
     }, [data, onChange]);
 
+    const handleAddField = useCallback((path) => {
+        const newData = JSON.parse(JSON.stringify(data));
+        let current = newData;
+        for (let i = 0; i < path.length; i++) {
+            current = current[path[i]];
+        }
+
+        // Generate unique key
+        let baseKey = 'new_field';
+        let key = baseKey;
+        let counter = 1;
+        while (current.hasOwnProperty(key)) {
+            key = `${baseKey}_${counter++}`;
+        }
+
+        current[key] = "value";
+        onChange(newData);
+
+        // Auto-expand if it was a new path
+        const pathString = path.join('.');
+        if (!expandedPaths.has(pathString)) {
+            toggleExpand(pathString);
+        }
+    }, [data, onChange, expandedPaths, toggleExpand]);
+
+    const handleDeleteField = useCallback((path) => {
+        const newData = JSON.parse(JSON.stringify(data));
+        let current = newData;
+        // If it's a top-level field
+        if (path.length === 1) {
+            delete newData[path[0]];
+        } else {
+            for (let i = 0; i < path.length - 1; i++) {
+                current = current[path[i]];
+            }
+            if (Array.isArray(current)) {
+                current.splice(Number(path[path.length - 1]), 1);
+            } else {
+                delete current[path[path.length - 1]];
+            }
+        }
+        onChange(newData);
+    }, [data, onChange]);
+
     if (!data || typeof data !== 'object') {
         return <div className="tree-empty">No data to display</div>;
     }
@@ -258,6 +324,8 @@ const JsonTreeEditor = ({ data, onChange }) => {
                         expandedPaths={expandedPaths}
                         toggleExpand={toggleExpand}
                         isLast={index === arr.length - 1}
+                        onAddField={handleAddField}
+                        onDeleteField={handleDeleteField}
                     />
                 ))}
             </div>

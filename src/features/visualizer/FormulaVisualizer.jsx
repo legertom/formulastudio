@@ -19,7 +19,7 @@ export default function FormulaVisualizer({ ast, error, mode = 'OU', onHoverNode
                 <p className="error-message">{friendly.message}</p>
                 {friendly.suggestions && friendly.suggestions.length > 0 && (
                     <div className="error-suggestions">
-                        <span className="suggestions-label">💡 Try this:</span>
+                        <span className="suggestions-label">Try this:</span>
                         <ul>
                             {friendly.suggestions.map((suggestion, i) => (
                                 <li key={i}>{suggestion}</li>

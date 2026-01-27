@@ -145,6 +145,37 @@ function EditorView() {
         setSelectedExample('');
     };
 
+    const handleDownloadJSON = () => {
+        const dataStr = JSON.stringify(testData, null, 2);
+        const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+
+        const exportFileDefaultName = 'test_data.json';
+
+        const linkElement = document.createElement('a');
+        linkElement.setAttribute('href', dataUri);
+        linkElement.setAttribute('download', exportFileDefaultName);
+        linkElement.click();
+    };
+
+    const handleUploadJSON = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const json = JSON.parse(event.target.result);
+                setTestData(json);
+                // Reset select if needed, or just let it stay
+            } catch (err) {
+                alert('Invalid JSON file');
+            }
+        };
+        reader.readAsText(file);
+        // Reset input
+        e.target.value = '';
+    };
+
     return (
         <>
             <header className="app-header">
@@ -215,7 +246,7 @@ function EditorView() {
                             transition: 'all 0.2s'
                         }}
                     >
-                        📝 Editor
+                        Editor
                     </button>
                     <button
                         className={`panel-toggle-btn ${showTestData ? 'active' : ''}`}
@@ -231,7 +262,7 @@ function EditorView() {
                             transition: 'all 0.2s'
                         }}
                     >
-                        📊 Data
+                        Data
                     </button>
                     <button
                         className={`panel-toggle-btn ${showOutputPanel ? 'active' : ''}`}
@@ -247,7 +278,7 @@ function EditorView() {
                             transition: 'all 0.2s'
                         }}
                     >
-                        🔍 Output
+                        Output
                     </button>
                 </div>
 
@@ -260,17 +291,17 @@ function EditorView() {
             <main className="workspace" style={{ gridTemplateColumns: `repeat(${visiblePanels}, 1fr)` }}>
                 {/* Editor Panel */}
                 {showEditorPanel && <div className="panel">
-                    <div className="panel-header">
-                        <div className="panel-title">
-                            <span>Raw Logic</span>
-                            <span style={{ fontSize: '0.8em', opacity: 0.5, fontWeight: 'normal' }}>IDM Syntax</span>
+                    <div className="panel-header" style={{ flexWrap: 'wrap', gap: '0.5rem', padding: '0.75rem 1rem', justifyContent: 'space-between' }}>
+                        <div className="panel-title" style={{ flexShrink: 0 }}>
+                            <span>Editor</span>
                         </div>
 
-                        <div className="panel-controls">
+                        <div className="panel-controls" style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'nowrap' }}>
                             <label htmlFor="example-loader" className="sr-only">Load Example</label>
                             <select
                                 id="example-loader"
                                 className="example-select"
+                                style={{ maxWidth: '120px', flexShrink: 1 }}
                                 onChange={loadExample}
                                 value={selectedExample}
                                 aria-label="Load Example"
@@ -279,36 +310,51 @@ function EditorView() {
                                 {examples
                                     .filter(ex => ex.type === logicMode)
                                     .map(ex => (
-                                        <option key={ex.name} value={ex.name}>Example {ex.name}</option>
+                                        <option key={ex.name} value={ex.name}>{ex.name}</option>
                                     ))}
                             </select>
 
-                            <label className="toggle-label" style={{ display: 'flex', alignItems: 'center', fontSize: '0.8rem', marginRight: '1rem', cursor: 'pointer', gap: '6px' }}>
+                            <label className="toggle-label" data-tooltip="Toggle Syntax Highlighting" data-tooltip-pos="bottom" style={{ display: 'flex', alignItems: 'center', fontSize: '0.75rem', cursor: 'pointer', gap: '4px', whiteSpace: 'nowrap', flexShrink: 0 }}>
                                 <input
                                     type="checkbox"
                                     checked={showSyntax}
                                     onChange={(e) => setShowSyntax(e.target.checked)}
                                     style={{ cursor: 'pointer' }}
                                 />
-                                Syntax Highlight
+                                Highlight
                             </label>
 
-                            <button
-                                onClick={handleCompress}
-                                className="btn-secondary"
-                                style={{ padding: '0.35em 0.8em', fontSize: '0.85em', marginRight: '0.5rem' }}
-                                disabled={!!error || !ast}
-                            >
-                                Compress
-                            </button>
-                            <button
-                                onClick={handleFormat}
-                                className="btn-primary"
-                                style={{ padding: '0.35em 0.8em', fontSize: '0.85em' }}
-                                disabled={!!error || !ast}
-                            >
-                                Format
-                            </button>
+                            <div className="data-actions-group" style={{ flexShrink: 0 }}>
+                                <button
+                                    onClick={handleCompress}
+                                    className="btn-icon"
+                                    data-tooltip="Compress logic"
+                                    data-tooltip-pos="bottom"
+                                    disabled={!!error || !ast}
+                                    style={{ padding: '4px 6px' }}
+                                >
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M4 14h6v6" />
+                                        <path d="M20 10h-6V4" />
+                                        <path d="M14 10l7-7" />
+                                        <path d="M10 14l-7 7" />
+                                    </svg>
+                                </button>
+                                <button
+                                    onClick={handleFormat}
+                                    className="btn-icon"
+                                    data-tooltip="Format logic"
+                                    data-tooltip-pos="bottom"
+                                    disabled={!!error || !ast}
+                                    style={{ padding: '4px 6px' }}
+                                >
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                                        <line x1="8" y1="9" x2="16" y2="9" />
+                                        <line x1="8" y1="13" x2="14" y2="13" />
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -345,9 +391,55 @@ function EditorView() {
                 {showTestData && (
                     <div className="panel">
                         <div className="panel-header">
-                            <div className="panel-title">
+                            <div className="panel-title" style={{ flexShrink: 0 }}>
                                 <span>Test Data</span>
-                                <span style={{ fontSize: '0.8em', opacity: 0.5, fontWeight: 'normal' }}>Live Wire</span>
+                            </div>
+                            <div className="panel-controls" style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                                <div className="data-actions-group">
+                                    <button
+                                        onClick={handleDownloadJSON}
+                                        className="btn-icon"
+                                        data-tooltip="Export JSON"
+                                        data-tooltip-pos="bottom"
+                                        style={{ padding: '4px 6px' }}
+                                    >
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                            <polyline points="7 10 12 15 17 10" />
+                                            <line x1="12" y1="15" x2="12" y2="3" />
+                                        </svg>
+                                    </button>
+                                    <label
+                                        className="btn-icon"
+                                        style={{ cursor: 'pointer', padding: '4px 6px' }}
+                                        data-tooltip="Import JSON"
+                                        data-tooltip-pos="bottom"
+                                    >
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                            <polyline points="17 8 12 3 7 8" />
+                                            <line x1="12" y1="3" x2="12" y2="15" />
+                                        </svg>
+                                        <input
+                                            type="file"
+                                            accept=".json"
+                                            onChange={handleUploadJSON}
+                                            style={{ display: 'none' }}
+                                        />
+                                    </label>
+                                </div>
+                                <button
+                                    onClick={() => setTestData(sampledata)}
+                                    className="btn-tertiary"
+                                    data-tooltip="Reset sample data"
+                                    data-tooltip-pos="bottom"
+                                    style={{ padding: '4px 8px' }}
+                                >
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                                        <path d="M3 3v5h5" />
+                                    </svg>
+                                </button>
                             </div>
                         </div>
                         <div className="data-panel-wrapper" style={{ padding: '1rem', overflow: 'auto', flex: 1 }}>
@@ -365,7 +457,6 @@ function EditorView() {
                         <div className="panel-header">
                             <div className="panel-title">
                                 <span>Visualizer</span>
-                                <span style={{ fontSize: '0.8em', opacity: 0.5, fontWeight: 'normal' }}>Live Preview</span>
                             </div>
                             <div className="panel-controls" style={{ marginLeft: 'auto' }}>
                                 <div className="search-box" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>

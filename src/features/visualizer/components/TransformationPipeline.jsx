@@ -95,7 +95,7 @@ const TransformationPipeline = ({ steps, finalResult }) => {
                 alignItems: 'center',
                 gap: '0.5rem'
             }}>
-                <span>⚙️</span>
+                <span>Logic</span>
                 <span>Operations</span>
                 <span style={{
                     marginLeft: 'auto',

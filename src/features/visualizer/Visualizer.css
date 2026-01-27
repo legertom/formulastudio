@@ -1271,6 +1271,43 @@
   min-width: 100px;
 }
 
+.tree-node-actions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  margin-left: 8px;
+}
+
+.tree-node-row:hover .tree-node-actions {
+  opacity: 1;
+}
+
+.tree-action-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.tree-action-btn:hover {
+  color: white;
+  background: var(--accent-primary);
+}
+
+.tree-action-btn.delete:hover {
+  background: #ef4444;
+}
+
 .tree-children {
   padding-left: 20px;
   border-left: 1px solid var(--glass-border);

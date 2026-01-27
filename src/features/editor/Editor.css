@@ -133,3 +133,59 @@
   color: #94a3b8;
   /* Muted blue-grey */
 }
+
+/* Data Panel Redesign */
+.data-actions-group {
+  display: flex;
+  background: var(--bg-tertiary);
+  padding: 2px;
+  border-radius: 6px;
+  border: 1px solid var(--glass-border);
+}
+
+.btn-icon {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-icon:hover {
+  background: var(--glass-highlight);
+  color: var(--text-primary);
+}
+
+.btn-icon svg {
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.btn-icon:hover svg {
+  opacity: 1;
+}
+
+.btn-tertiary {
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  color: var(--text-muted);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-tertiary:hover {
+  border-color: var(--text-secondary);
+  color: var(--text-secondary);
+  background: var(--glass-highlight);
+}

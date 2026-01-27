@@ -27,7 +27,7 @@ const OutputPanel = ({ result, error, formulaType }) => {
                 alignItems: 'center',
                 gap: '0.5rem'
             }}>
-                <span>{hasError ? '⚠️' : '📤'}</span>
+                <span>{hasError ? 'Alert' : 'Result'}</span>
                 <span>{hasError ? 'Error' : 'Output'}</span>
                 {formulaType && !hasError && (
                     <span style={{

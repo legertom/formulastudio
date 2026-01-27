@@ -260,7 +260,7 @@ const PipelineView = ({ ast, traceMap, onHoverNode }) => {
                         fontWeight: 600,
                         fontSize: '1rem'
                     }}>
-                        ✓ Final: "{String(getTraceValue(ast) ?? '?')}"
+                        Final Result: "{String(getTraceValue(ast) ?? '?')}"
                     </div>
                 </>
             )}

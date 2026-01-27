@@ -157,7 +157,7 @@ const InFunctionView = ({ node, traceMap, onHoverNode }) => {
                                     transition: 'all 0.2s ease'
                                 }}
                             >
-                                {isMatchingItem && <span>✓</span>}
+                                {isMatchingItem && <span style={{ color: 'var(--success)' }}>(match)</span>}
                                 {item}
                             </span>
                         );

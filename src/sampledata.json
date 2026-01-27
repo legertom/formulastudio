@@ -34,7 +34,10 @@
       }
     ],
     "ext": {
-      "extension_field_name": "iep_status_active"
+      "iep_status": "Active",
+      "ell_level": "Level 3",
+      "gifted_program": "Math/Science",
+      "lunch_balance": 15.50
     },
     "fcat_reading_level": "3",
     "frl_status": "Reduced",
@@ -92,7 +95,9 @@
       "district_password": "TeachPass456"
     },
     "ext": {
-      "extension_field_name": "certification_math"
+      "certification_id": "CERT-992B",
+      "mentor_status": "Senior",
+      "preferred_contact": "Email"
     },
     "school": "sch_4a8b2c1d",
     "schools": [
@@ -117,7 +122,9 @@
     },
     "department": "Administration",
     "ext": {
-      "extension_field_name": "access_level_3"
+      "security_clearance": "Level 3",
+      "parking_permit": "A-44",
+      "access_card": "AC-1092"
     },
     "roles": [
       "Administrator",

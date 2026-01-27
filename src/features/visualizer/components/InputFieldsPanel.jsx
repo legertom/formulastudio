@@ -48,7 +48,7 @@ const InputFieldsPanel = ({ fieldAccesses }) => {
                 alignItems: 'center',
                 gap: '0.5rem'
             }}>
-                <span>📥</span>
+                <span>Input</span>
                 <span>Input Data</span>
                 <span style={{
                     marginLeft: 'auto',
@@ -72,7 +72,7 @@ const InputFieldsPanel = ({ fieldAccesses }) => {
                         alignItems: 'center',
                         gap: '0.75rem'
                     }}>
-                        <span style={{ color: 'var(--success)', fontSize: '1rem' }}>✓</span>
+                        <span style={{ color: 'var(--success)', fontSize: '0.8rem', fontWeight: 600 }}>MATCH</span>
                         <div style={{ flex: 1, minWidth: 0 }}>
                             <div style={{
                                 fontSize: '0.8rem',
@@ -109,7 +109,7 @@ const InputFieldsPanel = ({ fieldAccesses }) => {
                         alignItems: 'center',
                         gap: '0.75rem'
                     }}>
-                        <span style={{ color: 'var(--danger)', fontSize: '1rem' }}>✗</span>
+                        <span style={{ color: 'var(--danger)', fontSize: '0.8rem', fontWeight: 600 }}>MISSING</span>
                         <div style={{ flex: 1, minWidth: 0 }}>
                             <div style={{
                                 fontSize: '0.8rem',

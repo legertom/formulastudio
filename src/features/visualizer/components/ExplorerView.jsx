@@ -77,7 +77,7 @@ const ExplorerView = ({ ast, showTestData, testData: externalTestData }) => {
                         transition: 'all 0.2s ease'
                     }}
                 >
-                    📊 Data Flow
+                    Data Flow
                 </button>
                 <button
                     onClick={() => setViewMode('tree')}
@@ -93,7 +93,7 @@ const ExplorerView = ({ ast, showTestData, testData: externalTestData }) => {
                         transition: 'all 0.2s ease'
                     }}
                 >
-                    🌳 Tree View
+                    Tree View
                 </button>
             </div>
 
@@ -121,7 +121,7 @@ const ExplorerView = ({ ast, showTestData, testData: externalTestData }) => {
                             color: 'var(--text-secondary)'
                         }}
                     >
-                        <span>⚡ Live Wire (Test Data)</span>
+                        <span>Live Wire (Test Data)</span>
                         <span>{isTestPanelOpen ? '▼' : '▶'}</span>
                     </div>
 
