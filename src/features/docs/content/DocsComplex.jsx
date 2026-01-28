@@ -9,7 +9,7 @@ const DocsComplex = () => {
             </header>
 
             <section className="docs-section">
-                <h4>Graduation Year Normalization</h4>
+                <h4 id="Graduation Year Normalization">Graduation Year Normalization</h4>
                 <p>
                     <strong>Goal:</strong> Clean up the graduation year field. <br />
                     Sometimes SIS data comes in formats like "Class of 2023". This formula checks the value and keeps only the year.
@@ -53,7 +53,7 @@ const DocsComplex = () => {
             <hr className="docs-divider" />
 
             <section className="docs-section">
-                <h4>Grade Level Standardization</h4>
+                <h4 id="Grade Level Standardization">Grade Level Standardization</h4>
                 <p>
                     <strong>Goal:</strong> Group specific grade levels into broader categories like "Elementary", "Middle", or "High".<br />
                     This is useful for assigning permissions or grouping users in target applications.
@@ -103,7 +103,7 @@ if greater student.grade "8" "High" "Unknown"}}`}
             <hr className="docs-divider" />
 
             <section className="docs-section">
-                <h4>Short Grade Labels</h4>
+                <h4 id="Short Grade Labels">Short Grade Labels</h4>
                 <p>
                     <strong>Goal:</strong> Compress grade names into short codes (e.g., "Kindergarten" &rarr; "K").<br />
                     Ideal for generating usernames or short display tags.
@@ -144,7 +144,7 @@ if in student.grade "4 5 6 7 8 9 10 11 12" concat student.grade "th" ""}}`}
             <hr className="docs-divider" />
 
             <section className="docs-section">
-                <h4>School Name Cleaning</h4>
+                <h4 id="School Name Cleaning">School Name Cleaning</h4>
                 <p>
                     <strong>Goal:</strong> Remove "School" from the end of school names for cleaner display.
                 </p>

@@ -136,7 +136,7 @@ const DocsExamples = () => {
             {EXAMPLES_DATA.map((example, idx) => (
                 <section key={idx} className="docs-section" style={{ marginBottom: '2rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-                        <h4 style={{ margin: 0 }}>{idx + 1}. {example.title}</h4>
+                        <h4 id={example.title} style={{ margin: 0 }}>{idx + 1}. {example.title}</h4>
                         <span style={{
                             fontSize: '0.7rem',
                             padding: '0.2rem 0.5rem',

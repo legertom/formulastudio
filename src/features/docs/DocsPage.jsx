@@ -82,8 +82,32 @@ const NAV_STRUCTURE = [
     {
         title: "Learn",
         items: [
-            { id: 'examples', label: 'Examples & Recipes' },
-            { id: 'complex', label: 'Complex Patterns' },
+            {
+                id: 'examples',
+                label: 'Examples & Recipes',
+                subItems: [
+                    'First Name Template',
+                    'Full Name with Space',
+                    'ID Generation',
+                    'Hyphen Replacement',
+                    'Length Conditional',
+                    'Secret ID Check',
+                    'Graduation Status (Nested If)',
+                    'Middle Name Handling',
+                    'Middle Name with Fallback',
+                    'Full Name with Optional Middle'
+                ]
+            },
+            {
+                id: 'complex',
+                label: 'Complex Patterns',
+                subItems: [
+                    'Graduation Year Normalization',
+                    'Grade Level Standardization',
+                    'Short Grade Labels',
+                    'School Name Cleaning'
+                ]
+            },
         ]
     },
     {

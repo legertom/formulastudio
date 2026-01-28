@@ -223,8 +223,14 @@ const SyntaxHighlightedEditor = ({ value, onChange, placeholder, highlightRange,
                 content: (
                     <div className="editor-tooltip">
                         <div className="tooltip-header">
-                            <span className="tooltip-title">{funcData.name}</span>
-                            <span className="tooltip-arity">({funcData.arity} arguments)</span>
+                            <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem' }}>
+                                <span className="tooltip-title">{funcData.name}</span>
+                                <span className="tooltip-arity">({funcData.arity} arguments)</span>
+                            </div>
+                            <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem' }}>
+                                <span style={{ color: '#94a3b8' }}>Returns</span>
+                                <span style={{ color: '#c4b5fd', fontFamily: 'var(--font-mono)' }}>{funcData.returns || 'String'}</span>
+                            </div>
                         </div>
                         <div className="tooltip-desc">{funcData.desc}</div>
                         <div className="tooltip-section">
@@ -248,9 +254,22 @@ const SyntaxHighlightedEditor = ({ value, onChange, placeholder, highlightRange,
                 )
             });
         } else if (tokenType === 'variable') {
-            // Resolve Type only (don't show value)
             const val = resolvePath(dataContext, tokenText);
-            const valType = val === undefined ? 'Unknown' : (typeof val === 'object' ? 'Object' : typeof val);
+            const exists = val !== undefined;
+
+            let valType = 'Unknown';
+            if (exists) {
+                if (val === null) valType = 'Null';
+                else if (Array.isArray(val)) valType = 'Array';
+                else valType = typeof val;
+                valType = valType.charAt(0).toUpperCase() + valType.slice(1);
+            }
+
+            let displayVal = String(val);
+            if (!exists) displayVal = "Field not found in current data";
+            else if (val === null) displayVal = "null";
+            else if (typeof val === 'string') displayVal = `"${val}"`;
+            else if (typeof val === 'object') displayVal = JSON.stringify(val);
 
             setTooltip({
                 x: e.clientX,
@@ -259,8 +278,27 @@ const SyntaxHighlightedEditor = ({ value, onChange, placeholder, highlightRange,
                 content: (
                     <div className="editor-tooltip">
                         <div className="tooltip-header">
-                            <span className="tooltip-title" style={{ color: '#60a5fa' }}>{tokenText}</span>
-                            <span className="tooltip-arity">Variable</span>
+                            <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem' }}>
+                                <span className="tooltip-title" style={{ color: '#60a5fa' }}>{tokenText}</span>
+                                <span className="tooltip-arity">Variable</span>
+                            </div>
+                            <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem' }}>
+                                <span style={{ color: '#94a3b8' }}>Type</span>
+                                <span style={{ color: exists ? '#60a5fa' : '#ef4444', fontFamily: 'var(--font-mono)' }}>{exists ? valType : 'Missing'}</span>
+                            </div>
+                        </div>
+                        <div className="tooltip-section">
+                            <div className="tooltip-label">CURRENT VALUE</div>
+                            <div className="tooltip-code" style={{
+                                color: exists ? '#e2e8f0' : '#94a3b8',
+                                fontStyle: exists ? 'normal' : 'italic',
+                                whiteSpace: 'pre-wrap',
+                                wordBreak: 'break-all',
+                                maxHeight: '150px',
+                                overflowY: 'auto'
+                            }}>
+                                {displayVal}
+                            </div>
                         </div>
                     </div>
                 )

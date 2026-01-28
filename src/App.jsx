@@ -14,7 +14,10 @@ function App() {
       <NavBar />
       <div className="app-content">
         <Routes>
-          <Route path="/" element={<EditorView />} />
+          <Route path="/" element={<Navigate to="/explorer" replace />} />
+          <Route path="/explorer" element={<EditorView mode="EXPLORER" />} />
+          <Route path="/ou" element={<EditorView mode="OU" />} />
+          <Route path="/group" element={<EditorView mode="GROUP" />} />
           <Route path="/training" element={<TrainingIntro />} />
           <Route path="/training/:chapterIndex/:stepIndex" element={<TrainingCenter />} />
           <Route path="/docs" element={<Navigate to="/docs/intro" replace />} />

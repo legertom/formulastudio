@@ -224,7 +224,7 @@ export const LOGIC_OPS = [
     },
     {
         name: "contains",
-        syntax: "{{contains str sub}}",
+        syntax: "{{contains text substring}}",
         arity: 2,
         desc: "Checks if a string contains a substring.",
         returns: "Boolean",

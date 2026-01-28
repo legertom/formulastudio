@@ -5,20 +5,37 @@ const FIELDS_DATA = [
         category: "Identity & Demographics",
         fields: [
             { name: "Names", formula: ["{{name.first}}", "{{name.last}}", "{{name.middle}}"], availability: ["all"] },
+            { name: "Preferred Name", formula: ["{{student.preferred_name.first}}", "{{student.preferred_name.last}}"], availability: ["student"] },
+            { name: "Email", formula: ["{{email}}", "{{student._meta.sis_email}}"], availability: ["all"] },
             { name: "SIS ID", formula: ["{{student.sis_id}}", "{{teacher.sis_id}}"], availability: ["student", "teacher"] },
             { name: "State ID", formula: ["{{student.state_id}}", "{{teacher.state_id}}"], availability: ["student", "teacher"] },
             { name: "Student Number", formula: ["{{student.student_number}}"], availability: ["student"] },
-            { name: "Teacher Number", formula: ["{{teacher.teacher_number}}"], availability: ["teacher"] },
-            { name: "Staff ID", formula: ["{{staff.staff_id}}"], availability: ["staff"] },
-            { name: "Title", formula: ["{{staff.title}}"], availability: ["staff"] },
-            { name: "Birthday", formula: ["{{student.dob}}"], availability: ["student"] }
+            { name: "Employee ID", formula: ["{{teacher.teacher_number}}", "{{staff.staff_id}}"], availability: ["teacher", "staff"] },
+            { name: "Title", formula: ["{{staff.title}}", "{{teacher.title}}"], availability: ["staff", "teacher"] },
+            { name: "Birthday", formula: ["{{student.dob}}"], availability: ["student"] },
+            { name: "Gender", formula: ["{{student.gender}}"], availability: ["student"] },
+            { name: "Race/Ethnicity", formula: ["{{student.race}}", "{{student.hispanic_ethnicity}}"], availability: ["student"] },
+            { name: "Language", formula: ["{{student.home_language}}", "{{student.native_language}}"], availability: ["student"] }
         ]
     },
     {
         category: "School & Academic",
         fields: [
-            { name: "School Name", formula: ["{{school_name}}"], availability: ["student", "teacher"] },
-            { name: "Graduation Year", formula: ["{{student.graduation_year}}"], availability: ["student"] }
+            { name: "School Name", formula: ["{{school_name}}", "{{school.name}}"], availability: ["all"] },
+            { name: "Grade Level", formula: ["{{student.grade}}"], availability: ["student"] },
+            { name: "Graduation Year", formula: ["{{student.graduation_year}}"], availability: ["student"] },
+            { name: "GPA", formula: ["{{student.unweighted_gpa}}", "{{student.weighted_gpa}}"], availability: ["student"] },
+            { name: "Program Status", formula: ["{{student.ell_status}}", "{{student.iep_status}}", "{{student.section_504_status}}", "{{student.gifted_status}}"], availability: ["student"] },
+            { name: "Lunch Status", formula: ["{{student.frl_status}}"], availability: ["student"] },
+            { name: "Department", formula: ["{{staff.department}}"], availability: ["staff"] },
+            { name: "Roles", formula: ["{{staff.roles}}"], availability: ["staff"] }
+        ]
+    },
+    {
+        category: "Contact & Location",
+        fields: [
+            { name: "Home Address", formula: ["{{student.location.address}}", "{{student.location.city}}", "{{student.location.state}}", "{{student.location.zip}}"], availability: ["student"] },
+            { name: "Principals", formula: ["{{school.principal.name}}", "{{school.principal.email}}"], availability: ["all"] }
         ]
     },
     {
