@@ -141,16 +141,17 @@ const FeedbackWidget = ({ location = 'Unknown' }) => {
             const btn = document.getElementById('feedback-trigger-btn');
             if (btn) btn.style.visibility = 'hidden';
 
-            // CAPTURE FIX: window.scrollY correction
+            // CAPTURE FIX: Capture only the visible viewport
             const canvas = await html2canvas(document.body, {
                 scale: window.devicePixelRatio,
                 useCORS: true,
                 logging: false,
-                // These options often fix viewport alignment issues
-                scrollX: 0,
-                scrollY: -window.scrollY,
-                windowWidth: document.documentElement.offsetWidth,
-                windowHeight: document.documentElement.offsetHeight,
+                x: window.scrollX,
+                y: window.scrollY,
+                width: window.innerWidth,
+                height: window.innerHeight,
+                windowWidth: window.innerWidth,
+                windowHeight: window.innerHeight,
             });
 
             if (btn) btn.style.visibility = 'visible';
