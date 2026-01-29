@@ -4,7 +4,7 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { feedback, screenshot, location } = req.body;
+        const { feedback, screenshot, location, name } = req.body;
         const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL;
 
         if (!DISCORD_WEBHOOK_URL) {
@@ -21,7 +21,7 @@ export default async function handler(req, res) {
         const formData = new FormData();
 
         // Add Message Content
-        formData.append('content', `**Feedback Report**\n**Location:** ${location}\n**Message:** ${feedback}`);
+        formData.append('content', `**Feedback Report**\n**Name:** ${name || 'Anonymous'}\n**Location:** ${location}\n**Message:** ${feedback}`);
 
         // Add File
         // We need to pass a Blob-like object. 

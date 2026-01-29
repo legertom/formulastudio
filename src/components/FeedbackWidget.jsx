@@ -115,6 +115,7 @@ const FeedbackWidget = ({ location = 'Unknown' }) => {
     // Initial State (Restored)
     const [isOpen, setIsOpen] = useState(false);
     const [feedback, setFeedback] = useState('');
+    const [name, setName] = useState('');
     const [isCapturing, setIsCapturing] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -345,6 +346,7 @@ const FeedbackWidget = ({ location = 'Unknown' }) => {
 
             const payload = {
                 feedback,
+                name,
                 screenshot: finalScreenshot,
                 location: `${location} | URL: ${window.location.href}`,
             };
@@ -362,6 +364,7 @@ const FeedbackWidget = ({ location = 'Unknown' }) => {
                 if (res.status === 404) {
                     console.log('📋 FEEDBACK (Local Dev Mode - API not available):');
                     console.log('Location:', payload.location);
+                    console.log('Name:', payload.name);
                     console.log('Message:', payload.feedback);
                     console.log('Screenshot:', payload.screenshot.substring(0, 100) + '...');
 
@@ -435,6 +438,15 @@ const FeedbackWidget = ({ location = 'Unknown' }) => {
                                 </button>
                             </div>
                         </div>
+
+                        <input
+                            type="text"
+                            style={{ ...styles.textarea, height: '40px', marginBottom: '0.5rem' }}
+                            placeholder="Your Name (Optional)"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            disabled={isSubmitting}
+                        />
 
                         <textarea
                             style={styles.textarea}
