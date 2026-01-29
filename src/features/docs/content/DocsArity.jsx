@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import {
     TEXT_TRANSFORM_OPS,
     LOGIC_OPS,
@@ -15,12 +16,12 @@ const DocsArity = () => {
     // Combine all functions
     const allFunctions = React.useMemo(() => {
         const list = [
-            ...LOGIC_OPS,
-            ...TEXT_TRANSFORM_OPS,
-            ...MATH_DATE_OPS,
-            ...UTILITY_OPS,
-            ...TEXT_EXTRACTION_OPS,
-            ...SEARCH_REPLACE_OPS
+            ...LOGIC_OPS.map(f => ({ ...f, category: 'logic' })),
+            ...TEXT_TRANSFORM_OPS.map(f => ({ ...f, category: 'text-transform' })),
+            ...MATH_DATE_OPS.map(f => ({ ...f, category: 'math-dates' })),
+            ...UTILITY_OPS.map(f => ({ ...f, category: 'utilities' })),
+            ...TEXT_EXTRACTION_OPS.map(f => ({ ...f, category: 'text-extraction' })),
+            ...SEARCH_REPLACE_OPS.map(f => ({ ...f, category: 'search-replace' }))
         ];
 
         return list.sort((a, b) => {
@@ -117,7 +118,11 @@ const DocsArity = () => {
                     <tbody>
                         {allFunctions.map(func => (
                             <tr key={func.name}>
-                                <td><code>{func.name}</code></td>
+                                <td>
+                                    <Link to={`/docs/${func.category}/${func.name}`}>
+                                        <code>{func.name}</code>
+                                    </Link>
+                                </td>
                                 <td><strong>{func.arity}</strong></td>
                                 <td>{func.args ? func.args.map(a => a.name || a.arg.replace('Arg ', 'arg')).join(', ') : 'args...'}</td>
                                 <td>
@@ -134,7 +139,7 @@ const DocsArity = () => {
                     padding: '1rem',
                     marginTop: '1rem'
                 }}>
-                    <strong>Note:</strong> Most functions have fixed arity and require an exact number of arguments.
+                    <strong>Note:</strong> All functions have fixed arity and require an exact number of arguments.
                 </div>
             </section>
 
