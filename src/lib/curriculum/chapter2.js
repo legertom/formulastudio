@@ -227,25 +227,78 @@ export const chapter2 = {
             hints: ["Same pattern as before, just use name.last", "{{ concat \"Hello, \" toUpper name.last }}"],
             prefill: "{{}}"
         },
+        // === NEW: Building Blocks for Nested Concat (S18-20) ===
         {
             id: "c2-s18",
             type: "challenge",
-            title: "Full Name",
-            goal: "Output First + Space + Last",
-            description: "Here's a puzzle: we need to join **three** things—`name.first`, a space, and `name.last`.\n\nBut `concat` only takes **2 inputs** at a time!\n\n**The Solution:** Nest one `concat` inside another.\n1. First, join the space and last name: `concat \" \" name.last` → `\" Picard\"`\n2. Then, join that result to the first name: `concat name.first [result]` → `\"Jean Picard\"`\n\n**Challenge:**\nCreate the output `\"Jean Picard\"`.",
+            title: "Building Blocks - Part 1",
+            goal: "Join a space with the last name",
+            description: "You've used `concat` to join two pieces before.\n\nNow let's build a specific combination we'll use as a **building block** for something bigger.\n\n**Challenge:**\nJoin a space `\" \"` with `name.last`.\n\nNotice the output starts with a space—that's exactly what we want!",
             testCases: [
-                { name: "Jean", data: { "name": { "first": "Jean", "last": "Picard" } }, expected: "Jean Picard" },
-                { name: "Beverly", data: { "name": { "first": "Beverly", "last": "Crusher" } }, expected: "Beverly Crusher" }
+                { name: "Picard", data: { "name": { "first": "Jean", "last": "Picard" } }, expected: " Picard" },
+                { name: "Crusher", data: { "name": { "first": "Beverly", "last": "Crusher" } }, expected: " Crusher" }
             ],
             hints: [
-                "First: concat \" \" name.last → \" Picard\"",
-                "Then: concat name.first [that result] → \"Jean Picard\"",
-                "{{ concat name.first concat \" \" name.last }}"
+                "concat takes two arguments",
+                "First argument is a space: \" \"",
+                "{{ concat \" \" name.last }}"
             ],
             prefill: "{{}}"
         },
         {
             id: "c2-s19",
+            type: "challenge",
+            title: "Building Blocks - Part 2",
+            goal: "Join the first name with \" Picard\"",
+            description: "Now here's the clever part: we can use the **output** of one concat as the **input** to another concat!\n\nThe previous step created `\" Picard\"` (space + last name).\n\nNow let's join `name.first` with that same pattern.\n\n**Challenge:**\nUse `concat` to join `name.first` with the formula from the previous step: `concat \" \" name.last`\n\nType them together: `concat name.first concat \" \" name.last`",
+            testCases: [
+                { name: "Jean Picard", data: { "name": { "first": "Jean", "last": "Picard" } }, expected: "Jean Picard" },
+                { name: "Beverly Crusher", data: { "name": { "first": "Beverly", "last": "Crusher" } }, expected: "Beverly Crusher" }
+            ],
+            hints: [
+                "The second argument should be the formula from Step 18",
+                "concat \" \" name.last produces \" Picard\"",
+                "Complete formula: {{ concat name.first concat \" \" name.last }}"
+            ],
+            prefill: "{{ concat name.first }}"
+        },
+        {
+            id: "c2-s20",
+            type: "challenge",
+            title: "Three Things, Two Steps",
+            goal: "Write the full name formula from scratch",
+            description: "Let's review what you just learned:\n\n**The Problem:** Join THREE things (`name.first` + `\" \"` + `name.last`)\n**The Solution:** Use TWO concat operations\n\n1. **Inner concat:** `concat \" \" name.last` → creates `\" Picard\"`\n2. **Outer concat:** `concat name.first [inner result]` → creates `\"Jean Picard\"`\n\nThis is called **Nesting**—putting one function inside another.\n\n**Challenge:**\nWrite the full formula from scratch to output `\"Jean Picard\"`.",
+            testCases: [
+                { name: "Jean Picard", data: { "name": { "first": "Jean", "last": "Picard" } }, expected: "Jean Picard" },
+                { name: "Beverly Crusher", data: { "name": { "first": "Beverly", "last": "Crusher" } }, expected: "Beverly Crusher" },
+                { name: "James Bond", data: { "name": { "first": "James", "last": "Bond" } }, expected: "James Bond" }
+            ],
+            hints: [
+                "Start with the inner concat: concat \" \" name.last",
+                "Use that as the 2nd argument to another concat",
+                "{{ concat name.first concat \" \" name.last }}"
+            ],
+            prefill: "{{}}"
+        },
+        {
+            id: "c2-s21",
+            type: "challenge",
+            title: "Last, First Format",
+            goal: "Output Last, First",
+            description: "Now that you know how to nest concat operations, let's apply this skill.\n\nSometimes names are formatted as `\"Last, First\"` (like in a directory or formal list).\n\n**Challenge:**\nCreate the output `\"Picard, Jean\"` using the same nesting pattern you just learned.",
+            testCases: [
+                { name: "Jean", data: { "name": { "first": "Jean", "last": "Picard" } }, expected: "Picard, Jean" },
+                { name: "Beverly", data: { "name": { "first": "Beverly", "last": "Crusher" } }, expected: "Crusher, Beverly" }
+            ],
+            hints: [
+                "This time start with the last name",
+                "The inner concat: concat \", \" name.first",
+                "{{ concat name.last concat \", \" name.first }}"
+            ],
+            prefill: "{{}}"
+        },
+        {
+            id: "c2-s22",
             type: "challenge",
             title: "Outer Nesting",
             goal: "Shout the whole greeting",
@@ -258,7 +311,7 @@ export const chapter2 = {
             prefill: "{{}}"
         },
         {
-            id: "c2-s20",
+            id: "c2-s23",
             type: "challenge",
             title: "Chapter 2 Final Exam",
             goal: "Create a formatted greeting",
