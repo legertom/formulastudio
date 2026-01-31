@@ -44,6 +44,14 @@ export function tokenize(input) {
     const startBrace = input.indexOf('{{');
     const endBrace = input.lastIndexOf('}}');
 
+    // Check for content before opening braces
+    if (startBrace !== -1) {
+        const beforeBraces = input.substring(0, startBrace).trim();
+        if (beforeBraces.length > 0) {
+            throw new Error(`Remove text before {{. Your formula must start with {{`);
+        }
+    }
+
     if (startBrace !== -1 && endBrace !== -1 && endBrace > startBrace) {
         // Slice the input to just the formula part, keeping the braces
         // We set current relative to the slice, but we want to track indices?
@@ -58,6 +66,14 @@ export function tokenize(input) {
 
     // Capture the valid range to tokenize
     const endLimit = (startBrace !== -1 && endBrace !== -1) ? endBrace + 2 : input.length;
+
+    // Check for content after closing braces
+    if (endBrace !== -1 && endBrace + 2 < input.length) {
+        const afterBraces = input.substring(endBrace + 2).trim();
+        if (afterBraces.length > 0) {
+            throw new Error(`Remove text after }}. Your formula must end with }}`);
+        }
+    }
 
     while (current < endLimit) {
         let char = input[current];
@@ -178,8 +194,10 @@ export function parse(tokens) {
         return tokens[tokens.length - 1]; // EOF equivalent
     }
 
-    // Check if we start with {{
+    // Check if we start with {{ and track it
+    let hasOpeningBrace = false;
     if (peek().type === TokenType.OPEN_BRACE) {
+        hasOpeningBrace = true;
         advance();
 
         // Handle empty braces {{}}
@@ -320,9 +338,19 @@ export function parse(tokens) {
 
     const ast = parseExpression();
 
-    // Check for trailing }}
-    if (current < tokens.length && tokens[current].type === TokenType.CLOSE_BRACE) {
-        advance();
+    // Enforce closing }} if we had opening {{
+    if (hasOpeningBrace) {
+        if (current < tokens.length && tokens[current].type === TokenType.CLOSE_BRACE) {
+            advance();
+
+            // Check for extra content after closing }}
+            if (current < tokens.length) {
+                const extraToken = tokens[current];
+                throw new Error(`Only one formula is allowed. Remove the extra content after }}`);
+            }
+        } else {
+            throw new Error(`Missing closing }}. Your formula must end with }}`);
+        }
     }
 
     return ast;
