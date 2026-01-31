@@ -16,6 +16,8 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep 
     const [selectedCaseIndex, setSelectedCaseIndex] = useState(0);
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [answerStatus, setAnswerStatus] = useState(null); // null, 'correct', 'incorrect'
+    const [bannerDismissed, setBannerDismissed] = useState(false);
+
 
     // Initialize/Reset
     useEffect(() => {
@@ -26,7 +28,31 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep 
         setSelectedCaseIndex(0);
         setSelectedAnswer(null);
         setAnswerStatus(null);
+        setBannerDismissed(false);
     }, [level]);
+
+    // Timer for success banner
+    useEffect(() => {
+        let timer;
+        const isCorrect = answerStatus === 'correct' || (results.length > 0 && results.every(r => r.isCorrect));
+
+        if (isCorrect && !bannerDismissed) {
+            timer = setTimeout(() => {
+                setBannerDismissed(true);
+            }, 5000);
+        }
+
+        // Reset dismissal if it becomes incorrect again
+        if (!isCorrect && bannerDismissed) {
+            setBannerDismissed(false);
+        }
+
+        return () => {
+            if (timer) clearTimeout(timer);
+        };
+    }, [answerStatus, results, bannerDismissed]);
+
+
 
     // Challenge Logic
     useEffect(() => {
@@ -250,23 +276,35 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep 
                                     {renderMarkdownText(h)}
                                 </div>
                             ))}
-                            {visibleHints < level.hints.length && (
-                                <button className="btn-hint-link" onClick={() => setVisibleHints(prev => prev + 1)}>
-                                    {visibleHints === 0 ? "Need a hint?" : "Show next hint"}
-                                </button>
-                            )}
+                            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                                {visibleHints < level.hints.length && (
+                                    <button className="btn-hint-link" onClick={() => setVisibleHints(prev => prev + 1)}>
+                                        {visibleHints === 0 ? "Need a hint?" : "Show next hint"}
+                                    </button>
+                                )}
+                                {visibleHints > 0 && (
+                                    <button className="btn-hint-close" onClick={() => setVisibleHints(0)}>
+                                        Hide hints
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     )}
 
                     {/* Success banner */}
-                    {isCorrect && (
-                        <div className="success-banner-fixed">
+                    {isCorrect && !bannerDismissed && (
+                        <div
+                            className="success-banner-fixed"
+                            onClick={() => setBannerDismissed(true)}
+                            style={{ cursor: 'pointer' }}
+                        >
                             <div className="success-icon">🎉</div>
                             <div className="success-message">
                                 <strong>Correct!</strong> Great observation.
                             </div>
                         </div>
                     )}
+
 
                     <div className="focus-actions">
                         {isCorrect ? (
@@ -387,11 +425,18 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep 
                                 </div>
                             ))}
 
-                            {visibleHints < level.hints.length && (
-                                <button className="btn-hint-link" onClick={() => setVisibleHints(prev => prev + 1)}>
-                                    {visibleHints === 0 ? "Need a hint?" : "Show next hint"}
-                                </button>
-                            )}
+                            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                                {visibleHints < level.hints.length && (
+                                    <button className="btn-hint-link" onClick={() => setVisibleHints(prev => prev + 1)}>
+                                        {visibleHints === 0 ? "Need a hint?" : "Show next hint"}
+                                    </button>
+                                )}
+                                {visibleHints > 0 && (
+                                    <button className="btn-hint-close" onClick={() => setVisibleHints(0)}>
+                                        Hide hints
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     )}
                 </div>
@@ -439,14 +484,19 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep 
                 </div>
 
                 {/* Fixed success banner at top of screen */}
-                {isAllCorrect && (
-                    <div className="success-banner-fixed">
+                {isAllCorrect && !bannerDismissed && (
+                    <div
+                        className="success-banner-fixed"
+                        onClick={() => setBannerDismissed(true)}
+                        style={{ cursor: 'pointer' }}
+                    >
                         <div className="success-icon">🎉</div>
                         <div className="success-message">
                             <strong>Great job!</strong> Your formula is correct.
                         </div>
                     </div>
                 )}
+
 
                 <div className="focus-actions">
                     {isAllCorrect ? (

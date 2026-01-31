@@ -38,6 +38,11 @@ export const chapter3 = {
                 { name: "Hyphenated", data: { "name": { "first": "Jean-Luc" } }, expected: "JL" },
                 { name: "Space Separated", data: { "name": { "first": "Mary Jane" } }, expected: "MJ" }
             ],
+            coachMark: {
+                target: ".ref-avatar-1",
+                text: "See how it handles spaces!",
+                placement: "top"
+            },
             hints: ["Type {{ initials name.first }}"],
             prefill: "{{}}"
         },
@@ -51,6 +56,11 @@ export const chapter3 = {
                 { name: "Acronym", data: { "system": { "phrase": "what you see is what you get" } }, expected: "WYSIWYG" },
                 { name: "Mixed Separators", data: { "system": { "phrase": "Hyper-Text Markup Language" } }, expected: "HTML" }
             ],
+            coachMark: {
+                target: ".ref-avatar-1",
+                text: "Try the mixed separator data!",
+                placement: "top"
+            },
             hints: ["Type {{ initials system.phrase }}"],
             prefill: "{{}}"
         },
@@ -135,6 +145,11 @@ export const chapter3 = {
             testCases: [
                 { name: "Jean-Luc", data: { "name": { "first": "Jean-Luc", "last": "Picard" } }, expected: "JLPicard" }
             ],
+            coachMark: {
+                target: ".ref-avatar-0",
+                text: "Observe the difference from the previous step.",
+                placement: "top"
+            },
             hints: ["{{ concat initials name.first name.last }}"],
             prefill: "{{}}"
         },

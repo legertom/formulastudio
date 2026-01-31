@@ -64,6 +64,11 @@ export const chapter2 = {
                 { name: "Engineering", data: { "staff": { "department": "engineering" } }, expected: "ENGINEERING" },
                 { name: "Sales", data: { "staff": { "department": "sales" } }, expected: "SALES" }
             ],
+            coachMark: {
+                target: ".ref-avatar-1",
+                text: "Switch to see the Sales data!",
+                placement: "top"
+            },
             hints: ["Instead of \"text\", use the variable staff.department", "Type {{ toUpper staff.department }}"],
             prefill: "{{}}"
         },
@@ -273,6 +278,11 @@ export const chapter2 = {
                 { name: "Beverly Crusher", data: { "name": { "first": "Beverly", "last": "Crusher" } }, expected: "Beverly Crusher" },
                 { name: "James Bond", data: { "name": { "first": "James", "last": "Bond" } }, expected: "James Bond" }
             ],
+            coachMark: {
+                target: ".ref-avatar-1",
+                text: "Test your formula with different users!",
+                placement: "top"
+            },
             hints: [
                 "Start with the inner concat: concat \" \" name.last",
                 "Use that as the 2nd argument to another concat",

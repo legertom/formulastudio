@@ -20,6 +20,11 @@ export const chapter1 = {
             goal: "Output the text \"Hello\"",
             description: "To use text, we must wrap it in **double quotes** `\" \"`.\n\n`{{ \"Hello\" }}`\n\n**Why?**\nQuotes tell the computer: \"I mean **Literally** this text.\"\n\nIf you want the computer to say exactly what you type, you MUST use quotes.",
             testCases: [{ name: "Test", data: {}, expected: "Hello" }],
+            coachMark: {
+                target: ".btn-hint-link",
+                text: "Stuck? Click here for a hint!",
+                placement: "top"
+            },
             hints: ["Type {{ \"Hello\" }}"],
             prefill: "{{}}"
         },

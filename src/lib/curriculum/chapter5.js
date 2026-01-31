@@ -40,6 +40,11 @@ export const chapter5 = {
                 { name: "Admin", data: { "role": "Admin" }, expected: "Welcome" },
                 { name: "Guest", data: { "role": "Guest" }, expected: "Access Denied" }
             ],
+            coachMark: {
+                target: ".ref-avatar-1",
+                text: "Switch to 'Guest' to test the deny logic!",
+                placement: "top"
+            },
             hints: [
                 "Start with {{ if ...",
                 "Your condition is: equals role \"Admin\"",
@@ -143,6 +148,11 @@ export const chapter5 = {
                 { name: "Editor", data: { "role": "Editor" }, expected: "Edit Access" },
                 { name: "Guest", data: { "role": "Guest" }, expected: "View Only" }
             ],
+            coachMark: {
+                target: ".ref-avatar-1",
+                text: "Try all three roles to verify your chain!",
+                placement: "top"
+            },
             hints: [
                 "Outer check: if equals role \"Admin\" ...",
                 "The 'else' is another checking: if equals role \"Editor\" ...",

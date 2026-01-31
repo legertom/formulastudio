@@ -50,6 +50,11 @@ export const chapter4 = {
                 { name: "Mixed Case", data: { "student": { "email": "Jean.Picard@StarFleet.EDU" } }, expected: "jean.picard@starfleet.edu" },
                 { name: "All Caps", data: { "student": { "email": "ADMIN@SCHOOL.ORG" } }, expected: "admin@school.org" }
             ],
+            coachMark: {
+                target: ".ref-avatar-1",
+                text: "Check the 'All Caps' example.",
+                placement: "top"
+            },
             hints: ["{{ toLower student.email }}"],
             prefill: "{{}}"
         },
