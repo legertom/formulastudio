@@ -6,7 +6,7 @@
   /* Disable outer scroll, let internal container handle it */
   padding: 0;
   /* Removing padding so scrollbar hits edge */
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--overlay-bg);
   border-radius: 8px;
   border: 1px solid var(--glass-border);
 }
@@ -1319,4 +1319,123 @@
   font-style: italic;
   padding: 1rem;
   text-align: center;
+}
+
+/* ========================================
+   LIGHT THEME OVERRIDES
+   ======================================== */
+[data-theme="light"] .visualizer-wrapper {
+  background: var(--bg-secondary);
+}
+
+[data-theme="light"] .view-switcher {
+  background: var(--bg-tertiary);
+}
+
+[data-theme="light"] .view-switch-btn {
+  color: var(--text-secondary);
+}
+
+[data-theme="light"] .view-switch-btn.active {
+  background: var(--accent-primary);
+  color: white;
+}
+
+/* Data flow sections */
+[data-theme="light"] .data-flow-section {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--glass-border);
+}
+
+[data-theme="light"] .operation-card {
+  background: white;
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .operation-card:hover {
+  background: var(--bg-tertiary);
+}
+
+/* Result section */
+[data-theme="light"] .result-section-box {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--glass-border);
+}
+
+[data-theme="light"] .result-value-display {
+  background: white;
+  border: 1px solid var(--glass-border);
+}
+
+/* Search input */
+[data-theme="light"] .json-search-container input {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--glass-border);
+}
+
+[data-theme="light"] .json-search-container input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Tree view */
+[data-theme="light"] .tree-node {
+  background: white;
+  border: 1px solid var(--glass-border);
+}
+
+[data-theme="light"] .tree-node:hover {
+  background: var(--bg-tertiary);
+}
+
+[data-theme="light"] .tree-node.active {
+  background: rgba(99, 102, 241, 0.1);
+  border-color: var(--accent-primary);
+}
+
+/* Table rows */
+[data-theme="light"] .table-key-row,
+[data-theme="light"] .table-value-row {
+  background: white;
+}
+
+[data-theme="light"] .table-key-row:nth-child(even),
+[data-theme="light"] .table-value-row:nth-child(even) {
+  background: var(--bg-tertiary);
+}
+
+/* Node cards */
+[data-theme="light"] .node-card {
+  background: white;
+  border: 1px solid var(--glass-border);
+}
+
+[data-theme="light"] .node-card:hover {
+  background: var(--bg-tertiary);
+}
+
+/* Object/array wrappers */
+[data-theme="light"] .object-wrapper,
+[data-theme="light"] .array-wrapper {
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid var(--glass-border);
+}
+
+/* Error suggestions */
+[data-theme="light"] .error-suggestions {
+  background: rgba(239, 68, 68, 0.05);
+}
+
+/* Type tags */
+[data-theme="light"] .type-tag {
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+}
+
+/* Lookup popouts */
+[data-theme="light"] .lookup-popout-container {
+  background: white;
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }

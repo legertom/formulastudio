@@ -4,7 +4,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--overlay-bg);
   border-radius: 8px;
   border: 1px solid var(--glass-border);
   overflow: hidden;
@@ -75,7 +75,7 @@
   height: 100% !important;
   /* Force full height in panel */
   min-height: 300px;
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--overlay-bg);
   /* Unified background */
   border: 1px solid var(--glass-border);
   border-radius: 8px;

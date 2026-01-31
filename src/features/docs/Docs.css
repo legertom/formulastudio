@@ -5,7 +5,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.75);
+  background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(8px);
   z-index: 1000;
   display: flex;
@@ -403,7 +403,7 @@
 
 .editor-area {
   flex: 1;
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--overlay-bg);
   border-radius: 8px;
   border: 1px solid var(--glass-border);
   padding: 1rem;

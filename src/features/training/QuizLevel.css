@@ -51,12 +51,12 @@
 }
 
 .data-preview {
-    background: #1a1a1a;
+    background: var(--bg-tertiary);
     padding: 1rem;
     border-radius: 8px;
     font-family: 'Fira Code', monospace;
     font-size: 0.8rem;
-    color: #a5b3ce;
+    color: var(--text-secondary);
     overflow-x: auto;
 }
 
@@ -71,7 +71,7 @@
     height: 200px;
     /* Base height */
     min-height: 300px;
-    background: #1a1a1a;
+    background: var(--bg-tertiary);
     border: 1px solid var(--glass-border);
     border-radius: 12px;
     padding: 1.5rem;
@@ -439,7 +439,7 @@
 .focus-editor:focus {
     outline: none;
     border-color: var(--accent-primary);
-    background: rgba(0, 0, 0, 0.3);
+    background: var(--overlay-bg-strong);
 }
 
 .focus-hints {
@@ -517,7 +517,7 @@
 
 .focus-test-item:hover {
     background: var(--bg-tertiary);
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: var(--glass-border);
 }
 
 .focus-test-item.selected {
@@ -856,10 +856,10 @@
     gap: 0.75rem;
     min-height: 300px;
     align-self: stretch;
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--bg-secondary);
     border-radius: 12px;
     padding: 1.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
 }
 
 /* Adjust heading in the new padded container */
@@ -947,7 +947,7 @@
 }
 
 .training-style-minimal .focus-test-item {
-    background: rgba(15, 23, 42, 0.85);
+    background: var(--bg-tertiary);
     border-radius: 6px;
     border-left-width: 2px;
 }

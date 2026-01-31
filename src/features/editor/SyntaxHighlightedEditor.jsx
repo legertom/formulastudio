@@ -290,7 +290,7 @@ const SyntaxHighlightedEditor = ({ value, onChange, placeholder, highlightRange,
                         <div className="tooltip-section">
                             <div className="tooltip-label">CURRENT VALUE</div>
                             <div className="tooltip-code" style={{
-                                color: exists ? '#e2e8f0' : '#94a3b8',
+                                color: exists ? 'var(--text-primary)' : 'var(--text-muted)',
                                 fontStyle: exists ? 'normal' : 'italic',
                                 whiteSpace: 'pre-wrap',
                                 wordBreak: 'break-all',

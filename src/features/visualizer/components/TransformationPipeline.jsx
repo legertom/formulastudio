@@ -11,7 +11,7 @@ const TransformationPipeline = ({ steps, finalResult }) => {
         return (
             <div className="data-flow-panel" style={{
                 padding: '1rem',
-                background: 'rgba(0,0,0,0.2)',
+                background: 'var(--overlay-bg)',
                 borderRadius: '8px',
                 border: '1px solid var(--glass-border)',
             }}>
@@ -79,7 +79,7 @@ const TransformationPipeline = ({ steps, finalResult }) => {
 
     return (
         <div className="data-flow-panel" style={{
-            background: 'rgba(0,0,0,0.2)',
+            background: 'var(--overlay-bg)',
             borderRadius: '8px',
             border: '1px solid var(--glass-border)',
             overflow: 'hidden'

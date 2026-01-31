@@ -97,20 +97,20 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: var(--accent-primary);
   text-decoration: inherit;
 }
 
 a:hover {
-  color: #535bf2;
+  color: var(--accent-secondary);
 }
 
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #1e1e24;
-  /* Match App.css --bg-primary */
+  background-color: var(--bg-primary);
+  transition: background-color 0.2s ease;
 }
 
 h1 {
@@ -125,13 +125,14 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: border-color 0.25s, background-color 0.2s;
 }
 
 button:hover {
-  border-color: #646cff;
+  border-color: var(--accent-primary);
 }
 
 button:focus,
@@ -160,22 +161,7 @@ button:focus-visible {
   border-color: var(--text-secondary);
 }
 
-@media (prefers-color-scheme: light) {
-
-  /* Removed background override to force dark theme consistency */
-  :root {
-    color: #213547;
-    /* background-color: #ffffff; REMOVED */
-  }
-
-  a:hover {
-    color: #747bff;
-  }
-
-  button {
-    background-color: #f9f9f9;
-  }
-}
+/* Legacy prefers-color-scheme removed - now using data-theme attribute */
 
 /* Navbar Styles */
 .main-nav {
@@ -189,6 +175,18 @@ button:focus-visible {
   position: sticky;
   top: 0;
   z-index: 100;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .nav-brand {
@@ -256,8 +254,8 @@ button:focus-visible {
   bottom: calc(100% + 10px);
   left: 50%;
   transform: translateX(-50%) translateY(5px);
-  background: #1e1e2e;
-  color: #cdd6f4;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
   padding: 6px 10px;
   border-radius: 6px;
   font-size: 0.75rem;
@@ -267,7 +265,7 @@ button:focus-visible {
   visibility: hidden;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1000;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 12px var(--shadow-color), 0 0 0 1px var(--glass-border);
   pointer-events: none;
 }
 
@@ -278,7 +276,7 @@ button:focus-visible {
   left: 50%;
   transform: translateX(-50%) translateY(0);
   border: 5px solid transparent;
-  border-top-color: #1e1e2e;
+  border-top-color: var(--bg-tertiary);
   opacity: 0;
   visibility: hidden;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -297,7 +295,7 @@ button:focus-visible {
   bottom: auto !important;
   top: 100%;
   border-top-color: transparent !important;
-  border-bottom-color: #1e1e2e !important;
+  border-bottom-color: var(--bg-tertiary) !important;
   transform: translateX(-50%) translateY(-5px);
 }
 

@@ -59,7 +59,7 @@ const ExplorerView = ({ ast, showTestData, testData: externalTestData }) => {
                 display: 'flex',
                 gap: '0.5rem',
                 padding: '0.25rem',
-                background: 'rgba(0,0,0,0.3)',
+                background: 'var(--overlay-bg)',
                 borderRadius: '8px',
                 width: 'fit-content'
             }}>
@@ -103,7 +103,7 @@ const ExplorerView = ({ ast, showTestData, testData: externalTestData }) => {
                     marginBottom: '1rem',
                     border: '1px solid var(--glass-border)',
                     borderRadius: '8px',
-                    background: 'rgba(0,0,0,0.2)',
+                    background: 'var(--overlay-bg)',
                     overflow: 'hidden'
                 }}>
                     <div
@@ -111,7 +111,7 @@ const ExplorerView = ({ ast, showTestData, testData: externalTestData }) => {
                         onClick={() => setIsTestPanelOpen(!isTestPanelOpen)}
                         style={{
                             padding: '0.5rem 1rem',
-                            background: 'rgba(255,255,255,0.05)',
+                            background: 'var(--glass-highlight)',
                             cursor: 'pointer',
                             display: 'flex',
                             justifyContent: 'space-between',
