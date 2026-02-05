@@ -14,7 +14,7 @@ export const chapter6 = {
                 { name: "Manager", data: { "role": "Manager" }, expected: "Approved" },
                 { name: "Staff", data: { "role": "Staff" }, expected: "Pending" }
             ],
-            hints: ["{{ if (equals role \"Manager\") \"Approved\" \"Pending\" }}"],
+            hints: ["{{ if equals role \"Manager\" \"Approved\" \"Pending\" }}"],
             prefill: "{{}}"
         },
         {
@@ -43,9 +43,9 @@ export const chapter6 = {
                 { name: "sales Active", data: { "role": "Sales", "status": "Active" }, expected: "false" }
             ],
             hints: [
-                "Check role: (equals role \"Admin\")",
-                "Check status: (equals status \"Active\")",
-                "Combine: {{ and (equals role \"Admin\") (equals status \"Active\") }}"
+                "Check role: equals role \"Admin\"",
+                "Check status: equals status \"Active\"",
+                "Combine: {{ and equals role \"Admin\" equals status \"Active\" }}"
             ],
             prefill: "{{}}"
         },
@@ -60,7 +60,7 @@ export const chapter6 = {
                 { name: "Admin Inactive", data: { "role": "Admin", "status": "Inactive" }, expected: "Locked" },
                 { name: "Staff Active", data: { "role": "Staff", "status": "Active" }, expected: "Locked" }
             ],
-            hints: ["{{ if (and (equals role \"Admin\") (equals status \"Active\")) \"Access Granted\" \"Locked\" }}"],
+            hints: ["{{ if and equals role \"Admin\" equals status \"Active\" \"Access Granted\" \"Locked\" }}"],
             prefill: "{{}}"
         },
         {
@@ -88,7 +88,7 @@ export const chapter6 = {
                 { name: "Ticket Holder", data: { "type": "Guest", "hasTicket": true }, expected: "true" },
                 { name: "Empty Handed", data: { "type": "Guest", "hasTicket": false }, expected: "false" }
             ],
-            hints: ["{{ or (equals type \"VIP\") hasTicket }}"],
+            hints: ["{{ or equals type \"VIP\" hasTicket }}"],
             prefill: "{{}}"
         },
         {
@@ -102,7 +102,7 @@ export const chapter6 = {
                 { name: "is Member", data: { "type": "Member" }, expected: "true" },
                 { name: "is Guest", data: { "type": "Guest" }, expected: "false" }
             ],
-            hints: ["{{ or (equals type \"VIP\") (equals type \"Member\") }}"],
+            hints: ["{{ or equals type \"VIP\" equals type \"Member\" }}"],
             prefill: "{{}}"
         },
         {
@@ -116,7 +116,7 @@ export const chapter6 = {
                 { name: "Member", data: { "type": "Member" }, expected: "Welcome In" },
                 { name: "Guest", data: { "type": "Guest" }, expected: "Pay Entry" }
             ],
-            hints: ["{{ if (or (equals type \"VIP\") (equals type \"Member\")) \"Welcome In\" \"Pay Entry\" }}"],
+            hints: ["{{ if or equals type \"VIP\" equals type \"Member\" \"Welcome In\" \"Pay Entry\" }}"],
             prefill: "{{}}"
         },
         {
@@ -142,7 +142,7 @@ export const chapter6 = {
                 { name: "Banned User", data: { "status": "Banned" }, expected: "false" },
                 { name: "Active User", data: { "status": "Active" }, expected: "true" }
             ],
-            hints: ["{{ not (equals status \"Banned\") }}"],
+            hints: ["{{ not equals status \"Banned\" }}"],
             prefill: "{{}}"
         },
         {
@@ -156,7 +156,7 @@ export const chapter6 = {
                 { name: "Active", data: { "status": "Active" }, expected: "Allow" },
                 { name: "Pending", data: { "status": "Pending" }, expected: "Allow" }
             ],
-            hints: ["{{ if (not (equals status \"Banned\")) \"Allow\" \"Block\" }}"],
+            hints: ["{{ if not equals status \"Banned\" \"Allow\" \"Block\" }}"],
             prefill: "{{}}"
         },
         {
@@ -198,8 +198,8 @@ export const chapter6 = {
                 { name: "Sophomore", data: { "student": { "grade": "10" } }, expected: "High School" }
             ],
             hints: [
-                "Check: (in student.grade \"09 10 11 12\")",
-                "{{ if (in student.grade \"09 10 11 12\") \"High School\" \"Other\" }}"
+                "Check: in student.grade \"09 10 11 12\"",
+                "{{ if in student.grade \"09 10 11 12\" \"High School\" \"Other\" }}"
             ],
             prefill: "{{}}"
         },
@@ -208,7 +208,7 @@ export const chapter6 = {
             type: "challenge",
             title: "The Logic Chain",
             goal: "Complex Permission Check",
-            description: "We can chain these logic gates together.\n\n**Pattern:** `{{ and condition1 (or condition2 condition3) }}`\n\n**Challenge:**\nA user can edit IF:\n\n• They are `\"Active\"`\n**AND**\n• They are EITHER `\"Editor\"` **OR** `\"Admin\"`\n\nOutput `\"Can Edit\"` or `\"View Only\"`.",
+            description: "We can chain these logic gates together.\n\n**Pattern:** `{{ and condition1 or condition2 condition3 }}`\n\n**Challenge:**\nA user can edit IF:\n\n• They are `\"Active\"`\n**AND**\n• They are EITHER `\"Editor\"` **OR** `\"Admin\"`\n\nOutput `\"Can Edit\"` or `\"View Only\"`.",
             testCases: [
                 { name: "Active Admin", data: { "status": "Active", "role": "Admin" }, expected: "Can Edit" },
                 { name: "Active Editor", data: { "status": "Active", "role": "Editor" }, expected: "Can Edit" },
@@ -216,8 +216,8 @@ export const chapter6 = {
                 { name: "Active Guest", data: { "status": "Active", "role": "Guest" }, expected: "View Only" }
             ],
             hints: [
-                "Build the OR first: (or (equals role \"Admin\") (equals role \"Editor\"))",
-                "Combine with AND: (and (equals status \"Active\") ...)",
+                "Build the OR first: or equals role \"Admin\" equals role \"Editor\"",
+                "Combine with AND: and equals status \"Active\" ...",
                 "Wrap in IF"
             ],
             prefill: "{{}}"
@@ -227,13 +227,13 @@ export const chapter6 = {
             type: "challenge",
             title: "Concept: The Triple And",
             goal: "Check if One AND Two AND Three",
-            description: "To check 3 things, we just nest an `and` inside another `and`.\n\n**Structure:** `{{ and one (and two three) }}`\n\n**Challenge:**\nReturn true only if all three variables (`one`, `two`, `three`) are true.",
+            description: "To check 3 things, we just nest an `and` inside another `and`.\n\n**Structure:** `{{ and one and two three }}`\n\n**Challenge:**\nReturn true only if all three variables (`one`, `two`, `three`) are true.",
             testCases: [
                 { name: "All True", data: { "one": true, "two": true, "three": true }, expected: "true" },
                 { name: "One False", data: { "one": false, "two": true, "three": true }, expected: "false" },
                 { name: "Two False", data: { "one": true, "two": false, "three": true }, expected: "false" }
             ],
-            hints: ["{{ and one (and two three) }}"],
+            hints: ["{{ and one and two three }}"],
             prefill: "{{}}"
         },
         {
@@ -241,7 +241,7 @@ export const chapter6 = {
             type: "challenge",
             title: "Practice: Range Check",
             goal: "Check if score is in valid range",
-            description: "Let's practice combining `less` and `geq` to check a numeric range.\n\n**Refresher:**\n`geq` = Greater than or Equal (≥)\n`less` = Strictly Less Than (<)\n\n**Challenge:**\nCheck if `score` is **at least 50** AND **less than 100**.\nReturn `true` or `false`.",
+            description: "To check if a number is inside a range, we combine two separate checks using `and`.\n\nThink of it as two separate questions:\n1. Is it 50 or higher? (`geq score 50`)\n2. Is it less than 100? (`less score 100`)\n\n**Challenge:**\nReturn `true` if the `score` is **at least 50** AND **less than 100**.",
             testCases: [
                 { name: "Valid (50)", data: { "score": 50 }, expected: "true" },
                 { name: "Valid (75)", data: { "score": 75 }, expected: "true" },
@@ -249,9 +249,10 @@ export const chapter6 = {
                 { name: "Too High", data: { "score": 100 }, expected: "false" }
             ],
             hints: [
-                "Check lower bound: (geq score 50)",
-                "Check upper bound: (less score 100)",
-                "{{ and (geq score 50) (less score 100) }}"
+                "Step 1: check the bottom: geq score 50",
+                "Step 2: check the top: less score 100",
+                "Step 3: Glue them together with 'and' at the start.",
+                "{{ and geq score 50 less score 100 }}"
             ],
             prefill: "{{}}"
         },
@@ -266,7 +267,7 @@ export const chapter6 = {
                 { name: "Short", data: { "pass": "short#" }, expected: "false" },
                 { name: "No Hash", data: { "pass": "longpassword" }, expected: "false" }
             ],
-            hints: ["{{ and (greater (length pass) 8) (contains pass \"#\") }}"],
+            hints: ["{{ and greater length pass 8 contains pass \"#\" }}"],
             prefill: "{{}}"
         },
         {
@@ -279,7 +280,7 @@ export const chapter6 = {
                 { name: "Secure", data: { "pass": "mysecret" }, expected: "true" },
                 { name: "Forbidden", data: { "pass": "mypassword123" }, expected: "false" }
             ],
-            hints: ["{{ not (contains pass \"password\") }}"],
+            hints: ["{{ not contains pass \"password\" }}"],
             prefill: "{{}}"
         },
         {
@@ -287,16 +288,16 @@ export const chapter6 = {
             type: "challenge",
             title: "Practice: The Core Logic",
             goal: "Combine Part 1 and Part 2",
-            description: "Now combine the two previous steps into one logic check.\n\n**Challenge:**\nReturn `true` if the password meets **ALL** criteria:\n\n• Length > 8 AND contains \"#\"\n• AND does NOT contain \"password\"\n\nUse the Triple And structure: `and (Part 1) (Part 2)`.",
+            description: "Now combine the two previous steps into one logic check.\n\n**Challenge:**\nReturn `true` if the password meets **ALL** criteria:\n\n• Length > 8 AND contains \"#\"\n• AND does NOT contain \"password\"\n\nUse the Triple And structure: `and Part 1 Part 2`.",
             testCases: [
                 { name: "Perfect", data: { "pass": "secure#123456" }, expected: "true" },
                 { name: "Failed Part 1", data: { "pass": "short#" }, expected: "false" },
                 { name: "Failed Part 2", data: { "pass": "mypassword#123" }, expected: "false" }
             ],
             hints: [
-                "Part 1: (and (greater (length pass) 8) (contains pass \"#\"))",
-                "Part 2: (not (contains pass \"password\"))",
-                "Combine: {{ and (Part 1) (Part 2) }}"
+                "Part 1: and greater length pass 8 contains pass \"#\"",
+                "Part 2: not contains pass \"password\"",
+                "Combine: {{ and Part 1 Part 2 }}"
             ],
             prefill: "{{}}"
         },
@@ -314,7 +315,7 @@ export const chapter6 = {
             ],
             hints: [
                 "Copy your answer from the previous step.",
-                "Wrap it: {{ if (PASTE_LOGIC_HERE) \"Strong\" \"Weak\" }}"
+                "Wrap it: {{ if PASTE_LOGIC_HERE \"Strong\" \"Weak\" }}"
             ],
             prefill: "{{}}"
         }
