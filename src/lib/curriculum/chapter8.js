@@ -61,7 +61,7 @@ export const chapter8 = {
             type: "challenge",
             title: "Concept: Truthiness",
             goal: "Understand how if treats empty strings",
-            description: "Here's a powerful concept: **Empty strings are treated as `false` by the `if` function.**\n\n**Truthiness Rules:**\n• Empty string `\"\"` → `false`\n• Any non-empty string → `true`\n\n**Why this matters:**\n`{{ if (ignoreIfNull name.middle) ... }}`\n• If middle exists → truthy → first branch\n• If middle missing → empty string → falsy → second branch\n\n**Challenge:**\nIf `status` exists (is not empty), output `\"Active\"`. Otherwise output `\"Inactive\"`.",
+            description: "Here's a powerful concept: **Empty strings are treated as `false` by the `if` function.**\n\n**Truthiness Rules:**\n• Empty string `\"\"` → `false`\n• Any non-empty string → `true`\n\n**Why this matters:**\n`{{ if ignoreIfNull name.middle ... }}`\n• If middle exists → truthy → first branch\n• If middle missing → empty string → falsy → second branch\n\n**Challenge:**\nIf `status` exists (is not empty), output `\"Active\"`. Otherwise output `\"Inactive\"`.",
             testCases: [
                 { name: "Has Status", data: { "status": "online" }, expected: "Active" },
                 { name: "No Status", data: { "user": "test" }, expected: "Inactive" }
@@ -94,14 +94,17 @@ export const chapter8 = {
             type: "challenge",
             title: "Practice: Conditional Separator",
             goal: "Add a space only if field exists",
-            description: "Here's a tricky one: How do you add a space **only** if a field exists?\n\n**The Problem:**\n`{{ concat \"Hello\" concat \" \" name.middle }}`\n→ If middle is missing, you get `\"Hello \"` (trailing space)\n\n**The Solution:**\nMake the space conditional too!\n\n**Challenge:**\nOutput `\"Prefix: \"` followed by the `tag` field. But only add the space if `tag` exists.",
+            description: "How do you add a space **only** if a field exists?\n\n**The Goal:**\n• If `tag` is `\"VIP\"` → Output: `\"Prefix: VIP\"` (Space included)\n• If `tag` is missing → Output: `\"Prefix:\"` (**No space** at the end)\n\n**The Problem:**\nIf you just do `{{ concat \"Prefix: \" ignoreIfNull tag }}`, you'll get a trailing space (`\"Prefix: \"`) when the tag is missing. In clean data formatting, we want to avoid that extra space.\n\n**Challenge:**\nOutput `\"Prefix:\"` followed by a conditional space and the `tag` field. The space should only appear if the tag does.",
             testCases: [
                 { name: "Has Tag", data: { "tag": "VIP" }, expected: "Prefix: VIP" },
                 { name: "No Tag", data: { "user": "test" }, expected: "Prefix:" }
             ],
             hints: [
-                "If tag exists, concat \" \" with tag",
-                "{{ concat \"Prefix:\" (if (ignoreIfNull tag) (concat \" \" (ignoreIfNull tag)) \"\") }}"
+                "1. Start with the static part: \"Prefix:\"",
+                "2. Use 'if' to decide what to add next.",
+                "3. If 'ignoreIfNull tag' is true, concat a space with 'ignoreIfNull tag'.",
+                "4. If false, just add an empty string \"\".",
+                "{{ concat \"Prefix:\" if ignoreIfNull tag concat \" \" ignoreIfNull tag \"\" }}"
             ],
             prefill: "{{}}"
         },
@@ -118,7 +121,7 @@ export const chapter8 = {
             hints: [
                 "Start with first name",
                 "Conditionally add space + suffix",
-                "{{ concat name.first (if (ignoreIfNull name.suffix) (concat \" \" (ignoreIfNull name.suffix)) \"\") }}"
+                "{{ concat name.first if ignoreIfNull name.suffix concat \" \" name.suffix \"\" }}"
             ],
             prefill: "{{}}"
         },
@@ -163,7 +166,7 @@ export const chapter8 = {
             ],
             hints: [
                 "Use if with ignoreIfNull",
-                "{{ if (ignoreIfNull name.middle) (ignoreIfNull name.middle) \"No Middle Name\" }}"
+                "{{ if ignoreIfNull name.middle ignoreIfNull name.middle \"No Middle Name\" }}"
             ],
             prefill: "{{}}"
         },
@@ -187,7 +190,7 @@ export const chapter8 = {
             ],
             hints: [
                 "Start: concat name.first concat \" \" ...",
-                "Middle part: (if (ignoreIfNull name.middle) (concat (ignoreIfNull name.middle) \" \") \"\")",
+                "Middle part: if ignoreIfNull name.middle concat ignoreIfNull name.middle \" \" \"\"",
                 "End with name.last"
             ],
             prefill: "{{}}"
