@@ -113,14 +113,16 @@ export const chapter8 = {
             type: "challenge",
             title: "Reinforcement: Full Name Builder",
             goal: "Practice nested concat with optional field",
-            description: "Let's build up to the final challenge.\n\n**Challenge:**\nOutput `name.first` followed by a space, then `name.suffix` (like \"Jr\" or \"Sr\").\n\nBut only add the space and suffix if `suffix` exists.\n\nExamples:\n• If suffix exists: `\"Jean Jr\"`\n• If no suffix: `\"Jean\"`",
+            description: "Let's build on the pattern from the last step.\n\n**The Goal:**\n• If `suffix` is `\"Jr\"` → Output: `\"Jean Jr\"` (Space + suffix included)\n• If `suffix` is missing → Output: `\"Jean\"` (**No trailing space**)\n\n**Challenge:**\nOutput `name.first` followed by a conditional space and the `name.suffix` field.",
             testCases: [
                 { name: "Has Suffix", data: { "name": { "first": "Jean", "suffix": "Jr" } }, expected: "Jean Jr" },
                 { name: "No Suffix", data: { "name": { "first": "Jean" } }, expected: "Jean" }
             ],
             hints: [
-                "Start with first name",
-                "Conditionally add space + suffix",
+                "1. Start with name.first",
+                "2. Use 'if' to decide what to add next.",
+                "3. If 'ignoreIfNull name.suffix' is true, concat a space with 'ignoreIfNull name.suffix'.",
+                "4. If false, just add an empty string \"\".",
                 "{{ concat name.first if ignoreIfNull name.suffix concat \" \" name.suffix \"\" }}"
             ],
             prefill: "{{}}"
