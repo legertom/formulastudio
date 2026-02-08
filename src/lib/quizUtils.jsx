@@ -1,4 +1,5 @@
 import React from 'react';
+import FunctionTooltip, { FUNCTIONS_SET } from '../components/FunctionTooltip';
 
 // Helper to render text with basic markdown (bold **text**, code `text`)
 // plus a tiny amount of "IDM-ish" token highlighting for {{ and }}.
@@ -15,11 +16,36 @@ export const renderMarkdownText = (text) => {
         });
     };
 
+    // Render a backtick code segment, wrapping known function names in FunctionTooltip
+    const renderCodeSegment = (codeText, key) => {
+        // Check if the entire code text is exactly a known function name
+        const trimmed = codeText.trim();
+        if (FUNCTIONS_SET.has(trimmed)) {
+            return <FunctionTooltip key={key} name={trimmed}>{codeText}</FunctionTooltip>;
+        }
+        // Check if the code text contains function names as whole words and wrap them
+        // Split by word boundaries, wrap known functions
+        const parts = codeText.split(/\b/);
+        const hasFunction = parts.some(p => FUNCTIONS_SET.has(p));
+        if (hasFunction) {
+            return (
+                <code key={key}>
+                    {parts.map((part, i) =>
+                        FUNCTIONS_SET.has(part)
+                            ? <FunctionTooltip key={i} name={part} inline>{part}</FunctionTooltip>
+                            : part
+                    )}
+                </code>
+            );
+        }
+        return <code key={key}>{codeText}</code>;
+    };
+
     // Helper for inline markdown (bold/code)
     const renderInlineMarkdown = (inlineText, baseKey) => {
         return inlineText.split('`').map((part, j) => {
             if (j % 2 === 1) {
-                return <code key={`${baseKey}-${j}`}>{part}</code>;
+                return renderCodeSegment(part, `${baseKey}-${j}`);
             }
             return part.split('**').map((subPart, k) => {
                 if (k % 2 === 1) {

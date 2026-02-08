@@ -1,177 +1,338 @@
 export const chapter7 = {
     id: "chapter-7",
-    title: "Chapter 7: Nested Logic",
-    description: "Chaining multiple if statements.",
+    title: "Chapter 7: Text Logic & Validation",
+    description: "Search text with contains, match lists with in, and build a password validator.",
+    functions: ["contains", "in"],
     steps: [
+        // ============================================================
+        // SECTION A: Warm-Up (Steps 1-2)
+        // ============================================================
         {
             id: "c7-s1",
             type: "challenge",
-            title: "Refresher: Simple If/Else",
-            goal: "Output 'Admin' or 'User' based on role",
-            description: "Before we dive into nested logic, let's review the basic `if` statement.\n\n**Tool: `if`** (Arity 3)\n\n`{{ if condition then_value else_value }}`\n\n**Challenge:**\nIf the `role` is `\"Admin\"`, output `\"Admin\"`. Otherwise, output `\"User\"`.",
+            title: "Refresher: And + Equals",
+            goal: "Quick and review",
+            description: "Let's warm up with an `and` check from Chapter 6.\n\n🧰 **Toolbox:** `if`, `and`, `equals`\n\n**Challenge:**\nIf `dept` is `\"Sales\"` **AND** `region` is `\"West\"`, output `\"Priority\"`. Otherwise `\"Standard\"`.",
             testCases: [
-                { name: "Admin", data: { "role": "Admin" }, expected: "Admin" },
-                { name: "Guest", data: { "role": "Guest" }, expected: "User" }
+                { name: "Sales West", data: { "dept": "Sales", "region": "West" }, expected: "Priority" },
+                { name: "Sales East", data: { "dept": "Sales", "region": "East" }, expected: "Standard" },
+                { name: "Engineering West", data: { "dept": "Engineering", "region": "West" }, expected: "Standard" }
             ],
-            hints: ["{{ if (equals role \"Admin\") \"Admin\" \"User\" }}"],
+            hints: [
+                "You need: if and equals ... equals ... output1 output2",
+                "{{ if and equals dept \"Sales\" equals region \"West\" \"Priority\" \"Standard\" }}"
+            ],
             prefill: "{{}}"
         },
         {
             id: "c7-s2",
             type: "challenge",
-            title: "Concept: The Else-If Pattern",
-            goal: "Understand nested if structure",
-            description: "What if we have **3 possible outcomes** instead of just 2?\n\nWe can put an `if` statement inside the **else slot** of another `if`!\n\n**Structure:**\n```\n{{ if condition1 \n     value1 \n     if condition2 value2 value3 \n}}\n```\n\n**How it works:**\n• If condition1 is true → value1\n• Else, check condition2:\n  • If condition2 is true → value2\n  • Else → value3\n\n**Challenge:**\nIf `fast` is true → `\"Fast\"`, else if `slow` is true → `\"Slow\"`, else → `\"Stopped\"`.",
+            title: "Refresher: Not + Equals",
+            goal: "Quick not review",
+            description: "One more warm-up with `not` from Chapter 6.\n\n🧰 **Toolbox:** `if`, `not`, `equals`\n\n**Challenge:**\nIf `status` is **NOT** `\"Archived\"`, output `\"Visible\"`. Otherwise `\"Hidden\"`.",
             testCases: [
-                { name: "Fast", data: { "fast": true, "slow": false }, expected: "Fast" },
-                { name: "Slow", data: { "fast": false, "slow": true }, expected: "Slow" },
-                { name: "Stopped", data: { "fast": false, "slow": false }, expected: "Stopped" }
+                { name: "Active", data: { "status": "Active" }, expected: "Visible" },
+                { name: "Archived", data: { "status": "Archived" }, expected: "Hidden" },
+                { name: "Draft", data: { "status": "Draft" }, expected: "Visible" }
             ],
             hints: [
-                "Start with: {{ if fast \"Fast\" ...",
-                "The else slot needs another if: ... (if slow \"Slow\" \"Stopped\")",
-                "{{ if fast \"Fast\" (if slow \"Slow\" \"Stopped\") }}"
+                "The condition is: not equals status \"Archived\"",
+                "{{ if not equals status \"Archived\" \"Visible\" \"Hidden\" }}"
             ],
             prefill: "{{}}"
         },
+
+        // ============================================================
+        // SECTION B: Contains (Steps 3-8)
+        // ============================================================
         {
             id: "c7-s3",
             type: "challenge",
-            title: "Practice: Three-Way Choice",
-            goal: "Implement traffic light logic",
-            description: "Let's practice the nested `if` pattern with boolean variables.\n\n**Challenge:**\nIf `go` is true → `\"Green\"`, else if `caution` is true → `\"Yellow\"`, else → `\"Red\"`.",
+            title: "Concept: Substring Search",
+            goal: "Fix the broken contains formula",
+            description: "**New Tool: `contains`** — Arity 2\n\n`{{ contains haystack needle }}`\n\nReturns `true` if the `needle` text is found **INSIDE** the `haystack`.\n\nThink of it as: \"Is **needle** hiding inside **haystack**?\"\n\n🧰 **Toolbox:** `contains` — new!\n\n**Challenge:**\nThe formula below tries to check if the `email` has an `@` symbol — but the arguments are **backwards**. Fix the order!\n\n*The haystack comes first, the needle comes second*",
             testCases: [
-                { name: "Green Light", data: { "go": true, "caution": false }, expected: "Green" },
-                { name: "Yellow Light", data: { "go": false, "caution": true }, expected: "Yellow" },
-                { name: "Red Light", data: { "go": false, "caution": false }, expected: "Red" }
+                { name: "Valid Email", data: { "email": "a@b.com" }, expected: "true" },
+                { name: "Invalid Email", data: { "email": "ab.com" }, expected: "false" }
             ],
-            hints: ["{{ if go \"Green\" (if caution \"Yellow\" \"Red\") }}"],
-            prefill: "{{}}"
+            hints: [
+                "The haystack — the text to search IN — comes first",
+                "The needle — what you're looking for — comes second",
+                "{{ contains email \"@\" }}"
+            ],
+            prefill: "{{ contains \"@\" email }}"
         },
         {
             id: "c7-s4",
-            type: "challenge",
-            title: "Practice: Three-Way with Equals",
-            goal: "Check membership tier",
-            description: "Now let's use `equals` instead of boolean variables.\n\n**Challenge:**\nIf `tier` is `\"VIP\"` → `\"VIP\"`, else if `tier` is `\"Member\"` → `\"Member\"`, else → `\"Guest\"`.",
-            testCases: [
-                { name: "VIP", data: { "tier": "VIP" }, expected: "VIP" },
-                { name: "Member", data: { "tier": "Member" }, expected: "Member" },
-                { name: "Guest", data: { "tier": "Basic" }, expected: "Guest" }
-            ],
-            hints: [
-                "First check: (equals tier \"VIP\")",
-                "Second check: (equals tier \"Member\")",
-                "{{ if (equals tier \"VIP\") \"VIP\" (if (equals tier \"Member\") \"Member\" \"Guest\") }}"
-            ],
-            prefill: "{{}}"
+            type: "multiple-choice",
+            title: "What Does Contains Return?",
+            goal: "Understand that contains returns a Boolean",
+            description: "`contains` returns a **Boolean** — just like `equals`. It answers the question: \"Is this text hiding inside that text?\"\n\nIt doesn't return the found text — just `true` or `false`.",
+            question: "The email is \"tom@company.com\". What does {{ contains email \"@\" }} return?",
+            options: ["true", "false", "\"@\"", "\"tom@company.com\""],
+            correctAnswer: "true",
+            hints: ["contains checks if the needle is inside the haystack", "\"@\" IS inside \"tom@company.com\""]
         },
         {
             id: "c7-s5",
             type: "challenge",
-            title: "Concept: Order Matters",
-            goal: "Understand check sequence importance",
-            description: "**CRITICAL INSIGHT:** The order of your checks matters!\n\nIf you check for `\"2025\"` first, then `\"2037\"`, you get different logic than checking `\"2037\"` first.\n\n**Why?** The first check that returns `true` wins. The rest are never evaluated.\n\n**Challenge:**\nCheck in this specific order:\n1. If `year` is `\"2037\"` → `\"Future\"`\n2. Else if `year` is `\"2025\"` → `\"Present\"`\n3. Else → `\"Past\"`",
+            title: "Contains in If",
+            goal: "Wrap contains in if",
+            description: "Since `contains` returns a Boolean, we can feed it to `if`!\n\n🧰 **Toolbox:** `if`, `contains`\n\n**Challenge:**\nThe `contains` check is already written. **Wrap it in an `if`** to output `\"Valid\"` when true and `\"Invalid\"` when false.",
             testCases: [
-                { name: "Future", data: { "year": "2037" }, expected: "Future" },
-                { name: "Present", data: { "year": "2025" }, expected: "Present" },
-                { name: "Past", data: { "year": "2020" }, expected: "Past" }
+                { name: "Valid", data: { "email": "a@b.com" }, expected: "Valid" },
+                { name: "Invalid", data: { "email": "ab.com" }, expected: "Invalid" }
             ],
-            hints: ["{{ if (equals year \"2037\") \"Future\" (if (equals year \"2025\") \"Present\" \"Past\") }}"],
-            prefill: "{{}}"
+            hints: [
+                "Put `if` at the start, and add the two output strings at the end",
+                "{{ if contains email \"@\" \"Valid\" \"Invalid\" }}"
+            ],
+            prefill: "{{ contains email \"@\" }}"
         },
         {
             id: "c7-s6",
             type: "challenge",
-            title: "Practice: Numeric Grading",
-            goal: "Assign letter grades",
-            description: "Nested `if` works great with numeric comparisons too!\n\n**Challenge:**\nIf `score` is greater than `90` → `\"A\"`, else if greater than `80` → `\"B\"`, else → `\"C\"`.",
+            title: "You Do: Contains in If",
+            goal: "Independent contains + if",
+            description: "Your turn — from scratch!\n\n🧰 **Toolbox:** `if`, `contains`\n\n**Challenge:**\nIf the `url` contains `\"https\"`, output `\"Secure\"`. Otherwise `\"Not Secure\"`.",
             testCases: [
-                { name: "A Grade", data: { "score": 95 }, expected: "A" },
-                { name: "B Grade", data: { "score": 85 }, expected: "B" },
-                { name: "C Grade", data: { "score": 75 }, expected: "C" }
+                { name: "Secure", data: { "url": "https://safe.com" }, expected: "Secure" },
+                { name: "Not Secure", data: { "url": "http://old.com" }, expected: "Not Secure" }
             ],
             hints: [
-                "Use greater for comparisons",
-                "{{ if (greater score 90) \"A\" (if (greater score 80) \"B\" \"C\") }}"
+                "The haystack is url, the needle is \"https\"",
+                "{{ if contains url \"https\" \"Secure\" \"Not Secure\" }}"
             ],
             prefill: "{{}}"
         },
         {
             id: "c7-s7",
             type: "challenge",
-            title: "Practice: Nested Data Access",
-            goal: "Check account type from nested object",
-            description: "Let's combine **dot notation** with nested logic.\n\n**Challenge:**\nAccess `user.account.type` and check:\n• If `\"Premium\"` → `\"Premium\"`\n• Else if `\"Basic\"` → `\"Basic\"`\n• Else → `\"Trial\"`",
+            title: "Contains + Not",
+            goal: "Negative text check",
+            description: "We can combine `contains` with `not` from Chapter 6!\n\n🧰 **Toolbox:** `if`, `not`, `contains`\n\n**Challenge:**\nIf the `username` does **NOT** contain `\"test\"`, output `\"Real\"`. Otherwise `\"Fake\"`.",
             testCases: [
-                { name: "Premium", data: { "user": { "account": { "type": "Premium" } } }, expected: "Premium" },
-                { name: "Basic", data: { "user": { "account": { "type": "Basic" } } }, expected: "Basic" },
-                { name: "Trial", data: { "user": { "account": { "type": "Free" } } }, expected: "Trial" }
+                { name: "Real", data: { "username": "jdoe" }, expected: "Real" },
+                { name: "Fake", data: { "username": "testuser" }, expected: "Fake" }
             ],
             hints: [
-                "Access the field: user.account.type",
-                "{{ if (equals user.account.type \"Premium\") \"Premium\" (if (equals user.account.type \"Basic\") \"Basic\" \"Trial\") }}"
+                "The condition is: not contains username \"test\"",
+                "{{ if not contains username \"test\" \"Real\" \"Fake\" }}"
             ],
             prefill: "{{}}"
         },
         {
             id: "c7-s8",
             type: "challenge",
-            title: "Reinforcement: Order Status",
-            goal: "Build confidence with similar pattern",
-            description: "One more practice before the final exam!\n\n**Challenge:**\nCheck `order.status` in this order:\n• If `\"Shipped\"` → `\"Shipped\"`\n• Else if `\"Processing\"` → `\"Processing\"`\n• Else → `\"Pending\"`",
+            title: "Contains + And",
+            goal: "Combine two contains checks",
+            description: "A valid email must contain **BOTH** `\"@\"` **AND** `\".\"`.\n\n🧰 **Toolbox:** `if`, `and`, `contains`\n\n**Challenge:**\nIf the `email` contains `\"@\"` **AND** contains `\".\"`, output `\"Valid\"`. Otherwise `\"Invalid\"`.",
             testCases: [
-                { name: "Shipped", data: { "order": { "status": "Shipped" } }, expected: "Shipped" },
-                { name: "Processing", data: { "order": { "status": "Processing" } }, expected: "Processing" },
-                { name: "Pending", data: { "order": { "status": "New" } }, expected: "Pending" }
+                { name: "Full Email", data: { "email": "a@b.com" }, expected: "Valid" },
+                { name: "No Dot", data: { "email": "a@b" }, expected: "Invalid" },
+                { name: "No At", data: { "email": "ab.com" }, expected: "Invalid" }
             ],
-            hints: ["{{ if (equals order.status \"Shipped\") \"Shipped\" (if (equals order.status \"Processing\") \"Processing\" \"Pending\") }}"],
+            hints: [
+                "You need two contains checks glued together with and",
+                "contains email \"@\" and contains email \".\"",
+                "{{ if and contains email \"@\" contains email \".\" \"Valid\" \"Invalid\" }}"
+            ],
             prefill: "{{}}"
         },
+
+        // ============================================================
+        // SECTION C: In (Steps 9-13)
+        // ============================================================
         {
             id: "c7-s9",
             type: "challenge",
-            title: "Practice: Age Check",
-            goal: "Classify students as Minor or Adult",
-            description: "Let's practice with numeric comparisons using `leq` (less than or equal to).\n\n**Refresher: `leq`** (Arity 2)\n`{{ leq number1 number2 }}` → returns `true` if number1 ≤ number2\n\n**Challenge:**\nIf `student.age` is **less than or equal to 18**, output `\"Minor\"`. Otherwise, output `\"Adult\"`.",
+            title: "Concept: List Membership",
+            goal: "Fix the broken formula",
+            description: "**New Tool: `in`** — Arity 2\n\n`{{ in value list }}`\n\nThe `list` is a **space-separated** string of options. Returns `true` if the value **exactly matches** one of the items.\n\n**Example:** `{{ in \"apple\" \"apple banana cherry\" }}` → `true`\n\n🧰 **Toolbox:** `in` — new!\n\n**Challenge:**\nThe formula below tries to check if `color` is red, blue, or green — but someone used `contains` instead of `in`. **Fix it!**\n\n*Think: do we want to search INSIDE text, or match against a LIST?*",
             testCases: [
-                { name: "Minor (18)", data: { "student": { "age": 18 } }, expected: "Minor" },
-                { name: "Minor (15)", data: { "student": { "age": 15 } }, expected: "Minor" },
-                { name: "Adult (21)", data: { "student": { "age": 21 } }, expected: "Adult" }
+                { name: "Red", data: { "color": "red" }, expected: "true" },
+                { name: "Blue", data: { "color": "blue" }, expected: "true" },
+                { name: "Yellow", data: { "color": "yellow" }, expected: "false" }
             ],
             hints: [
-                "Use leq to check: (leq student.age 18)",
-                "{{ if (leq student.age 18) \"Minor\" \"Adult\" }}"
+                "We want to match against a list, not search inside text",
+                "Replace `contains` with `in`",
+                "{{ in color \"red blue green\" }}"
+            ],
+            prefill: "{{ contains color \"red blue green\" }}"
+        },
+        {
+            id: "c7-s10",
+            type: "multiple-choice",
+            title: "Contains vs In",
+            goal: "Understand the critical difference",
+            description: "This is why `contains` and `in` are **different tools**!\n\n• `contains` finds text **INSIDE** other text — so \"red\" is inside \"reddish\"\n• `in` checks for an **EXACT match** against a list\n\nUse `in` when you want exact matches. Use `contains` when you're searching inside text.",
+            question: "color is \"reddish\". What does {{ contains color \"red\" }} return? Think carefully!",
+            options: ["true — \"red\" is inside \"reddish\"", "false — \"reddish\" is not \"red\""],
+            correctAnswer: "true — \"red\" is inside \"reddish\"",
+            hints: ["contains searches for a substring INSIDE text", "Is the text \"red\" hiding inside the text \"reddish\"?"]
+        },
+        {
+            id: "c7-s11",
+            type: "challenge",
+            title: "In with If",
+            goal: "Use in inside if",
+            description: "Let's put `in` to work inside an `if`.\n\n🧰 **Toolbox:** `if`, `in`\n\n**Challenge:**\nWe've started the formula. Complete it by adding the list of High School grades and the two outputs.\n\nIf `student.grade` is in `\"09 10 11 12\"`, output `\"High School\"`. Otherwise `\"Other\"`.",
+            testCases: [
+                { name: "Freshman", data: { "student": { "grade": "09" } }, expected: "High School" },
+                { name: "Senior", data: { "student": { "grade": "12" } }, expected: "High School" },
+                { name: "Middle School", data: { "student": { "grade": "07" } }, expected: "Other" }
+            ],
+            hints: [
+                "Add the list string and two output values",
+                "\"09 10 11 12\" \"High School\" \"Other\"",
+                "{{ if in student.grade \"09 10 11 12\" \"High School\" \"Other\" }}"
+            ],
+            prefill: "{{ if in student.grade }}"
+        },
+        {
+            id: "c7-s12",
+            type: "challenge",
+            title: "You Do: In with If",
+            goal: "Independent in + if",
+            description: "Your turn — from scratch!\n\n🧰 **Toolbox:** `if`, `in`\n\n**Challenge:**\nIf the `day` is a weekend day `\"Saturday Sunday\"`, output `\"Weekend\"`. Otherwise `\"Weekday\"`.",
+            testCases: [
+                { name: "Saturday", data: { "day": "Saturday" }, expected: "Weekend" },
+                { name: "Monday", data: { "day": "Monday" }, expected: "Weekday" },
+                { name: "Sunday", data: { "day": "Sunday" }, expected: "Weekend" }
+            ],
+            hints: [
+                "The list is \"Saturday Sunday\"",
+                "{{ if in day \"Saturday Sunday\" \"Weekend\" \"Weekday\" }}"
             ],
             prefill: "{{}}"
         },
         {
-            id: "c7-s10",
+            id: "c7-s13",
             type: "challenge",
-            title: "Final Exam: Graduation Status",
-            goal: "Output \"New Student\" (2037), \"Former Student\" (2025), or \"Current Student\" (Checked in that order).",
-            description: "Put it all together!\n\n**Challenge:**\nCheck `student.graduation_year` in this specific order:\n• If `\"2037\"` → `\"New Student\"`\n• Else if `\"2025\"` → `\"Former Student\"`\n• Else → `\"Current Student\"`",
+            title: "In + Not",
+            goal: "Combine in with not",
+            description: "We can combine `in` with `not` to exclude a group!\n\n🧰 **Toolbox:** `if`, `not`, `in`\n\n**Challenge:**\nIf the `status` is **NOT** in `\"Banned Suspended\"`, output `\"Active\"`. Otherwise `\"Restricted\"`.",
             testCases: [
-                {
-                    name: "New Student",
-                    data: { "student": { "graduation_year": "2037" } },
-                    expected: "New Student"
-                },
-                {
-                    name: "Former Student",
-                    data: { "student": { "graduation_year": "2025" } },
-                    expected: "Former Student"
-                },
-                {
-                    name: "Current Student",
-                    data: { "student": { "graduation_year": "2030" } },
-                    expected: "Current Student"
-                }
+                { name: "OK", data: { "status": "OK" }, expected: "Active" },
+                { name: "Banned", data: { "status": "Banned" }, expected: "Restricted" },
+                { name: "Suspended", data: { "status": "Suspended" }, expected: "Restricted" }
             ],
             hints: [
-                "Access the field: student.graduation_year",
-                "Check \"2037\" first, then \"2025\"",
-                "Structure: {{ if cond1 val1 (if cond2 val2 val3) }}"
+                "The condition is: not in status \"Banned Suspended\"",
+                "{{ if not in status \"Banned Suspended\" \"Active\" \"Restricted\" }}"
+            ],
+            prefill: "{{}}"
+        },
+
+        // ============================================================
+        // SECTION D: Range Checks (Steps 14-15)
+        // ============================================================
+        {
+            id: "c7-s14",
+            type: "challenge",
+            title: "Is It in Range?",
+            goal: "Range check with and + numeric comparisons",
+            description: "Let's combine `and` with numeric comparisons from Chapter 5.\n\n🧰 **Toolbox:** `and`, `geq`, `less`\n\nRemember from Chapter 5:\n• `geq score 50` → true if score is **50 or higher** — greater or equal\n• `less score 100` → true if score is **below 100**\n\n**Challenge:**\nWe've started the first check. Add the second check to complete the range.\n\nReturn `true` if `score` is **at least 50 AND less than 100**.",
+            testCases: [
+                { name: "Low Edge", data: { "score": 50 }, expected: "true" },
+                { name: "Middle", data: { "score": 75 }, expected: "true" },
+                { name: "Too Low", data: { "score": 49 }, expected: "false" },
+                { name: "Too High", data: { "score": 100 }, expected: "false" }
+            ],
+            hints: [
+                "Add the upper bound check: less score 100",
+                "{{ and geq score 50 less score 100 }}"
+            ],
+            prefill: "{{ and geq score 50 }}"
+        },
+        {
+            id: "c7-s15",
+            type: "challenge",
+            title: "Range Gate",
+            goal: "Range check inside if",
+            description: "Now wrap a range check in `if` for output.\n\n🧰 **Toolbox:** `if`, `and`, `geq`, `less`\n\n**Challenge:**\nIf `temperature` is **at least 60 AND less than 80**, output `\"Comfortable\"`. Otherwise `\"Extreme\"`.",
+            testCases: [
+                { name: "Just Right", data: { "temperature": 70 }, expected: "Comfortable" },
+                { name: "Too Cold", data: { "temperature": 59 }, expected: "Extreme" },
+                { name: "Too Hot", data: { "temperature": 80 }, expected: "Extreme" }
+            ],
+            hints: [
+                "The condition is: and geq temperature 60 less temperature 80",
+                "{{ if and geq temperature 60 less temperature 80 \"Comfortable\" \"Extreme\" }}"
+            ],
+            prefill: "{{}}"
+        },
+
+        // ============================================================
+        // SECTION E: Password Validator Capstone (Steps 16-19)
+        // ============================================================
+        {
+            id: "c7-s16",
+            type: "challenge",
+            title: "Build Part 1: Length + Hash",
+            goal: "And with greater + contains",
+            description: "Let's build a **Password Validator** step by step!\n\n🧰 **Toolbox:** `and`, `greater`, `length`, `contains`\n\nRemember from Chapter 5:\n• `length pass` → returns the number of characters\n• `greater X 8` → true if X is bigger than 8\n\n**Challenge:**\nWe've started with the length check. **Add a `contains` check** for the `\"#\"` symbol.\n\nCheck if `pass` is longer than 8 characters **AND** contains `\"#\"`.",
+            testCases: [
+                { name: "Valid", data: { "pass": "secure#1234" }, expected: "true" },
+                { name: "Too Short", data: { "pass": "short#" }, expected: "false" },
+                { name: "No Hash", data: { "pass": "longpassword" }, expected: "false" }
+            ],
+            hints: [
+                "Add: contains pass \"#\"",
+                "{{ and greater length pass 8 contains pass \"#\" }}"
+            ],
+            prefill: "{{ and greater length pass 8 }}"
+        },
+        {
+            id: "c7-s17",
+            type: "challenge",
+            title: "Build Part 2: The Forbidden Word",
+            goal: "Not + contains check",
+            description: "Second check: the password must **NOT** contain the word `\"password\"`.\n\n🧰 **Toolbox:** `not`, `contains`\n\n**Challenge:**\nBuild this check from scratch.",
+            testCases: [
+                { name: "Secure", data: { "pass": "mysecret" }, expected: "true" },
+                { name: "Forbidden", data: { "pass": "mypassword123" }, expected: "false" }
+            ],
+            hints: [
+                "Check if pass contains \"password\", then negate it",
+                "{{ not contains pass \"password\" }}"
+            ],
+            prefill: "{{}}"
+        },
+        {
+            id: "c7-s18",
+            type: "challenge",
+            title: "Combine: The Triple And",
+            goal: "Chain Part 1 and Part 2",
+            description: "Now combine your two checks into one.\n\nThe **Triple And** structure: `{{ and PART_1 PART_2 }}`\n\nWhen Part 1 is already an `and`, this becomes: `{{ and and ... ... PART_2 }}`\n\n🧰 **Toolbox:** `and`, `greater`, `length`, `contains`, `not`\n\n**Challenge:**\nWe've pasted Part 1 for you. **Add Part 2** — your forbidden word check — at the end.",
+            testCases: [
+                { name: "Perfect", data: { "pass": "secure#123456" }, expected: "true" },
+                { name: "Failed Part 1", data: { "pass": "short#" }, expected: "false" },
+                { name: "Failed Part 2", data: { "pass": "mypassword#123" }, expected: "false" }
+            ],
+            hints: [
+                "Add your Part 2 after the existing formula",
+                "not contains pass \"password\"",
+                "{{ and and greater length pass 8 contains pass \"#\" not contains pass \"password\" }}"
+            ],
+            prefill: "{{ and and greater length pass 8 contains pass \"#\" }}"
+        },
+        {
+            id: "c7-s19",
+            type: "challenge",
+            title: "Final Exam: Password Validator",
+            goal: "Wrap in if for final output",
+            description: "You built the engine. Now give it a voice!\n\n🧰 **Toolbox:** `if`, `and`, `greater`, `length`, `contains`, `not`\n\n**Challenge:**\nOutput `\"Strong\"` if the password passes **ALL** checks. Otherwise `\"Weak\"`.\n\nWrap your logic from the last step in an `if`.\n\n**Tip: Reuse what you just built!**",
+            testCases: [
+                { name: "Strong", data: { "pass": "secure#12345" }, expected: "Strong" },
+                { name: "No Hash", data: { "pass": "secure123456" }, expected: "Weak" },
+                { name: "Short", data: { "pass": "#short" }, expected: "Weak" },
+                { name: "Forbidden Word", data: { "pass": "mypassword#123" }, expected: "Weak" }
+            ],
+            hints: [
+                "Start with if, paste your logic, add the two outputs",
+                "{{ if and and greater length pass 8 contains pass \"#\" not contains pass \"password\" \"Strong\" \"Weak\" }}"
             ],
             prefill: "{{}}"
         }

@@ -9,7 +9,7 @@ export const chapter3 = {
             type: "challenge",
             title: "Concept: The Single Input",
             goal: "Use toLower to lowercase the first name",
-            description: "Let's talk about **Arity**.\n\n**Definition**: The number of arguments (inputs) a function takes.\n\n`{{ toLower text }}`\n\n**Etymology**: It comes from words like Un**ary** (1), Bin**ary** (2), and Tern**ary** (3). Mathematics just kept the \"-ary\" part!\n\nSome functions, like `toLower`, have an **Arity of 1**. They are \"Unary\" functions and need exactly one input.\n\n**Challenge:**\nUse `toLower` on `name.first`.",
+            description: "Let's talk about **Arity**.\n\n**Definition**: The number of arguments — inputs — a function takes.\n\n`{{ toLower text }}`\n\n**Etymology**: It comes from words like Un**ary** = 1, Bin**ary** = 2, and Tern**ary** = 3. Mathematics just kept the \"-ary\" part!\n\nSome functions, like `toLower`, have an **Arity of 1**. They are \"Unary\" functions and need exactly one input.\n\n**Challenge:**\nUse `toLower` on `name.first`.",
             testCases: [
                 { name: "Jean", data: { "name": { "first": "Jean" } }, expected: "jean" }
             ],
@@ -33,7 +33,7 @@ export const chapter3 = {
             type: "challenge",
             title: "New Tool: Initials",
             goal: "Get the initials of the first name",
-            description: "Meet your new favorite tool.\n\n**New Tool: `initials`** (Arity 1)\n\n`{{ initials text }}`\n\nIt automatically grabs the first letter of every word (separating by **spaces** or **hyphens**).\n\n**Challenge:**\nGet the initials for `name.first`.",
+            description: "Meet your new favorite tool.\n\n**New Tool: `initials`** — Arity 1\n\n`{{ initials text }}`\n\nIt automatically grabs the first letter of every word — separating by **spaces** or **hyphens**.\n\n**Challenge:**\nGet the initials for `name.first`.",
             testCases: [
                 { name: "Hyphenated", data: { "name": { "first": "Jean-Luc" } }, expected: "JL" },
                 { name: "Space Separated", data: { "name": { "first": "Mary Jane" } }, expected: "MJ" }
@@ -69,7 +69,7 @@ export const chapter3 = {
             type: "challenge",
             title: "New Tool: Substring",
             goal: "Extract the first letter of First Name",
-            description: "Sometimes you need more control than `initials` gives you.\n\n**New Tool: `substr`** (Arity 3)\n\n`{{ substr text start length }}`\n\nIt takes a \"sub\" (a portion) of a string. You tell it where to start and how many characters to grab.\n\nIt works by counting **Positions** starting at **0**:\n\n| Position | 0 | 1 | 2 | 3 |\n|----------|---|---|---|---|\n| Letter   | J | e | a | n |\n\n**Challenge:**\nGet just the first letter (Start at **0**, take **1**) of `name.first`.",
+            description: "Sometimes you need more control than `initials` gives you.\n\n**New Tool: `substr`** — Arity 3\n\n`{{ substr text start length }}`\n\nIt takes a \"sub\" — a portion — of a string. You tell it where to start and how many characters to grab.\n\nIt works by counting **Positions** starting at **0**:\n\n| Position | 0 | 1 | 2 | 3 |\n|----------|---|---|---|---|\n| Letter   | J | e | a | n |\n\n**Challenge:**\nGet just the first letter — Start at **0**, take **1** — of `name.first`.",
             testCases: [
                 { name: "Jean", data: { "name": { "first": "Jean" } }, expected: "J" }
             ],
@@ -81,7 +81,7 @@ export const chapter3 = {
             type: "challenge",
             title: "The \"Zero\" Rule",
             goal: "Extract the SECOND letter of First Name",
-            description: "In programming, we start counting at **0**, not 1.\n\n| Position | 0 | 1 | 2 | 3 |\n|----------|---|---|---|---|\n| Letter   | J | e | a | n |\n\n*   Position 0 = First Letter\n*   Position 1 = Second Letter\n*   Position 2 = Third Letter\n\n**Challenge:**\nUse `substr` to grab the **second** letter of `name.first` (Start at 1, take 1).",
+            description: "In programming, we start counting at **0**, not 1.\n\n| Position | 0 | 1 | 2 | 3 |\n|----------|---|---|---|---|\n| Letter   | J | e | a | n |\n\n*   Position 0 = First Letter\n*   Position 1 = Second Letter\n*   Position 2 = Third Letter\n\n**Challenge:**\nUse `substr` to grab the **second** letter of `name.first` — Start at 1, take 1.",
             testCases: [
                 { name: "Jean", data: { "name": { "first": "Jean" } }, expected: "e" }
             ],
@@ -92,7 +92,7 @@ export const chapter3 = {
             id: "c3-s7",
             type: "challenge",
             title: "Substring Practice",
-            goal: "Extract the year (2025) from the date",
+            goal: "Extract the year 2025 from the date",
             description: "Let's try extracting from the middle.\n\nThe date is \"05-20-2025\". Every character counts—including the hyphens!\n\n| Position | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |\n|----------|---|---|---|---|---|---|---|---|---|---|\n| Char     | 0 | 5 | - | 2 | 0 | - | 2 | 0 | 2 | 5 |\n\n*   \"05\" is at position 0.\n*   \"20\" is at position 3.\n*   \"2025\" starts at position 6!\n\n**Challenge:**\nExtract the 4 digits of the year from `student.enrollment_date`.",
             testCases: [
                 { name: "Date", data: { "student": { "enrollment_date": "05-20-2025" } }, expected: "2025" }
@@ -105,7 +105,7 @@ export const chapter3 = {
             type: "challenge",
             title: "Concept: Nesting",
             goal: "Uppercase the First Name, then add 'HI '",
-            description: "You can put functions inside functions. This is called **Nesting**.\n\n**Key Insight:** We don't use parentheses or brackets to group nested formulas. Because each function has a fixed **Arity** (number of inputs it consumes), the parser knows exactly where one function ends and another begins!\n\nRules:\n1. The **Inner** function runs first.\n2. The **Outer** function uses that result as its Input.\n\nWe've started you with `toUpper name.first` which outputs \"JEAN\".\n\n**Challenge:**\nUse `concat` to add \"HI \" before it to get \"HI JEAN\".",
+            description: "You can put functions inside functions. This is called **Nesting**.\n\n**Key Insight:** We don't use parentheses or brackets to group nested formulas. Because each function has a fixed **Arity** — the number of inputs it consumes — the parser knows exactly where one function ends and another begins!\n\nRules:\n1. The **Inner** function runs first.\n2. The **Outer** function uses that result as its Input.\n\nWe've started you with `toUpper name.first` which outputs \"JEAN\".\n\n**Challenge:**\nUse `concat` to add \"HI \" before it to get \"HI JEAN\".",
             testCases: [
                 { name: "Jean", data: { "name": { "first": "Jean" } }, expected: "HI JEAN" }
             ],
@@ -129,7 +129,7 @@ export const chapter3 = {
             type: "challenge",
             title: "Blueprint: The Handle",
             goal: "Create the handle text: FirstInitial + LastName",
-            description: "Let's build the username parts.\n\nCombine the **First Initial** (using `substr`) and the **Last Name**.\n\nExample: `J` + `Picard` = `JPicard`",
+            description: "Let's build the username parts.\n\nCombine the **First Initial** using `substr` and the **Last Name**.\n\nExample: `J` + `Picard` = `JPicard`",
             testCases: [
                 { name: "Jean-Luc", data: { "name": { "first": "Jean-Luc", "last": "Picard" } }, expected: "JPicard" }
             ],
@@ -141,7 +141,7 @@ export const chapter3 = {
             type: "challenge",
             title: "Alternative: Using Initials",
             goal: "Create the handle text: FirstInitials + LastName",
-            description: "Same data, different approach!\n\nWhat if the name is **hyphenated** like \"Jean-Luc\"? Using `substr` gives us just `J`, but `initials` gives us `JL`.\n\nEach tool has different utility:\n*   `substr` → Precise control (exactly 1 character)\n*   `initials` → All word initials (handles hyphens)\n\n**Challenge:**\nNow use `initials` instead of `substr` to get `JLPicard`.",
+            description: "Same data, different approach!\n\nWhat if the name is **hyphenated** like \"Jean-Luc\"? Using `substr` gives us just `J`, but `initials` gives us `JL`.\n\nEach tool has different utility:\n*   `substr` → Precise control — exactly 1 character\n*   `initials` → All word initials — handles hyphens\n\n**Challenge:**\nNow use `initials` instead of `substr` to get `JLPicard`.",
             testCases: [
                 { name: "Jean-Luc", data: { "name": { "first": "Jean-Luc", "last": "Picard" } }, expected: "JLPicard" }
             ],
@@ -158,7 +158,7 @@ export const chapter3 = {
             type: "challenge",
             title: "Final Exam: ID Generation",
             goal: "Create a template for FirstInitial + LastName + Year",
-            description: "Put it all together!\n\nCreate a User ID consisting of:\n1. First Initial\n2. Last Name\n3. Graduation Year\n\n(No spaces)",
+            description: "Put it all together!\n\nCreate a User ID consisting of:\n1. First Initial\n2. Last Name\n3. Graduation Year\n\nNo spaces.",
             testCases: [
                 {
                     name: "Standard User",
@@ -168,7 +168,7 @@ export const chapter3 = {
             ],
             hints: [
                 "You need nested concats.",
-                "{{ concat (Initial+Last) Year }}",
+                "Inner concat joins Initial + Last, outer concat adds Year",
                 "{{ concat concat substr ... name.last student.graduation_year }}"
             ],
             prefill: "{{}}"

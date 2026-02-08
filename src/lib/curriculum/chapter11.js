@@ -12,7 +12,7 @@ export const chapter11 = {
             goal: "Observe the new data structure",
             description: `So far, we've worked with single values like \`student.name\`. But look at the data panel for something new: **schools**.
 
-It doesn't have a single value. It has **square brackets** \`[]\`. This is an **Array** (also called a **List**).
+It doesn't have a single value. It has **square brackets** \`[]\`. This is an **Array** — also called a **List**.
 
 Think of an Array as a **box**. Inside the box are multiple items.
 
@@ -34,7 +34,7 @@ Output the student's name to move forward, but keep your eyes on that \`schools\
 Imagine a **Classroom** full of students. If you shout "What is your name?" at the room, you get silence. The *Classroom* doesn't have a name—the *Students* inside do.
 
 **Challenge:**
-Try to output \`student.schools.name\` and see what happens (it will be empty!). This proves we can't talk to the box; we have to talk to the items inside.`,
+Try to output \`student.schools.name\` and see what happens — it will be empty!. This proves we can't talk to the box; we have to talk to the items inside.`,
             testCases: [
                 { name: "Test", data: { "student": { "schools": [{ "name": "Starfleet Academy", "year": "2323" }, { "name": "Command School", "year": "2333" }] } }, expected: "" }
             ],
@@ -46,7 +46,7 @@ Try to output \`student.schools.name\` and see what happens (it will be empty!).
             type: "challenge",
             title: "Checking the First Folder",
             goal: "Use an index for the first time",
-            description: `To get to an item inside the box, we use its **position** (called an **index**).
+            description: `To get to an item inside the box, we use its **position** — called an **index**.
 
 In computer logic, we start counting at **0**.
 - \`schools[0]\` is the first item.
@@ -84,9 +84,9 @@ Output the name of the **second** school in the list.`,
             type: "challenge",
             title: "Same Item, Different Data",
             goal: "Access a different property using an index",
-            description: `Each "Student" in our "Classroom" (each item in our array) is an object with multiple fields.
+            description: `Each "Student" in our "Classroom" — each item in our array — is an object with multiple fields.
 
-For the first school (\`[0]\`), we can get the name OR the year.
+For the first school — \`[0]\` —, we can get the name OR the year.
 
 **Challenge:**
 Find out when Picard attended his first school. Output the \`year\` of \`student.schools[0]\`.`,
@@ -128,7 +128,7 @@ Instead of typing \`[0]\`, \`[1]\`, \`[2]\`, we tell the computer: "For every it
 \`{{forEach "variableName" array whatToOutput}}\`
 
 **Challenge:**
-The loop below works, but it's "smushing" the course names together. Use \`concat\` to add a comma and a space (\`", "\`) to the end of each course.`,
+The loop below works, but it's "smushing" the course names together. Use \`concat\` to add a comma and a space — \`", "\` — to the end of each course.`,
             testCases: [
                 { name: "Test", data: { "student": { "courses": ["Navigation", "Tactics", "Diplomacy"] } }, expected: "Navigation, Tactics, Diplomacy, " }
             ],
@@ -143,7 +143,7 @@ The loop below works, but it's "smushing" the course names together. Use \`conca
             type: "challenge",
             title: "Naming the Variable",
             goal: "Understand the loop variable",
-            description: `The first argument in quotes (\`"c"\`) is just a temporary label for "the item I'm currently looking at."
+            description: `The first argument in quotes — \`"c"\` — is just a temporary label for "the item I'm currently looking at."
 
 You can name it anything! It's like saying "For every **Student** in this classroom, tell me that **Student's** name."
 
@@ -177,14 +177,14 @@ Complete the formula by adding \`c\` as the third argument to output all the cou
             type: "challenge",
             title: "Looping over Folders",
             goal: "Access properties inside a loop",
-            description: `Now we return to our \`schools\` box. Because each item is a folder (an object), we use dot notation inside the loop.
+            description: `Now we return to our \`schools\` box. Because each item is a folder — an object —, we use dot notation inside the loop.
 
 If our label is \`"s"\`, then:
 - \`s.name\` gets the school name.
 - \`s.year\` gets the year.
 
 **Challenge:**
-The code outputs the whole folder (\`s\`). Change the logic to output just \`s.name\`.`,
+The code outputs the whole folder — \`s\` —. Change the logic to output just \`s.name\`.`,
             testCases: [
                 { name: "Test", data: { "student": { "schools": [{ "name": "Starfleet Academy", "year": "2323" }, { "name": "Command School", "year": "2333" }] } }, expected: "Starfleet AcademyCommand School" }
             ],
@@ -245,14 +245,14 @@ Update the logic to \`concat s.name s.year\`. Try to anticipate what the output 
             goal: "Intro to nested concat inside a loop",
             description: `That was hard to read. To add a space, we need a "nested" concat:
 
-\`concat s.name (concat " " s.year)\`
+\`concat s.name concat " " s.year\`
 
 **Challenge:**
 Add the space so the school name and year are separated.`,
             testCases: [
                 { name: "Test", data: { "student": { "schools": [{ "name": "Starfleet Academy", "year": "2323" }, { "name": "Command School", "year": "2333" }] } }, expected: "Starfleet Academy 2323Command School 2333" }
             ],
-            hints: ["{{forEach \"s\" student.schools concat s.name (concat \" \" s.year)}}"],
+            hints: ["{{forEach \"s\" student.schools concat s.name concat \" \" s.year}}"],
             prefill: "{{forEach \"s\" student.schools concat s.name s.year}}"
         },
         {
@@ -262,22 +262,22 @@ Add the space so the school name and year are separated.`,
             goal: "Practice punctuation wrapping",
             description: `Let's practice wrapping a value in parentheses.
             
-Formula: \`concat "(\" (concat s.year \")\")\`
+Formula: \`concat "(" concat s.year ")"\`
 
 **Challenge:**
-Change the logic to ONLY output the year wrapped in parentheses: \`(2323)\`(2333).`,
+Change the logic to ONLY output the year wrapped in parentheses: \`(2323)(2333)\`.`,
             testCases: [
                 { name: "Test", data: { "student": { "schools": [{ "name": "Starfleet Academy", "year": "2323" }, { "name": "Command School", "year": "2333" }] } }, expected: "(2323)(2333)" }
             ],
-            hints: ["{{forEach \"s\" student.schools concat \"(\" (concat s.year \")\")}}"],
+            hints: ["{{forEach \"s\" student.schools concat \"(\" concat s.year \")\"}}"],
             prefill: "{{forEach \"s\" student.schools }}"
         },
         {
             id: "c11-s16",
             type: "challenge",
             title: "Professional Formatting",
-            goal: "Combine Name + (Year)",
-            description: `Now combined Name and (Year). This requires three \`concat\` functions layered together.
+            goal: "Combine Name + Year",
+            description: `Now combine Name and Year — wrapped in parentheses. This requires three \`concat\` functions layered together.
 
 **Challenge:**
 Output: \`Starfleet Academy (2323)Command School (2333)\`.
@@ -286,7 +286,7 @@ Think of it as: Name + Space + Opening Parenthesis + Year + Closing Parenthesis.
             testCases: [
                 { name: "Test", data: { "student": { "schools": [{ "name": "Starfleet Academy", "year": "2323" }, { "name": "Command School", "year": "2333" }] } }, expected: "Starfleet Academy (2323)Command School (2333)" }
             ],
-            hints: ["{{forEach \"s\" student.schools concat s.name (concat \" (\" (concat s.year \")\"))}}"],
+            hints: ["{{forEach \"s\" student.schools concat s.name concat \" (\" concat s.year \")\"}}"],
             prefill: "{{forEach \"s\" student.schools }}"
         },
         {
@@ -301,8 +301,8 @@ Add the literal string \`" | "\` to the very end of your formatting logic.`,
             testCases: [
                 { name: "Test", data: { "student": { "schools": [{ "name": "Starfleet Academy", "year": "2323" }, { "name": "Command School", "year": "2333" }] } }, expected: "Starfleet Academy (2323) | Command School (2333) | " }
             ],
-            hints: ["{{forEach \"s\" student.schools concat s.name (concat \" (\" (concat s.year \") | \"))}}"],
-            prefill: "{{forEach \"s\" student.schools concat s.name (concat \" (\" (concat s.year \")\"))}}"
+            hints: ["{{forEach \"s\" student.schools concat s.name concat \" (\" concat s.year \") | \"}}"],
+            prefill: "{{forEach \"s\" student.schools concat s.name concat \" (\" concat s.year \")\"}}"
         },
         {
             id: "c11-s18",
@@ -322,7 +322,7 @@ Add the literal string \`" | "\` to the very end of your formatting logic.`,
             testCases: [
                 { name: "Test", data: { "student": { "schools": [{ "name": "Starfleet Academy", "year": "2323" }, { "name": "Command School", "year": "2333" }] } }, expected: "STARFLEET ACADEMY - 2323 | COMMAND SCHOOL - 2333 | " }
             ],
-            hints: ["{{forEach \"s\" student.schools concat (toUpper s.name) (concat \" - \" (concat s.year \" | \"))}}"],
+            hints: ["{{forEach \"s\" student.schools concat toUpper s.name concat \" - \" concat s.year \" | \"}}"],
             prefill: "{{}}"
         }
     ]

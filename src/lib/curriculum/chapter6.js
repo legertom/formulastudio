@@ -1,214 +1,411 @@
 export const chapter6 = {
     id: "chapter-6",
     title: "Chapter 6: Advanced Logic",
-    description: "Combine decisions with and, or, not, and contains.",
-    functions: ["and", "or", "not", "contains", "in"],
+    description: "Combine decisions with and, or, and not.",
+    functions: ["and", "or", "not"],
     steps: [
+        // ============================================================
+        // SECTION A: Warm-Up & Boolean Foundation (Steps 1-4)
+        // ============================================================
         {
             id: "c6-s1",
             type: "challenge",
             title: "Refresher: The If Check",
             goal: "Check if role is 'Manager'",
-            description: "Let's warm up with a standard check.\n\n**Tool: `if`** (Arity 3)\n\n**Challenge:**\nIf the `role` is `\"Manager\"`, output `\"Approved\"`. Otherwise output `\"Pending\"`.",
+            description: "Let's warm up with a standard check.\n\n🧰 **Toolbox:** `if`, `equals`\n\n**Challenge:**\nIf the `role` is `\"Manager\"`, output `\"Approved\"`. Otherwise output `\"Pending\"`.",
             testCases: [
                 { name: "Manager", data: { "role": "Manager" }, expected: "Approved" },
                 { name: "Staff", data: { "role": "Staff" }, expected: "Pending" }
             ],
-            hints: ["{{ if equals role \"Manager\" \"Approved\" \"Pending\" }}"],
+            hints: [
+                "Start with {{ if ...",
+                "Your condition is: equals role \"Manager\"",
+                "{{ if equals role \"Manager\" \"Approved\" \"Pending\" }}"
+            ],
             prefill: "{{}}"
         },
         {
             id: "c6-s2",
+            type: "multiple-choice",
+            title: "What Did Equals Return?",
+            goal: "Understand that equals returns a Boolean",
+            description: "In the last step, you wrote `{{ if equals role \"Manager\" ... }}`.\n\nThe `equals` function did its job **BEFORE** `if` made its decision.\n\nLet's make sure we understand what `equals` actually produced.\n\nThat `true`/`false` value is called a **Boolean**. Think of it as a Yes/No answer. Every `if` needs a Boolean to decide which path to take — it's the traffic light.",
+            question: "When the role IS \"Manager\", what does equals role \"Manager\" return?",
+            options: ["\"Manager\"", "true", "\"Approved\"", "equals"],
+            correctAnswer: "true",
+            hints: ["equals compares two things and answers a Yes/No question", "It doesn't return the text — it returns whether they match"]
+        },
+        {
+            id: "c6-s3",
+            type: "challenge",
+            title: "Refresher: Three-Way Choice",
+            goal: "Nested if with string checks",
+            description: "What if there are **3 options** instead of just 2?\n\nYou can put an `if` inside the **else slot** of another `if`!\n\n🧰 **Toolbox:** `if`, `equals`\n\n**Challenge:**\nWe've started the first check for you. The `\"Gold\"` tier gets `\"VIP\"`. Now extend it:\n• If tier is `\"Silver\"` → `\"Member\"`\n• Otherwise → `\"Guest\"`\n\nReplace `\"VIP\"` 's else value with another `if` statement.",
+            testCases: [
+                { name: "Gold", data: { "tier": "Gold" }, expected: "VIP" },
+                { name: "Silver", data: { "tier": "Silver" }, expected: "Member" },
+                { name: "Bronze", data: { "tier": "Bronze" }, expected: "Guest" }
+            ],
+            hints: [
+                "The else slot currently needs to be replaced with another if",
+                "if equals tier \"Silver\" \"Member\" \"Guest\"",
+                "{{ if equals tier \"Gold\" \"VIP\" if equals tier \"Silver\" \"Member\" \"Guest\" }}"
+            ],
+            prefill: "{{ if equals tier \"Gold\" \"VIP\" }}"
+        },
+        {
+            id: "c6-s4",
+            type: "challenge",
+            title: "Three-Way: Your Turn",
+            goal: "Build a nested if from scratch",
+            description: "Now build one from scratch!\n\n🧰 **Toolbox:** `if`, `equals`\n\n**Challenge:**\n1. If `dept` is `\"Engineering\"` → `\"Builds\"`\n2. Else if `dept` is `\"Sales\"` → `\"Sells\"`\n3. Else → `\"Supports\"`",
+            testCases: [
+                { name: "Engineering", data: { "dept": "Engineering" }, expected: "Builds" },
+                { name: "Sales", data: { "dept": "Sales" }, expected: "Sells" },
+                { name: "Marketing", data: { "dept": "Marketing" }, expected: "Supports" }
+            ],
+            hints: [
+                "Start with: {{ if equals dept \"Engineering\" \"Builds\" ...",
+                "The else slot is another if: if equals dept \"Sales\" \"Sells\" \"Supports\"",
+                "{{ if equals dept \"Engineering\" \"Builds\" if equals dept \"Sales\" \"Sells\" \"Supports\" }}"
+            ],
+            prefill: "{{}}"
+        },
+
+        // ============================================================
+        // SECTION B: And (Steps 5-11)
+        // ============================================================
+        {
+            id: "c6-s5",
             type: "challenge",
             title: "Concept: The Power of And",
-            goal: "Check if Ready AND Steady",
-            description: "Logic is about combining Truths. Let's look at `and` in its purest form.\n\n**New Tool: `and`** (Arity 2)\n\n`{{ and boolean1 boolean2 }}`\n\nIt returns `true` ONLY if both inputs are true.\n\n**Challenge:**\nCheck if the system is `ready` **AND** `steady`.",
+            goal: "Fix the broken formula",
+            description: "**New Tool: `and`** — Arity 2\n\n`{{ and boolean1 boolean2 }}`\n\nReturns `true` ONLY when **BOTH** inputs are true.\n\n🧰 **Toolbox:** `and` — new!\n\n**Challenge:**\nThe formula below only checks if the system is `ready` — but it **ignores** `steady`! We need BOTH to be true.\n\n**Fix it** by using `and` to check both variables.",
             testCases: [
                 { name: "All Systems Go", data: { "ready": true, "steady": true }, expected: "true" },
                 { name: "Not Steady", data: { "ready": true, "steady": false }, expected: "false" },
                 { name: "Not Ready", data: { "ready": false, "steady": true }, expected: "false" }
             ],
-            hints: ["{{ and ready steady }}"],
-            prefill: "{{}}"
-        },
-        {
-            id: "c6-s3",
-            type: "challenge",
-            title: "Concept: Dual Requirements",
-            goal: "Check if Admin AND Active",
-            description: "Now let's apply `and` to calculated values.\n\n**Challenge:**\nWe need to check if a user is an `\"Admin\"` **AND** their status is `\"Active\"`.\n\nYou'll need to use `equals` inside the `and`.",
-            testCases: [
-                { name: "Admin Active", data: { "role": "Admin", "status": "Active" }, expected: "true" },
-                { name: "Admin Inactive", data: { "role": "Admin", "status": "Inactive" }, expected: "false" },
-                { name: "sales Active", data: { "role": "Sales", "status": "Active" }, expected: "false" }
-            ],
             hints: [
-                "Check role: equals role \"Admin\"",
-                "Check status: equals status \"Active\"",
-                "Combine: {{ and equals role \"Admin\" equals status \"Active\" }}"
+                "Right now it only checks `ready`. We need to check `steady` too.",
+                "Replace the formula with: and ready steady",
+                "{{ and ready steady }}"
             ],
-            prefill: "{{}}"
-        },
-        {
-            id: "c6-s4",
-            type: "challenge",
-            title: "Practice: Secure Access",
-            goal: "Grant Access only to Active Admins",
-            description: "Now let's use that `and` check inside an `if`.\n\n**Challenge:**\nIf the user is an `\"Admin\"` **AND** `\"Active\"`, output `\"Access Granted\"`. Otherwise output `\"Locked\"`.",
-            testCases: [
-                { name: "Admin Active", data: { "role": "Admin", "status": "Active" }, expected: "Access Granted" },
-                { name: "Admin Inactive", data: { "role": "Admin", "status": "Inactive" }, expected: "Locked" },
-                { name: "Staff Active", data: { "role": "Staff", "status": "Active" }, expected: "Locked" }
-            ],
-            hints: ["{{ if and equals role \"Admin\" equals status \"Active\" \"Access Granted\" \"Locked\" }}"],
-            prefill: "{{}}"
-        },
-        {
-            id: "c6-s5",
-            type: "challenge",
-            title: "Concept: The Power of Or",
-            goal: "Check if Fast OR Cheap",
-            description: "Let's look at `or` simply.\n\n**New Tool: `or`** (Arity 2)\n\n`{{ or boolean1 boolean2 }}`\n\nReturns `true` if *at least one* input is true.\n\n*(Note: `or` can also be used for text defaults, but we will come back to that later. For now, think of it as a Logic Gate.)*\n\n**Challenge:**\nCheck if the project is `fast` **OR** `cheap`.",
-            testCases: [
-                { name: "Fast", data: { "fast": true, "cheap": false }, expected: "true" },
-                { name: "Cheap", data: { "fast": false, "cheap": true }, expected: "true" },
-                { name: "Neither", data: { "fast": false, "cheap": false }, expected: "false" }
-            ],
-            hints: ["{{ or fast cheap }}"],
-            prefill: "{{}}"
+            prefill: "{{ ready }}"
         },
         {
             id: "c6-s6",
-            type: "challenge",
-            title: "Concept: Mixing Checks",
-            goal: "Check if VIP OR has Ticket",
-            description: "We can mix calculated results with simple variables. You don't always need two functions.\n\n**Challenge:**\nA user can enter if they are a `\"VIP\"` **OR** if they `hasTicket` (Boolean).\n\nCombine the `equals` check with the boolean variable.",
-            testCases: [
-                { name: "VIP", data: { "type": "VIP", "hasTicket": false }, expected: "true" },
-                { name: "Ticket Holder", data: { "type": "Guest", "hasTicket": true }, expected: "true" },
-                { name: "Empty Handed", data: { "type": "Guest", "hasTicket": false }, expected: "false" }
-            ],
-            hints: ["{{ or equals type \"VIP\" hasTicket }}"],
-            prefill: "{{}}"
+            type: "multiple-choice",
+            title: "Predict the And",
+            goal: "Predict and behavior",
+            description: "`and` is strict — **BOTH** must be true. If even one is false, the whole thing is false.\n\nThink carefully before you answer!",
+            question: "If ready is true and steady is false, what does {{ and ready steady }} return?",
+            options: ["true", "false", "\"ready\"", "error"],
+            correctAnswer: "false",
+            hints: ["and requires BOTH to be true", "One of them is false..."]
         },
         {
             id: "c6-s7",
             type: "challenge",
-            title: "Concept: Flexible Entry",
-            goal: "Check for VIP OR Member",
-            description: "Now let's apply `or` to two calculated values.\n\n**Challenge:**\nCheck if the `type` is `\"VIP\"` **OR** `\"Member\"`.",
+            title: "And with One Equals",
+            goal: "Combine and with a boolean and an equals check",
+            description: "Now let's mix `and` with an `equals` check.\n\nA user must be an `\"Admin\"` **AND** `active` — a Boolean field.\n\n🧰 **Toolbox:** `and` — new!, `equals`\n\n**Challenge:**\nThe formula below only checks `active`. Add an `equals` check for the role **before** `active` to check BOTH conditions.",
             testCases: [
-                { name: "is VIP", data: { "type": "VIP" }, expected: "true" },
-                { name: "is Member", data: { "type": "Member" }, expected: "true" },
-                { name: "is Guest", data: { "type": "Guest" }, expected: "false" }
+                { name: "Admin Active", data: { "role": "Admin", "active": true }, expected: "true" },
+                { name: "Admin Inactive", data: { "role": "Admin", "active": false }, expected: "false" },
+                { name: "Staff Active", data: { "role": "Staff", "active": true }, expected: "false" }
             ],
-            hints: ["{{ or equals type \"VIP\" equals type \"Member\" }}"],
-            prefill: "{{}}"
+            hints: [
+                "Right now it only checks active. Add an equals check before it.",
+                "equals role \"Admin\"",
+                "{{ and equals role \"Admin\" active }}"
+            ],
+            prefill: "{{ active }}"
         },
         {
             id: "c6-s8",
             type: "challenge",
-            title: "Practice: The Club Door",
-            goal: "Welcome VIPs and Members",
-            description: "Let's put `or` into action.\n\n**Challenge:**\nIf the user is a `\"VIP\"` or a `\"Member\"`, output `\"Welcome In\"`. All others get `\"Pay Entry\"`.",
+            title: "And with Two Equals",
+            goal: "Both sides of and need equals",
+            description: "Now **BOTH** checks need `equals`.\n\nCheck if `role` is `\"Admin\"` **AND** `status` is `\"Active\"`.\n\nYou need **TWO** `equals` — one for each check.\n\n🧰 **Toolbox:** `and`, `equals`\n\n**Challenge:**\nWe've given you the first check. Add the second `equals` check.",
             testCases: [
-                { name: "VIP", data: { "type": "VIP" }, expected: "Welcome In" },
-                { name: "Member", data: { "type": "Member" }, expected: "Welcome In" },
-                { name: "Guest", data: { "type": "Guest" }, expected: "Pay Entry" }
+                { name: "Admin Active", data: { "role": "Admin", "status": "Active" }, expected: "true" },
+                { name: "Admin Inactive", data: { "role": "Admin", "status": "Inactive" }, expected: "false" },
+                { name: "Sales Active", data: { "role": "Sales", "status": "Active" }, expected: "false" }
             ],
-            hints: ["{{ if or equals type \"VIP\" equals type \"Member\" \"Welcome In\" \"Pay Entry\" }}"],
-            prefill: "{{}}"
+            hints: [
+                "You have the first check. Now add the second.",
+                "equals status \"Active\"",
+                "{{ and equals role \"Admin\" equals status \"Active\" }}"
+            ],
+            prefill: "{{ and equals role \"Admin\" }}"
         },
         {
             id: "c6-s9",
             type: "challenge",
-            title: "Concept: Simple Negation",
-            goal: "Flip the switch",
-            description: "Sometimes it's easier to say what we *don't* want.\n\n**New Tool: `not`** (Arity 1)\n\n`{{ not boolean }}`\n\nFlips a Boolean value. `true` becomes `false`, `false` becomes `true`.\n\n**Challenge:**\nThe door `isLocked`. Use `not` to unlock it (return `false`).",
+            title: "You Do: Dual Equals And",
+            goal: "Independent dual-equals and check",
+            description: "Your turn — from scratch!\n\n🧰 **Toolbox:** `and`, `equals`\n\n**Challenge:**\nCheck if `department` is `\"Sales\"` **AND** `region` is `\"West\"`.",
             testCases: [
-                { name: "Locked", data: { "isLocked": true }, expected: "false" },
-                { name: "Unlocked", data: { "isLocked": false }, expected: "true" }
+                { name: "Sales West", data: { "department": "Sales", "region": "West" }, expected: "true" },
+                { name: "Sales East", data: { "department": "Sales", "region": "East" }, expected: "false" },
+                { name: "Engineering West", data: { "department": "Engineering", "region": "West" }, expected: "false" }
             ],
-            hints: ["{{ not isLocked }}"],
+            hints: [
+                "You need two equals checks glued together with and",
+                "{{ and equals department \"Sales\" equals region \"West\" }}"
+            ],
             prefill: "{{}}"
         },
         {
             id: "c6-s10",
             type: "challenge",
-            title: "Practice: Negating a Check",
-            goal: "Check if NOT Banned",
-            description: "We can also negate the result of a function.\n\n**Challenge:**\nCheck if the `status` is **NOT** `\"Banned\"`.\n\n1. `equals status \"Banned\"` will be true if they are banned.\n2. Wrap that in `not` to flip it.",
+            title: "And Inside If",
+            goal: "Wrap and logic in if for output",
+            description: "Now let's use that `and` check inside an `if` to produce output.\n\n🧰 **Toolbox:** `if`, `and`, `equals`\n\n**Challenge:**\nIf the user is an `\"Admin\"` **AND** `\"Active\"`, output `\"Access Granted\"`. Otherwise `\"Locked\"`.",
             testCases: [
-                { name: "Banned User", data: { "status": "Banned" }, expected: "false" },
-                { name: "Active User", data: { "status": "Active" }, expected: "true" }
+                { name: "Admin Active", data: { "role": "Admin", "status": "Active" }, expected: "Access Granted" },
+                { name: "Admin Inactive", data: { "role": "Admin", "status": "Inactive" }, expected: "Locked" },
+                { name: "Staff Active", data: { "role": "Staff", "status": "Active" }, expected: "Locked" }
             ],
-            hints: ["{{ not equals status \"Banned\" }}"],
+            hints: [
+                "Start with if, then your and check, then the two outputs",
+                "{{ if and equals role \"Admin\" equals status \"Active\" \"Access Granted\" \"Locked\" }}"
+            ],
             prefill: "{{}}"
         },
         {
             id: "c6-s11",
             type: "challenge",
-            title: "Practice: Exclusion List",
-            goal: "Allow everyone except Banned users",
-            description: "Let's use `not` to filter out bad actors.\n\n**Challenge:**\nIf the `status` is **NOT** `\"Banned\"`, output `\"Allow\"`. Otherwise output `\"Block\"`.",
+            title: "Numeric And",
+            goal: "Mix numeric and string checks in and",
+            description: "We can mix different types of checks inside `and`.\n\n🧰 **Toolbox:** `if`, `and`, `greater`, `equals`\n\nRemember `greater` from Chapter 5? It checks if one number is bigger than another.\n\n**Challenge:**\nIf `score` is greater than `50` **AND** `status` is `\"Active\"`, output `\"Eligible\"`. Otherwise `\"Not Eligible\"`.",
+            testCases: [
+                { name: "High + Active", data: { "score": 60, "status": "Active" }, expected: "Eligible" },
+                { name: "High + Inactive", data: { "score": 60, "status": "Inactive" }, expected: "Not Eligible" },
+                { name: "Low + Active", data: { "score": 40, "status": "Active" }, expected: "Not Eligible" }
+            ],
+            hints: [
+                "One check is: greater score 50",
+                "The other check is: equals status \"Active\"",
+                "{{ if and greater score 50 equals status \"Active\" \"Eligible\" \"Not Eligible\" }}"
+            ],
+            prefill: "{{}}"
+        },
+
+        // ============================================================
+        // SECTION C: Or (Steps 12-17)
+        // ============================================================
+        {
+            id: "c6-s12",
+            type: "challenge",
+            title: "Concept: The Power of Or",
+            goal: "Fix the broken formula",
+            description: "**New Tool: `or`** — Arity 2\n\n`{{ or boolean1 boolean2 }}`\n\nReturns `true` if **AT LEAST ONE** input is true.\n\n🧰 **Toolbox:** `or` — new!\n\n**Challenge:**\nThe formula below is supposed to check if the project is `fast` **OR** `cheap` — but someone used `and`. **Fix it!**\n\n*Run it first to see what's wrong — then fix the function name*",
+            testCases: [
+                { name: "Fast Only", data: { "fast": true, "cheap": false }, expected: "true" },
+                { name: "Cheap Only", data: { "fast": false, "cheap": true }, expected: "true" },
+                { name: "Neither", data: { "fast": false, "cheap": false }, expected: "false" }
+            ],
+            hints: [
+                "The formula uses `and` but we need `or`",
+                "Replace `and` with `or`",
+                "{{ or fast cheap }}"
+            ],
+            prefill: "{{ and fast cheap }}"
+        },
+        {
+            id: "c6-s13",
+            type: "multiple-choice",
+            title: "Predict the Or",
+            goal: "Predict or behavior",
+            description: "`or` is generous — only **ONE** needs to be true. Compare this to `and` which required **BOTH**.",
+            question: "fast is false and cheap is true. What does {{ or fast cheap }} return?",
+            options: ["true", "false", "\"cheap\"", "error"],
+            correctAnswer: "true",
+            hints: ["or only needs ONE to be true", "cheap is true..."]
+        },
+        {
+            id: "c6-s14",
+            type: "challenge",
+            title: "Or with One Equals",
+            goal: "Or with one boolean and one equals check",
+            description: "A user can enter if they are a `\"VIP\"` **OR** if they have a ticket — `hasTicket` is a Boolean.\n\n🧰 **Toolbox:** `or`, `equals`\n\n**Challenge:**\nThe formula below only checks `hasTicket`. Add an `equals` check for the type **before** `hasTicket` to check EITHER condition.",
+            testCases: [
+                { name: "VIP", data: { "type": "VIP", "hasTicket": false }, expected: "true" },
+                { name: "Ticket Holder", data: { "type": "Guest", "hasTicket": true }, expected: "true" },
+                { name: "Empty Handed", data: { "type": "Guest", "hasTicket": false }, expected: "false" }
+            ],
+            hints: [
+                "Right now it only checks hasTicket. Add an equals check before it.",
+                "equals type \"VIP\"",
+                "{{ or equals type \"VIP\" hasTicket }}"
+            ],
+            prefill: "{{ hasTicket }}"
+        },
+        {
+            id: "c6-s15",
+            type: "challenge",
+            title: "Or with Two Equals",
+            goal: "Both sides of or need equals",
+            description: "Now both sides need `equals`.\n\n🧰 **Toolbox:** `or`, `equals`\n\n**Challenge:**\nCheck if `type` is `\"VIP\"` **OR** `\"Member\"`.",
+            testCases: [
+                { name: "VIP", data: { "type": "VIP" }, expected: "true" },
+                { name: "Member", data: { "type": "Member" }, expected: "true" },
+                { name: "Guest", data: { "type": "Guest" }, expected: "false" }
+            ],
+            hints: [
+                "You need two equals checks glued together with or",
+                "{{ or equals type \"VIP\" equals type \"Member\" }}"
+            ],
+            prefill: "{{}}"
+        },
+        {
+            id: "c6-s16",
+            type: "challenge",
+            title: "The Club Door",
+            goal: "Or inside if for output",
+            description: "Let's put `or` into action!\n\n🧰 **Toolbox:** `if`, `or`, `equals`\n\n**Challenge:**\nIf the user is a `\"VIP\"` **OR** a `\"Member\"`, output `\"Welcome In\"`. Everyone else gets `\"Pay Entry\"`.",
+            testCases: [
+                { name: "VIP", data: { "type": "VIP" }, expected: "Welcome In" },
+                { name: "Member", data: { "type": "Member" }, expected: "Welcome In" },
+                { name: "Guest", data: { "type": "Guest" }, expected: "Pay Entry" }
+            ],
+            hints: [
+                "Build the or check first, then wrap in if",
+                "{{ if or equals type \"VIP\" equals type \"Member\" \"Welcome In\" \"Pay Entry\" }}"
+            ],
+            prefill: "{{}}"
+        },
+        {
+            id: "c6-s17",
+            type: "challenge",
+            title: "Numeric Or",
+            goal: "Or with numeric comparisons",
+            description: "Kids under 13 and seniors 65+ get a discount.\n\n🧰 **Toolbox:** `if`, `or`, `less`, `geq`\n\nRemember from Chapter 5:\n• `less age 13` → true if age is below 13\n• `geq age 65` → true if age is 65 or higher\n\n**Challenge:**\nIf `age` is less than `13` **OR** `age` is geq `65`, output `\"Discounted\"`. Otherwise `\"Full Price\"`.",
+            testCases: [
+                { name: "Child", data: { "age": 10 }, expected: "Discounted" },
+                { name: "Adult", data: { "age": 30 }, expected: "Full Price" },
+                { name: "Senior", data: { "age": 70 }, expected: "Discounted" }
+            ],
+            hints: [
+                "One check is: less age 13",
+                "The other check is: geq age 65",
+                "{{ if or less age 13 geq age 65 \"Discounted\" \"Full Price\" }}"
+            ],
+            prefill: "{{}}"
+        },
+
+        // ============================================================
+        // SECTION D: Not (Steps 18-21)
+        // ============================================================
+        {
+            id: "c6-s18",
+            type: "challenge",
+            title: "Concept: Simple Negation",
+            goal: "Fix the formula by adding not",
+            description: "**New Tool: `not`** — Arity 1\n\n`{{ not boolean }}`\n\nFlips a Boolean — `true` becomes `false`, `false` becomes `true`.\n\n🧰 **Toolbox:** `not` — new!\n\n**Challenge:**\nThe door `isLocked`. We want to check if it's **UNLOCKED** — return `true` when `isLocked` is `false`.\n\nThe formula below just returns `isLocked` directly. **Add `not` to flip it!**",
+            testCases: [
+                { name: "Locked", data: { "isLocked": true }, expected: "false" },
+                { name: "Unlocked", data: { "isLocked": false }, expected: "true" }
+            ],
+            hints: [
+                "Add `not` before `isLocked`",
+                "{{ not isLocked }}"
+            ],
+            prefill: "{{ isLocked }}"
+        },
+        {
+            id: "c6-s19",
+            type: "multiple-choice",
+            title: "Predict the Not",
+            goal: "Predict not behavior",
+            description: "`not` is the simplest logic tool — it just flips. `true` becomes `false`, `false` becomes `true`.",
+            question: "If isLocked is true, what does {{ not isLocked }} return?",
+            options: ["true", "false", "\"not\"", "\"isLocked\""],
+            correctAnswer: "false",
+            hints: ["not flips the value", "true becomes..."]
+        },
+        {
+            id: "c6-s20",
+            type: "challenge",
+            title: "Negating a Check",
+            goal: "Wrap equals in not",
+            description: "We can also negate the result of a function like `equals`.\n\n🧰 **Toolbox:** `not`, `equals`\n\n**Challenge:**\nCheck if `status` is **NOT** `\"Banned\"`.\n\nThe formula below checks if the status IS Banned — returns `true` for banned users. **Add `not` at the front to flip it!**",
+            testCases: [
+                { name: "Banned User", data: { "status": "Banned" }, expected: "false" },
+                { name: "Active User", data: { "status": "Active" }, expected: "true" }
+            ],
+            hints: [
+                "This currently returns true for Banned — we want the opposite",
+                "Add `not` before `equals`",
+                "{{ not equals status \"Banned\" }}"
+            ],
+            prefill: "{{ equals status \"Banned\" }}"
+        },
+        {
+            id: "c6-s21",
+            type: "challenge",
+            title: "The Exclusion Gate",
+            goal: "Not inside if for output",
+            description: "Let's use `not` to filter out bad actors.\n\n🧰 **Toolbox:** `if`, `not`, `equals`\n\n**Challenge:**\nIf the `status` is **NOT** `\"Banned\"`, output `\"Allow\"`. Otherwise output `\"Block\"`.",
             testCases: [
                 { name: "Banned", data: { "status": "Banned" }, expected: "Block" },
                 { name: "Active", data: { "status": "Active" }, expected: "Allow" },
                 { name: "Pending", data: { "status": "Pending" }, expected: "Allow" }
             ],
-            hints: ["{{ if not equals status \"Banned\" \"Allow\" \"Block\" }}"],
-            prefill: "{{}}"
-        },
-        {
-            id: "c6-s12",
-            type: "challenge",
-            title: "Concept: Substring Search",
-            goal: "Check if email contains @",
-            description: "We can also get Booleans from text functions.\n\n**New Tool: `contains`** (Arity 2)\n\n`{{ contains haystack needle }}`\n\nReturns `true` if the `needle` text is found inside the `haystack`.\n\n**Challenge:**\nCheck if the `email` field contains the `@` symbol.",
-            testCases: [
-                { name: "Valid Email", data: { "email": "a@b.com" }, expected: "true" },
-                { name: "Invalid Email", data: { "email": "ab.com" }, expected: "false" }
+            hints: [
+                "The condition is: not equals status \"Banned\"",
+                "{{ if not equals status \"Banned\" \"Allow\" \"Block\" }}"
             ],
-            hints: ["{{ contains email \"@\" }}"],
             prefill: "{{}}"
         },
+
+        // ============================================================
+        // SECTION E: Capstone — The Logic Chain (Steps 22-24)
+        // ============================================================
         {
-            id: "c6-s13",
+            id: "c6-s22",
             type: "challenge",
-            title: "Concept: List Membership",
-            goal: "Check if student is in High School",
-            description: "We just learned `contains` checks if text is INSIDE another text. But what if we want to check if a value MATCHES one of several options?\n\n**New Tool: `in`** (Arity 2)\n\n`{{ in value list }}`\n\nThe `list` is a **space-separated** string of options.\n\n**Example:** `{{ in \"apple\" \"apple banana cherry\" }}` → `true`\n\n**Challenge:**\nCheck if the `student.grade` is in High School grades `\"09 10 11 12\"`.",
+            title: "Build the Or",
+            goal: "Build the inner or piece",
+            description: "Time for a real-world challenge! Let's build it step by step.\n\n**Scenario:** A user can edit if they are `\"Admin\"` **OR** `\"Editor\"`.\n\n🧰 **Toolbox:** `or`, `equals`\n\n**Challenge:**\nBuild JUST the `or` check. Is the role `\"Admin\"` or `\"Editor\"`?",
             testCases: [
-                { name: "Freshman", data: { "student": { "grade": "09" } }, expected: "true" },
-                { name: "Senior", data: { "student": { "grade": "12" } }, expected: "true" },
-                { name: "Middle School", data: { "student": { "grade": "07" } }, expected: "false" }
-            ],
-            hints: ["{{ in student.grade \"09 10 11 12\" }}"],
-            prefill: "{{}}"
-        },
-        {
-            id: "c6-s14",
-            type: "challenge",
-            title: "Practice: Grade Bands",
-            goal: "Classify students by school level",
-            description: "Let's put `in` to work inside an `if` statement.\n\n**Challenge:**\nIf the `student.grade` is in `\"09 10 11 12\"` (High School), output `\"High School\"`.\nOtherwise, output `\"Other\"`.",
-            testCases: [
-                { name: "Junior", data: { "student": { "grade": "11" } }, expected: "High School" },
-                { name: "8th Grade", data: { "student": { "grade": "08" } }, expected: "Other" },
-                { name: "Sophomore", data: { "student": { "grade": "10" } }, expected: "High School" }
+                { name: "Admin", data: { "role": "Admin", "status": "Active" }, expected: "true" },
+                { name: "Editor", data: { "role": "Editor", "status": "Active" }, expected: "true" },
+                { name: "Guest", data: { "role": "Guest", "status": "Active" }, expected: "false" }
             ],
             hints: [
-                "Check: in student.grade \"09 10 11 12\"",
-                "{{ if in student.grade \"09 10 11 12\" \"High School\" \"Other\" }}"
+                "or equals role \"Admin\" equals role \"Editor\"",
+                "{{ or equals role \"Admin\" equals role \"Editor\" }}"
             ],
             prefill: "{{}}"
         },
         {
-            id: "c6-s15",
+            id: "c6-s23",
             type: "challenge",
-            title: "The Logic Chain",
-            goal: "Complex Permission Check",
-            description: "We can chain these logic gates together.\n\n**Pattern:** `{{ and condition1 or condition2 condition3 }}`\n\n**Challenge:**\nA user can edit IF:\n\n• They are `\"Active\"`\n**AND**\n• They are EITHER `\"Editor\"` **OR** `\"Admin\"`\n\nOutput `\"Can Edit\"` or `\"View Only\"`.",
+            title: "Add the And",
+            goal: "Combine or with and",
+            description: "Great! Now add a second requirement: they must **ALSO** be `\"Active\"`.\n\n🧰 **Toolbox:** `and`, `or`, `equals`\n\n**Challenge:**\nWe've started with the `and` and the status check. **Add your `or` logic from the last step** after it.",
+            testCases: [
+                { name: "Active Admin", data: { "status": "Active", "role": "Admin" }, expected: "true" },
+                { name: "Active Editor", data: { "status": "Active", "role": "Editor" }, expected: "true" },
+                { name: "Inactive Admin", data: { "status": "Inactive", "role": "Admin" }, expected: "false" },
+                { name: "Active Guest", data: { "status": "Active", "role": "Guest" }, expected: "false" }
+            ],
+            hints: [
+                "Paste your or logic after the status check",
+                "or equals role \"Admin\" equals role \"Editor\"",
+                "{{ and equals status \"Active\" or equals role \"Admin\" equals role \"Editor\" }}"
+            ],
+            prefill: "{{ and equals status \"Active\" }}"
+        },
+        {
+            id: "c6-s24",
+            type: "challenge",
+            title: "The Full Gate",
+            goal: "Wrap in if for final output",
+            description: "You built the logic engine. Now give it a voice!\n\n🧰 **Toolbox:** `if`, `and`, `or`, `equals`\n\n**Challenge:**\nIf the user passes both checks, output `\"Can Edit\"`. Otherwise `\"View Only\"`.\n\nWrap your logic from the last step in an `if`.",
             testCases: [
                 { name: "Active Admin", data: { "status": "Active", "role": "Admin" }, expected: "Can Edit" },
                 { name: "Active Editor", data: { "status": "Active", "role": "Editor" }, expected: "Can Edit" },
@@ -216,106 +413,8 @@ export const chapter6 = {
                 { name: "Active Guest", data: { "status": "Active", "role": "Guest" }, expected: "View Only" }
             ],
             hints: [
-                "Build the OR first: or equals role \"Admin\" equals role \"Editor\"",
-                "Combine with AND: and equals status \"Active\" ...",
-                "Wrap in IF"
-            ],
-            prefill: "{{}}"
-        },
-        {
-            id: "c6-s16",
-            type: "challenge",
-            title: "Concept: The Triple And",
-            goal: "Check if One AND Two AND Three",
-            description: "To check 3 things, we just nest an `and` inside another `and`.\n\n**Structure:** `{{ and one and two three }}`\n\n**Challenge:**\nReturn true only if all three variables (`one`, `two`, `three`) are true.",
-            testCases: [
-                { name: "All True", data: { "one": true, "two": true, "three": true }, expected: "true" },
-                { name: "One False", data: { "one": false, "two": true, "three": true }, expected: "false" },
-                { name: "Two False", data: { "one": true, "two": false, "three": true }, expected: "false" }
-            ],
-            hints: ["{{ and one and two three }}"],
-            prefill: "{{}}"
-        },
-        {
-            id: "c6-s17",
-            type: "challenge",
-            title: "Practice: Range Check",
-            goal: "Check if score is in valid range",
-            description: "To check if a number is inside a range, we combine two separate checks using `and`.\n\nThink of it as two separate questions:\n1. Is it 50 or higher? (`geq score 50`)\n2. Is it less than 100? (`less score 100`)\n\n**Challenge:**\nReturn `true` if the `score` is **at least 50** AND **less than 100**.",
-            testCases: [
-                { name: "Valid (50)", data: { "score": 50 }, expected: "true" },
-                { name: "Valid (75)", data: { "score": 75 }, expected: "true" },
-                { name: "Too Low", data: { "score": 49 }, expected: "false" },
-                { name: "Too High", data: { "score": 100 }, expected: "false" }
-            ],
-            hints: [
-                "Step 1: check the bottom: geq score 50",
-                "Step 2: check the top: less score 100",
-                "Step 3: Glue them together with 'and' at the start.",
-                "{{ and geq score 50 less score 100 }}"
-            ],
-            prefill: "{{}}"
-        },
-        {
-            id: "c6-s18",
-            type: "challenge",
-            title: "Practice: Length and Hash",
-            goal: "Build Part 1 of Validator",
-            description: "Let's build the Password Validator one piece at a time.\n\n**Challenge:**\nCheck if the password:\n\n• Length is **greater** than 8\n• **AND** Contains `\"#\"`",
-            testCases: [
-                { name: "Valid", data: { "pass": "secure#1234" }, expected: "true" },
-                { name: "Short", data: { "pass": "short#" }, expected: "false" },
-                { name: "No Hash", data: { "pass": "longpassword" }, expected: "false" }
-            ],
-            hints: ["{{ and greater length pass 8 contains pass \"#\" }}"],
-            prefill: "{{}}"
-        },
-        {
-            id: "c6-s19",
-            type: "challenge",
-            title: "Practice: The Forbidden Word",
-            goal: "Build Part 2 of Validator",
-            description: "Now let's handle the negative check.\n\n**Challenge:**\nCheck if the password does **NOT** contain the word `\"password\"`.",
-            testCases: [
-                { name: "Secure", data: { "pass": "mysecret" }, expected: "true" },
-                { name: "Forbidden", data: { "pass": "mypassword123" }, expected: "false" }
-            ],
-            hints: ["{{ not contains pass \"password\" }}"],
-            prefill: "{{}}"
-        },
-        {
-            id: "c6-s20",
-            type: "challenge",
-            title: "Practice: The Core Logic",
-            goal: "Combine Part 1 and Part 2",
-            description: "Now combine the two previous steps into one logic check.\n\n**Challenge:**\nReturn `true` if the password meets **ALL** criteria:\n\n• Length > 8 AND contains \"#\"\n• AND does NOT contain \"password\"\n\nUse the Triple And structure: `and Part 1 Part 2`.",
-            testCases: [
-                { name: "Perfect", data: { "pass": "secure#123456" }, expected: "true" },
-                { name: "Failed Part 1", data: { "pass": "short#" }, expected: "false" },
-                { name: "Failed Part 2", data: { "pass": "mypassword#123" }, expected: "false" }
-            ],
-            hints: [
-                "Part 1: and greater length pass 8 contains pass \"#\"",
-                "Part 2: not contains pass \"password\"",
-                "Combine: {{ and Part 1 Part 2 }}"
-            ],
-            prefill: "{{}}"
-        },
-        {
-            id: "c6-s21",
-            type: "challenge",
-            title: "Final Exam: Password Validator",
-            goal: "Final Output",
-            description: "You have built the engine. Now give it a voice.\n\n**Challenge:**\nOutput `\"Strong\"` if the password meets **all** these criteria:\n\n• Length is greater than 8\n• Contains `\"#\"`\n• Does NOT contain `\"password\"`\n\nOtherwise, output `\"Weak\"`.\n\n**(Tip: Reuse the logic you just built!)**",
-            testCases: [
-                { name: "Strong", data: { "pass": "secure#12345" }, expected: "Strong" },
-                { name: "No Hash", data: { "pass": "secure123456" }, expected: "Weak" },
-                { name: "Short", data: { "pass": "#short" }, expected: "Weak" },
-                { name: "Forbidden Word", data: { "pass": "mypassword#123" }, expected: "Weak" }
-            ],
-            hints: [
-                "Copy your answer from the previous step.",
-                "Wrap it: {{ if PASTE_LOGIC_HERE \"Strong\" \"Weak\" }}"
+                "Start with if, then your and/or logic, then the two outputs",
+                "{{ if and equals status \"Active\" or equals role \"Admin\" equals role \"Editor\" \"Can Edit\" \"View Only\" }}"
             ],
             prefill: "{{}}"
         }

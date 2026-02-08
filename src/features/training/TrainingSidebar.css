@@ -48,7 +48,8 @@
 }
 
 .training-sidebar.collapsed .sidebar-header h2,
-.training-sidebar.collapsed .progress-text {
+.training-sidebar.collapsed .progress-text,
+.training-sidebar.collapsed .progress-save-status {
     display: none;
 }
 
@@ -65,6 +66,21 @@
 .progress-text {
     font-size: 0.85rem;
     color: var(--text-muted);
+}
+
+.progress-save-status {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.progress-save-status.cloud {
+    color: var(--success);
+}
+
+.progress-save-status.syncing {
+    color: var(--warning);
 }
 
 .level-list {

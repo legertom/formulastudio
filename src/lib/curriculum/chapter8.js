@@ -9,7 +9,7 @@ export const chapter8 = {
             type: "challenge",
             title: "Refresher: Concatenation",
             goal: "Join first and last name with a space",
-            description: "Before we tackle missing data, let's review `concat`.\n\n**Tool: `concat`** (Arity 2)\n\n**Challenge:**\nJoin `name.first` and `name.last` with a space in between.",
+            description: "Before we tackle missing data, let's review `concat`.\n\n**Tool: `concat`** — Arity 2\n\n**Challenge:**\nJoin `name.first` and `name.last` with a space in between.",
             testCases: [
                 { name: "Standard", data: { "name": { "first": "Jean", "last": "Picard" } }, expected: "Jean Picard" }
             ],
@@ -21,7 +21,7 @@ export const chapter8 = {
             type: "challenge",
             title: "Concept: The Missing Field Problem",
             goal: "See what happens with missing data",
-            description: "What happens when you try to access a field that doesn't exist?\n\n**The Problem:** If you write `{{ name.middle }}` but the data doesn't have a `middle` field, the formula **throws an error**.\n\n**The Data Below:**\nNotice there is NO `middle` field in the name object.\n\n**Challenge:**\nTry to output `name.middle` and observe the error.\n\n(Don't worry, this is supposed to fail! Click 'Skip Step' to continue.)",
+            description: "What happens when you try to access a field that doesn't exist?\n\n**The Problem:** If you write `{{ name.middle }}` but the data doesn't have a `middle` field, the formula **throws an error**.\n\n**The Data Below:**\nNotice there is NO `middle` field in the name object.\n\n**Challenge:**\nTry to output `name.middle` and observe the error.\n\nDon't worry, this is supposed to fail! Click 'Skip Step' to continue.",
             referenceDataPlacement: "top",
             testCases: [
                 { name: "No Middle", data: { "name": { "first": "Jean", "last": "Picard" } }, expected: "" }
@@ -34,7 +34,7 @@ export const chapter8 = {
             type: "challenge",
             title: "New Tool: ignoreIfNull",
             goal: "Safely access an optional field",
-            description: "We need a way to access fields that might not exist.\n\n**New Tool: `ignoreIfNull`** (Arity 1)\n\n`{{ ignoreIfNull field }}`\n\n**How it works:**\n• If the field exists → returns its value\n• If the field is missing → returns empty string `\"\"`\n• **No crash!**\n\n**Challenge:**\nUse `ignoreIfNull` to safely access `name.middle`.\n\n(The output will be empty since there's no middle name, but it won't crash!)",
+            description: "We need a way to access fields that might not exist.\n\n**New Tool: `ignoreIfNull`** — Arity 1\n\n`{{ ignoreIfNull field }}`\n\n**How it works:**\n• If the field exists → returns its value\n• If the field is missing → returns empty string `\"\"`\n• **No crash!**\n\n**Challenge:**\nUse `ignoreIfNull` to safely access `name.middle`.\n\nThe output will be empty since there's no middle name, but it won't crash!",
             referenceDataPlacement: "top",
             testCases: [
                 { name: "No Middle", data: { "name": { "first": "Jean" } }, expected: "" },
@@ -48,7 +48,7 @@ export const chapter8 = {
             type: "challenge",
             title: "Practice: Optional Fields",
             goal: "Access an optional nickname",
-            description: "Let's practice with a different optional field.\n\n**Challenge:**\nSafely access `user.nickname`. If it exists, show it. If not, show nothing (empty string).",
+            description: "Let's practice with a different optional field.\n\n**Challenge:**\nSafely access `user.nickname`. If it exists, show it. If not, show nothing an empty string.",
             testCases: [
                 { name: "Has Nickname", data: { "user": { "nickname": "Captain" } }, expected: "Captain" },
                 { name: "No Nickname", data: { "user": { "name": "Jean" } }, expected: "" }
@@ -61,7 +61,7 @@ export const chapter8 = {
             type: "challenge",
             title: "Concept: Truthiness",
             goal: "Understand how if treats empty strings",
-            description: "Here's a powerful concept: **Empty strings are treated as `false` by the `if` function.**\n\n**Truthiness Rules:**\n• Empty string `\"\"` → `false`\n• Any non-empty string → `true`\n\n**Why this matters:**\n`{{ if ignoreIfNull name.middle ... }}`\n• If middle exists → truthy → first branch\n• If middle missing → empty string → falsy → second branch\n\n**Challenge:**\nIf `status` exists (is not empty), output `\"Active\"`. Otherwise output `\"Inactive\"`.",
+            description: "Here's a powerful concept: **Empty strings are treated as `false` by the `if` function.**\n\n**Truthiness Rules:**\n• Empty string `\"\"` → `false`\n• Any non-empty string → `true`\n\n**Why this matters:**\n`{{ if ignoreIfNull name.middle ... }}`\n• If middle exists → truthy → first branch\n• If middle missing → empty string → falsy → second branch\n\n**Challenge:**\nIf `status` exists — is not empty —, output `\"Active\"`. Otherwise output `\"Inactive\"`.",
             testCases: [
                 { name: "Has Status", data: { "status": "online" }, expected: "Active" },
                 { name: "No Status", data: { "user": "test" }, expected: "Inactive" }
@@ -94,7 +94,7 @@ export const chapter8 = {
             type: "challenge",
             title: "Practice: Conditional Separator",
             goal: "Add a space only if field exists",
-            description: "How do you add a space **only** if a field exists?\n\n**The Goal:**\n• If `tag` is `\"VIP\"` → Output: `\"Prefix: VIP\"` (Space included)\n• If `tag` is missing → Output: `\"Prefix:\"` (**No space** at the end)\n\n**The Problem:**\nIf you just do `{{ concat \"Prefix: \" ignoreIfNull tag }}`, you'll get a trailing space (`\"Prefix: \"`) when the tag is missing. In clean data formatting, we want to avoid that extra space.\n\n**Challenge:**\nOutput `\"Prefix:\"` followed by a conditional space and the `tag` field. The space should only appear if the tag does.",
+            description: "How do you add a space **only** if a field exists?\n\n**The Goal:**\n• If `tag` is `\"VIP\"` → Output: `\"Prefix: VIP\"` — Space included\n• If `tag` is missing → Output: `\"Prefix:\"` — **No space** at the end\n\n**The Problem:**\nIf you just do `{{ concat \"Prefix: \" ignoreIfNull tag }}`, you'll get a trailing space `\"Prefix: \"` when the tag is missing. In clean data formatting, we want to avoid that extra space.\n\n**Challenge:**\nOutput `\"Prefix:\"` followed by a conditional space and the `tag` field. The space should only appear if the tag does.",
             testCases: [
                 { name: "Has Tag", data: { "tag": "VIP" }, expected: "Prefix: VIP" },
                 { name: "No Tag", data: { "user": "test" }, expected: "Prefix:" }
@@ -113,7 +113,7 @@ export const chapter8 = {
             type: "challenge",
             title: "Reinforcement: Full Name Builder",
             goal: "Practice nested concat with optional field",
-            description: "Let's build on the pattern from the last step.\n\n**The Goal:**\n• If `suffix` is `\"Jr\"` → Output: `\"Jean Jr\"` (Space + suffix included)\n• If `suffix` is missing → Output: `\"Jean\"` (**No trailing space**)\n\n**Challenge:**\nOutput `name.first` followed by a conditional space and the `name.suffix` field.",
+            description: "Let's build on the pattern from the last step.\n\n**The Goal:**\n• If `suffix` is `\"Jr\"` → Output: `\"Jean Jr\"` — Space + suffix included\n• If `suffix` is missing → Output: `\"Jean\"` **No trailing space**\n\n**Challenge:**\nOutput `name.first` followed by a conditional space and the `name.suffix` field.",
             testCases: [
                 { name: "Has Suffix", data: { "name": { "first": "Jean", "suffix": "Jr" } }, expected: "Jean Jr" },
                 { name: "No Suffix", data: { "name": { "first": "Jean" } }, expected: "Jean" }
@@ -132,7 +132,7 @@ export const chapter8 = {
             type: "challenge",
             title: "Exam 1: Middle Name or Nothing",
             goal: "Output the middle name if it exists, otherwise nothing.",
-            description: "First checkpoint! This should be straightforward now.\n\n**Challenge:**\nOutput `name.middle` if it exists. If it doesn't exist, output nothing (empty string).",
+            description: "First checkpoint! This should be straightforward now.\n\n**Challenge:**\nOutput `name.middle` if it exists. If it doesn't exist, output nothing an empty string.",
             testCases: [
                 {
                     name: "User with middle name",
@@ -177,7 +177,7 @@ export const chapter8 = {
             type: "challenge",
             title: "Final Exam: Full Name with Optional Middle",
             goal: "Create a template that checks for a middle name. If it exists, include it between first and last names. If not, just First Last.",
-            description: "The ultimate challenge! Combine everything you've learned.\n\n**Requirements:**\n\n• If middle name exists: `\"First Middle Last\"`\n• If no middle name: `\"First Last\"`\n• No extra spaces!\n\n**Strategy:**\n1. Start with `name.first`\n2. Add a space\n3. Conditionally add middle + space (only if middle exists)\n4. Add `name.last`",
+            description: "The ultimate challenge! Combine everything you've learned.\n\n**Requirements:**\n\n• If middle name exists: `\"First Middle Last\"`\n• If no middle name: `\"First Last\"`\n• No extra spaces!\n\n**Strategy:**\n1. Start with `name.first`\n2. Add a space\n3. Conditionally add middle + space — only if middle exists\n4. Add `name.last`",
             testCases: [
                 {
                     name: "User with Middle Name",

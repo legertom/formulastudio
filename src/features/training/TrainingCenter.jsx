@@ -1,16 +1,49 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { CURRICULUM } from '../../lib/curriculum';
+import { CURRICULUM, CURRICULUM_VERSION } from '../../lib/curriculum';
 import './TrainingLayout.css';
 import './TrainingSidebar.css';
 import QuizLevel from './QuizLevel';
 import FeedbackWidget from '../../components/FeedbackWidget';
+import { useAuth } from '../../context/AuthContext';
+import { isSupabaseConfigured, supabase } from '../../lib/supabaseClient';
 
 const TRAINING_SIDEBAR_COLLAPSED_KEY = 'fs_training_sidebar_collapsed';
+const TRAINING_COMPLETED_STEPS_KEY = `fs_training_completed_steps_${CURRICULUM_VERSION}`;
+const TRAINING_PROGRESS_COURSE_SLUG = 'formula-studio-core';
+const ALL_STEP_IDS = new Set(
+    CURRICULUM.flatMap((chapter) => chapter.steps.map((step) => step.id))
+);
+
+const sanitizeStepIds = (stepIds) => {
+    const unique = new Set();
+    for (const id of stepIds || []) {
+        if (typeof id === 'string' && ALL_STEP_IDS.has(id)) {
+            unique.add(id);
+        }
+    }
+    return [...unique];
+};
+
+const loadCompletedSteps = () => {
+    try {
+        const stored = window.localStorage.getItem(TRAINING_COMPLETED_STEPS_KEY);
+        if (!stored) return [];
+
+        const parsed = JSON.parse(stored);
+        if (!Array.isArray(parsed)) return [];
+
+        return sanitizeStepIds(parsed);
+    } catch {
+        return [];
+    }
+};
 
 const TrainingCenter = () => {
     const { chapterIndex, stepIndex } = useParams();
     const navigate = useNavigate();
+    const { user } = useAuth();
+    const userId = user?.id;
 
     // Parse URL params (1-based from URL -> 0-based for internal use)
     const rawChapter = parseInt(chapterIndex, 10);
@@ -41,7 +74,9 @@ const TrainingCenter = () => {
     });
 
     // Track completed step IDs (e.g., ["c1-s1", "c1-s2"])
-    const [completedSteps, setCompletedSteps] = useState([]);
+    const [completedSteps, setCompletedSteps] = useState(() => loadCompletedSteps());
+    const [progressSaveState, setProgressSaveState] = useState('local');
+    const completedStepsRef = useRef(completedSteps);
 
     // Track which chapters are collapsed (by chapter index)
     // Initialize with all chapters collapsed except the active one
@@ -66,17 +101,141 @@ const TrainingCenter = () => {
         }
     }, [sidebarCollapsed]);
 
+    useEffect(() => {
+        try {
+            window.localStorage.setItem(
+                TRAINING_COMPLETED_STEPS_KEY,
+                JSON.stringify(completedSteps)
+            );
+        } catch {
+            // Ignore
+        }
+    }, [completedSteps]);
+
+    useEffect(() => {
+        completedStepsRef.current = completedSteps;
+    }, [completedSteps]);
+
+    useEffect(() => {
+        let cancelled = false;
+
+        const syncProgress = async () => {
+            const localSteps = loadCompletedSteps();
+
+            if (!userId || !isSupabaseConfigured || !supabase) {
+                if (!cancelled) {
+                    setCompletedSteps(localSteps);
+                    setProgressSaveState('local');
+                }
+                return;
+            }
+
+            if (!cancelled) {
+                setProgressSaveState('syncing');
+            }
+
+            const { data, error } = await supabase
+                .from('step_progress')
+                .select('step_id')
+                .eq('user_id', userId)
+                .eq('course_slug', TRAINING_PROGRESS_COURSE_SLUG);
+
+            if (error) {
+                console.error('Failed to load cloud training progress:', error);
+                if (!cancelled) {
+                    setCompletedSteps(localSteps);
+                    setProgressSaveState('local');
+                }
+                return;
+            }
+
+            const remoteSteps = sanitizeStepIds((data || []).map((row) => row.step_id));
+            const mergedSteps = sanitizeStepIds([...localSteps, ...remoteSteps]);
+            const remoteStepSet = new Set(remoteSteps);
+            const localOnlySteps = mergedSteps.filter((stepId) => !remoteStepSet.has(stepId));
+
+            if (localOnlySteps.length > 0) {
+                const upsertRows = localOnlySteps.map((stepId) => ({
+                    user_id: userId,
+                    course_slug: TRAINING_PROGRESS_COURSE_SLUG,
+                    step_id: stepId
+                }));
+
+                const { error: upsertError } = await supabase
+                    .from('step_progress')
+                    .upsert(upsertRows, { onConflict: 'user_id,course_slug,step_id' });
+
+                if (upsertError) {
+                    console.error('Failed to merge local training progress into cloud:', upsertError);
+                }
+            }
+
+            if (!cancelled) {
+                setCompletedSteps(mergedSteps);
+                setProgressSaveState('cloud');
+            }
+        };
+
+        void syncProgress();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [userId]);
+
     // If invalid, render nothing while redirecting (or render loading)
     if (!isValid) return null;
 
     const activeChapter = CURRICULUM[activeChapterIndex];
     const activeStep = activeChapter.steps[activeStepIndex];
 
+    const persistCompletedStep = async (stepId) => {
+        if (!userId || !isSupabaseConfigured || !supabase) return;
+
+        setProgressSaveState('syncing');
+
+        const { error } = await supabase.from('step_progress').upsert(
+            [
+                {
+                    user_id: userId,
+                    course_slug: TRAINING_PROGRESS_COURSE_SLUG,
+                    step_id: stepId
+                }
+            ],
+            { onConflict: 'user_id,course_slug,step_id' }
+        );
+
+        if (error) {
+            console.error('Failed to save completed step to cloud:', error);
+            setProgressSaveState('local');
+            return;
+        }
+
+        setProgressSaveState('cloud');
+    };
+
     const handleStepComplete = (stepId) => {
-        if (!completedSteps.includes(stepId)) {
-            setCompletedSteps([...completedSteps, stepId]);
+        if (completedStepsRef.current.includes(stepId)) {
+            return;
+        }
+
+        const next = [...completedStepsRef.current, stepId];
+        completedStepsRef.current = next;
+        setCompletedSteps(next);
+
+        if (userId && isSupabaseConfigured && supabase) {
+            void persistCompletedStep(stepId);
+        } else {
+            setProgressSaveState('local');
         }
     };
+
+    const progressSaveText = (() => {
+        if (!userId) return 'Saved on this device';
+        if (progressSaveState === 'syncing') return 'Syncing to account...';
+        if (progressSaveState === 'cloud') return 'Saved to account';
+        return 'Saved locally (offline)';
+    })();
 
     const toggleChapterCollapse = (chapterIndex) => {
         setCollapsedChapters(prev => {
@@ -138,6 +297,9 @@ const TrainingCenter = () => {
                     </div>
                     <span className="progress-text">
                         {completedSteps.length} Steps Completed
+                    </span>
+                    <span className={`progress-save-status ${progressSaveState}`}>
+                        {progressSaveText}
                     </span>
                 </div>
 

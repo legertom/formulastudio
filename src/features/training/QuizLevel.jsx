@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { tokenize, parse } from '../../lib/parser';
+import { tokenize, parse, prettyStringify } from '../../lib/parser';
 import SyntaxHighlightedEditor from '../editor/SyntaxHighlightedEditor';
 import { renderMarkdownText, evaluateAst } from '../../lib/quizUtils.jsx';
 import CoachMark from '../../components/CoachMark';
@@ -105,6 +105,66 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep 
             onComplete();
         }
     }, [formula, level]);
+
+    const handleFormat = () => {
+        const trimmed = formula.trim();
+        if (!trimmed) return;
+
+        try {
+            const tokens = tokenize(trimmed);
+            const ast = parse(tokens);
+            if (!ast) return;
+            const formatted = `{{ ${prettyStringify(ast)} }}`;
+            setFormula(formatted);
+        } catch {
+            // Formula doesn't parse yet — do a simple keyword-based formatting
+            // Add a newline before each function keyword for readability
+            const inner = trimmed.replace(/^\{\{/, '').replace(/\}\}$/, '').trim();
+            if (!inner) return;
+
+            // Sorted longest-first so "ignoreIfNull" matches before "if", "contains" before "in", etc.
+            const KEYWORDS = [
+                'delimiterCapitalize', 'ignoreIfNull', 'textAfterLast', 'alphanumeric',
+                'textBefore', 'textAfter', 'formatDate', 'contains', 'initials', 'subtract',
+                'trimLeft', 'forEach', 'replace', 'toUpper', 'toLower', 'greater', 'equals',
+                'concat', 'length', 'substr', 'equal', 'less', 'not', 'geq', 'leq', 'add',
+                'and', 'or', 'if', 'in'
+            ];
+
+            // Collapse whitespace first, then add newline+indent before nested functions
+            let collapsed = inner.replace(/\s+/g, ' ').trim();
+            let depth = 0;
+            let result = '';
+            let i = 0;
+
+            while (i < collapsed.length) {
+                // Check if we're at a keyword boundary
+                let matchedKeyword = null;
+                for (const kw of KEYWORDS) {
+                    if (collapsed.substring(i, i + kw.length) === kw) {
+                        // Make sure it's a word boundary
+                        const before = i === 0 ? ' ' : collapsed[i - 1];
+                        const after = i + kw.length >= collapsed.length ? ' ' : collapsed[i + kw.length];
+                        if (/[\s]/.test(before) && /[\s"0-9a-zA-Z_]/.test(after)) {
+                            matchedKeyword = kw;
+                            break;
+                        }
+                    }
+                }
+
+                if (matchedKeyword && i > 0) {
+                    depth++;
+                    result += '\n' + '  '.repeat(depth) + matchedKeyword;
+                    i += matchedKeyword.length;
+                } else {
+                    result += collapsed[i];
+                    i++;
+                }
+            }
+
+            setFormula(`{{ ${result.trim()} }}`);
+        }
+    };
 
     // ---- RENDER LESSON ----
     if (level.type === 'lesson') {
@@ -410,7 +470,18 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep 
                 <div className={`focus-editor-section ${isAllCorrect ? 'success' : ''}`} style={{ marginTop: 0 }}>
                     <div className="editor-label-row">
                         <label>Formula Editor</label>
-                        <div className="live-tag">Live Preview</div>
+                        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                            <button
+                                type="button"
+                                className="btn-format"
+                                onMouseDown={(e) => e.preventDefault()}
+                                onClick={handleFormat}
+                                title="Format formula for readability"
+                            >
+                                Format
+                            </button>
+                            <div className="live-tag">Live Preview</div>
+                        </div>
                     </div>
                     <SyntaxHighlightedEditor
                         value={formula}

@@ -189,6 +189,30 @@ button:focus-visible {
   gap: 1rem;
 }
 
+.auth-nav-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.auth-nav-user {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.auth-nav-btn {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+.auth-nav-signin {
+  border: 1px solid var(--glass-border);
+}
+
 .nav-brand {
   display: flex;
   align-items: center;
@@ -320,4 +344,31 @@ button:focus-visible {
 
 [data-tooltip][data-tooltip-pos="bottom"]:hover::after {
   transform: translateX(-50%) translateY(5px);
+}
+
+/* Function tooltip triggers in description text */
+.fn-tooltip-trigger {
+  cursor: help;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--accent-secondary);
+  transition: color 0.15s ease;
+}
+
+.fn-tooltip-trigger:hover {
+  color: var(--accent-secondary);
+}
+
+/* Inline function name inside a longer code block */
+.fn-inline {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--accent-secondary);
+  cursor: help;
+}
+
+.fn-inline:hover {
+  color: var(--accent-secondary);
 }

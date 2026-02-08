@@ -10,7 +10,7 @@ export const chapter2 = {
             type: "challenge",
             title: "Meet Your First Function",
             goal: "Turn hello into HELLO",
-            description: "Functions are the **Verbs** of code—magic words that **DO** things to your data.\n\nThere are only 29 of them, and each one does a specific, unique job.\n\n**New Function: `toUpper`** (Arity 1)\n\n`{{ toUpper text }}`\n\nConverts all letters to UPPERCASE. Think of it like the CAPS LOCK key.\n\n**Challenge:**\nThe **literal** text `\"hello\"` is already in the editor. Add `toUpper` before it to transform it.",
+            description: "Functions are the **Verbs** of code—magic words that **DO** things to your data.\n\nThere are only 29 of them, and each one does a specific, unique job.\n\n**New Function: `toUpper`** — Arity 1\n\n`{{ toUpper text }}`\n\nConverts all letters to UPPERCASE. Think of it like the CAPS LOCK key.\n\n**Challenge:**\nThe **literal** text `\"hello\"` is already in the editor. Add `toUpper` before it to transform it.",
             testCases: [
                 { name: "Test", data: {}, expected: "HELLO" }
             ],
@@ -121,7 +121,7 @@ export const chapter2 = {
             type: "challenge",
             title: "Counting Characters",
             goal: "Count the letters in \"argument\"",
-            description: "Not all functions transform text—some analyze it.\n\n**New Function: `length`** (Arity 1)\n\n`{{ length text }}`\n\nCounts the number of characters in text. Like counting letters on a Scrabble board.\n\n**Challenge:**\nUse `length` to count the letters in `\"argument\"`.",
+            description: "Not all functions transform text—some analyze it.\n\n**New Function: `length`** — Arity 1\n\n`{{ length text }}`\n\nCounts the number of characters in text. Like counting letters on a Scrabble board.\n\n**Challenge:**\nUse `length` to count the letters in `\"argument\"`.",
             testCases: [
                 { name: "Test", data: {}, expected: "8" }
             ],
@@ -163,7 +163,7 @@ export const chapter2 = {
             type: "challenge",
             title: "Joining Text",
             goal: "Join \"Super\" and \"Man\"",
-            description: "Some functions need more than one argument.\n\n**New Function: `concat`** (Arity 2)\n\n`{{ concat text1 text2 }}`\n\nShort for \"concatenate\"—it glues two pieces of text together. Like taping two pieces of paper end-to-end.\n\n**Challenge:**\nUse `concat` to join `\"Super\"` and `\"Man\"`.",
+            description: "Some functions need more than one argument.\n\n**New Function: `concat`** — Arity 2\n\n`{{ concat text1 text2 }}`\n\nShort for \"concatenate\"—it glues two pieces of text together. Like taping two pieces of paper end-to-end.\n\n**Challenge:**\nUse `concat` to join `\"Super\"` and `\"Man\"`.",
             testCases: [
                 { name: "Test", data: {}, expected: "SuperMan" }
             ],
@@ -199,7 +199,7 @@ export const chapter2 = {
             type: "challenge",
             title: "Mixed Arguments",
             goal: "Add a title before the last name",
-            description: "You can mix **Strings** and **Variables**.\n\n**Challenge:**\nJoin the text `\"Agent \"` (notice the space!) with the `name.last` variable.",
+            description: "You can mix **Strings** and **Variables**.\n\n**Challenge:**\nJoin the text `\"Agent \"` — notice the space! with the `name.last` variable.",
             testCases: [
                 { name: "Bond", data: { "name": { "last": "Bond" } }, expected: "Agent Bond" }
             ],
@@ -255,7 +255,7 @@ export const chapter2 = {
             type: "challenge",
             title: "Building Blocks - Part 2",
             goal: "Join the first name with \" Picard\"",
-            description: "Now here's the clever part: we can use the **output** of one concat as the **input** to another concat!\n\nThe previous step created `\" Picard\"` (space + last name).\n\nNow let's join `name.first` with that same pattern.\n\n**Challenge:**\nUse `concat` to join `name.first` with the formula from the previous step: `concat \" \" name.last`\n\nType them together: `concat name.first concat \" \" name.last`",
+            description: "Now here's the clever part: we can use the **output** of one concat as the **input** to another concat!\n\nThe previous step created `\" Picard\"` — space + last name.\n\nNow let's join `name.first` with that same pattern.\n\n**Challenge:**\nUse `concat` to join `name.first` with the formula from the previous step: `concat \" \" name.last`\n\nType them together: `concat name.first concat \" \" name.last`",
             testCases: [
                 { name: "Jean Picard", data: { "name": { "first": "Jean", "last": "Picard" } }, expected: "Jean Picard" },
                 { name: "Beverly Crusher", data: { "name": { "first": "Beverly", "last": "Crusher" } }, expected: "Beverly Crusher" }
@@ -272,7 +272,7 @@ export const chapter2 = {
             type: "challenge",
             title: "Three Things, Two Steps",
             goal: "Write the full name formula from scratch",
-            description: "Let's review what you just learned:\n\n**The Problem:** Join THREE things (`name.first` + `\" \"` + `name.last`)\n**The Solution:** Use TWO concat operations\n\n1. **Inner concat:** `concat \" \" name.last` → creates `\" Picard\"`\n2. **Outer concat:** `concat name.first [inner result]` → creates `\"Jean Picard\"`\n\nThis is called **Nesting**—putting one function inside another.\n\n**Challenge:**\nWrite the full formula from scratch to output `\"Jean Picard\"`.",
+            description: "Let's review what you just learned:\n\n**The Problem:** Join THREE things `name.first` + `\" \"` + `name.last`\n**The Solution:** Use TWO concat operations\n\n1. **Inner concat:** `concat \" \" name.last` → creates `\" Picard\"`\n2. **Outer concat:** `concat name.first [inner result]` → creates `\"Jean Picard\"`\n\nThis is called **Nesting**—putting one function inside another.\n\n**Challenge:**\nWrite the full formula from scratch to output `\"Jean Picard\"`.",
             testCases: [
                 { name: "Jean Picard", data: { "name": { "first": "Jean", "last": "Picard" } }, expected: "Jean Picard" },
                 { name: "Beverly Crusher", data: { "name": { "first": "Beverly", "last": "Crusher" } }, expected: "Beverly Crusher" },
@@ -295,7 +295,7 @@ export const chapter2 = {
             type: "challenge",
             title: "Last, First Format",
             goal: "Output Last, First",
-            description: "Now that you know how to nest concat operations, let's apply this skill.\n\nSometimes names are formatted as `\"Last, First\"` (like in a directory or formal list).\n\n**Challenge:**\nCreate the output `\"Picard, Jean\"` using the same nesting pattern you just learned.",
+            description: "Now that you know how to nest concat operations, let's apply this skill.\n\nSometimes names are formatted as `\"Last, First\"` — like in a directory or formal list.\n\n**Challenge:**\nCreate the output `\"Picard, Jean\"` using the same nesting pattern you just learned.",
             testCases: [
                 { name: "Jean", data: { "name": { "first": "Jean", "last": "Picard" } }, expected: "Picard, Jean" },
                 { name: "Beverly", data: { "name": { "first": "Beverly", "last": "Crusher" } }, expected: "Crusher, Beverly" }

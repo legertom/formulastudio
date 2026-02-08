@@ -9,7 +9,7 @@ export const chapter4 = {
             type: "challenge",
             title: "Refresher: Length",
             goal: "Check the length of the raw string",
-            description: "It's time to become a **Data Janitor**.\n\nData often comes in \"raw\"—with extra spaces, weird symbols, or typos. Before we clean it, let's analyze it.\n\n**Challenge:**\nUse the `length` function (Arity 1) to count the characters in the `name` field.\n\n(It looks like \"Jean\", but is it?)",
+            description: "It's time to become a **Data Janitor**.\n\nData often comes in \"raw\"—with extra spaces, weird symbols, or typos. Before we clean it, let's analyze it.\n\n**Challenge:**\nUse the `length` function — Arity 1 to count the characters in the `name` field.\n\nIt looks like \"Jean\", but is it?",
             testCases: [
                 { name: "Raw Name", data: { "name": "   Jean   " }, expected: "10" }
             ],
@@ -21,7 +21,7 @@ export const chapter4 = {
             type: "challenge",
             title: "Tool: Edge Cleaning",
             goal: "Remove the leading spaces",
-            description: "See? The length was 10, but \"Jean\" only has 4 letters! That means there are hidden spaces.\n\n**New Tool: `trimLeft`** (Arity 1)\n\n`{{ trimLeft text }}`\n\nThis function removes all empty spaces from the **start** (left side) of a string.\n\n**Challenge:**\nClean up the `name` field.",
+            description: "See? The length was 10, but \"Jean\" only has 4 letters! That means there are hidden spaces.\n\n**New Tool: `trimLeft`** — Arity 1\n\n`{{ trimLeft text }}`\n\nThis function removes all empty spaces from the **start** — left side — of a string.\n\n**Challenge:**\nClean up the `name` field.",
             testCases: [
                 { name: "Raw Name", data: { "name": "   Jean   " }, expected: "Jean   " }
             ],
@@ -33,7 +33,7 @@ export const chapter4 = {
             type: "challenge",
             title: "Tool: The Nuke",
             goal: "Remove symbols/spaces and convert to UPPERCASE",
-            description: "Sometimes you need to scrub EVERYTHING except the letters and numbers.\n\n**New Tool: `alphanumeric`** (Arity 1)\n\n`{{ alphanumeric text }}`\n\nIt destroys spaces, punctuation, symbols—leaving only A-Z and 0-9.\n\n**Reinforcement:**\nLet's combine this with `toUpper` to create a standard, clean ID code.\n\n1. `alphanumeric` the `id_code`.\n2. `toUpper` the result.",
+            description: "Sometimes you need to scrub EVERYTHING except the letters and numbers.\n\n**New Tool: `alphanumeric`** — Arity 1\n\n`{{ alphanumeric text }}`\n\nIt destroys spaces, punctuation, symbols—leaving only A-Z and 0-9.\n\n**Reinforcement:**\nLet's combine this with `toUpper` to create a standard, clean ID code.\n\n1. `alphanumeric` the `id_code`.\n2. `toUpper` the result.",
             testCases: [
                 { name: "Messy Code", data: { "id_code": "User #123 (active)" }, expected: "USER123ACTIVE" }
             ],
@@ -45,7 +45,7 @@ export const chapter4 = {
             type: "challenge",
             title: "Practice: Normalize Email",
             goal: "Lowercase the email address",
-            description: "Email addresses are case-insensitive, so it's best practice to normalize them to lowercase.\n\n**Reinforcement: `toLower`** (Arity 1)\n\n`{{ toLower text }}`\n\nConverts all letters to lowercase.\n\n**Challenge:**\nNormalize the `student.email` to lowercase.",
+            description: "Email addresses are case-insensitive, so it's best practice to normalize them to lowercase.\n\n**Reinforcement: `toLower`** — Arity 1\n\n`{{ toLower text }}`\n\nConverts all letters to lowercase.\n\n**Challenge:**\nNormalize the `student.email` to lowercase.",
             testCases: [
                 { name: "Mixed Case", data: { "student": { "email": "Jean.Picard@StarFleet.EDU" } }, expected: "jean.picard@starfleet.edu" },
                 { name: "All Caps", data: { "student": { "email": "ADMIN@SCHOOL.ORG" } }, expected: "admin@school.org" }
@@ -63,7 +63,7 @@ export const chapter4 = {
             type: "challenge",
             title: "Concept: Intro to Replace",
             goal: "Replace the dots with exclamation points",
-            description: "Sometimes you don't want to destroy characters, you want to **swap** them.\n\n**New Tool: `replace`** (Arity 3)\n\n`{{ replace text string_to_find string_to_replace_with }}`\n\nThink of it like \"Find and Replace\" in a word processor.\n\n**Challenge:**\nThe formula below replaces dots with question marks. Fix it so dots become exclamation points instead!",
+            description: "Sometimes you don't want to destroy characters, you want to **swap** them.\n\n**New Tool: `replace`** — Arity 3\n\n`{{ replace text string_to_find string_to_replace_with }}`\n\nThink of it like \"Find and Replace\" in a word processor.\n\n**Challenge:**\nThe formula below replaces dots with question marks. Fix it so dots become exclamation points instead!",
             testCases: [
                 { name: "Loading", data: { "status": "Loading..." }, expected: "Loading!!!" }
             ],
@@ -93,8 +93,8 @@ export const chapter4 = {
             ],
             hints: [
                 "Start with: replace tag \"[\" \"\"",
-                "Then wrap that in another replace: replace (...) \"]\" \"\"",
-                "{{ replace (replace tag \"[\" \"\") \"]\" \"\" }}"
+                "Then wrap that in another replace: replace ... \"]\" \"\"",
+                "{{ replace replace tag \"[\" \"\" \"]\" \"\" }}"
             ],
             prefill: "{{}}"
         },
@@ -103,7 +103,7 @@ export const chapter4 = {
             type: "challenge",
             title: "Concept: Basic Addition",
             goal: "Add two numbers together",
-            description: "Great cleanup work! Now let's do some math.\n\n**New Tool: `add`** (Arity 2)\n\n`{{ add number1 number2 }}`\n\nThis function takes two numbers and returns their sum.\n\n**Challenge:**\nAdd **5** and **3** together.",
+            description: "Great cleanup work! Now let's do some math.\n\n**New Tool: `add`** — Arity 2\n\n`{{ add number1 number2 }}`\n\nThis function takes two numbers and returns their sum.\n\n**Challenge:**\nAdd **5** and **3** together.",
             testCases: [
                 { name: "Simple Sum", data: {}, expected: "8" }
             ],
@@ -121,13 +121,13 @@ export const chapter4 = {
             ],
             hints: [
                 "Calculate the lengths first.",
-                "{{ add (length first) (length last) }}",
+                "{{ add length name.first length name.last }}",
                 "{{ add length name.first length name.last }}"
             ],
             prefill: "{{}}"
         },
         {
-            id: "c4-s7b",
+            id: "c4-s7b2",
             type: "challenge",
             title: "Practice: Score Bonus",
             goal: "Add 50 to the player score",
@@ -143,7 +143,7 @@ export const chapter4 = {
             type: "challenge",
             title: "Challenge: The Chain",
             goal: "Sum 5 numbers: Base + Bonus + 30 + 40 + Ten",
-            description: "The `add` function only takes **2 inputs**, but we need to add **5 things**.\n\n**The Inputs:**\n1. `score.base` (Data)\n2. `score.bonus.round` (Nested Data)\n3. Literal `30`\n4. Literal `40`\n5. The `glitch` field (It says \"ten\"... you need to `replace` it with \"10\"!)\n\n**The Strategy:**\nChain them all together! `add (1) add (2) add (3) ...`\n\n**Challenge:**\nCalculate the total (10 + 20 + 30 + 40 + 10 = 110).",
+            description: "The `add` function only takes **2 inputs**, but we need to add **5 things**.\n\n**The Inputs:**\n1. `score.base` — Data\n2. `score.bonus.round` — Nested Data\n3. Literal `30`\n4. Literal `40`\n5. The `glitch` field — It says \"ten\"... you need to `replace` it with \"10\"!\n\n**The Strategy:**\nChain them all together! `add A add B add C ...`\n\n**Challenge:**\nCalculate the total: 10 + 20 + 30 + 40 + 10 = 110.",
             testCases: [
                 {
                     name: "Complex Sum",
@@ -167,7 +167,7 @@ export const chapter4 = {
             type: "challenge",
             title: "Bonus Challenge: The Clean Sweep",
             goal: "Sanitize, Replace, and Finalize the First Name",
-            description: "Put all your skills together for the Final Exam.\n\nThe input name is messy: `\"  Jean-Luc  \"`.\n\n**Your Mission:**\n1. `trimLeft` to clean the start.\n2. `replace` the hyphen `-` with a space ` `.\n3. Output the clean result: `\"Jean Luc  \"` (Don't worry about the trailing spaces for now).",
+            description: "Put all your skills together for the Final Exam.\n\nThe input name is messy: `\"  Jean-Luc  \"`.\n\n**Your Mission:**\n1. `trimLeft` to clean the start.\n2. `replace` the hyphen `-` with a space ` `.\n3. Output the clean result: `\"Jean Luc  \"` — Don't worry about the trailing spaces for now.",
             testCases: [
                 {
                     name: "Messy Hyphen",

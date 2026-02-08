@@ -1,8 +1,19 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle';
+import { useAuth } from '../context/AuthContext';
 
 const NavBar = () => {
+    const { user, isAdmin, signOut, isSupabaseConfigured } = useAuth();
+
+    const handleSignOut = async () => {
+        try {
+            await signOut();
+        } catch (error) {
+            console.error('Sign out failed:', error);
+        }
+    };
+
     return (
         <nav className="main-nav">
             <div className="nav-left">
@@ -32,10 +43,41 @@ const NavBar = () => {
                     >
                         Documentation
                     </NavLink>
+                    {isAdmin && (
+                        <NavLink
+                            to="/admin"
+                            className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+                        >
+                            Admin
+                        </NavLink>
+                    )}
                 </div>
             </div>
 
             <div className="nav-right">
+                {isSupabaseConfigured && (
+                    user ? (
+                        <div className="auth-nav-group">
+                            <NavLink
+                                to="/account"
+                                className={({ isActive }) => `nav-item auth-nav-signin ${isActive ? 'active' : ''}`}
+                            >
+                                Account
+                            </NavLink>
+                            <span className="auth-nav-user" title={user.email}>{user.email}</span>
+                            <button type="button" className="auth-nav-btn" onClick={handleSignOut}>
+                                Sign Out
+                            </button>
+                        </div>
+                    ) : (
+                        <NavLink
+                            to="/auth"
+                            className={({ isActive }) => `nav-item auth-nav-signin ${isActive ? 'active' : ''}`}
+                        >
+                            Sign In
+                        </NavLink>
+                    )
+                )}
                 <ThemeToggle />
             </div>
         </nav>
@@ -43,4 +85,3 @@ const NavBar = () => {
 };
 
 export default NavBar;
-

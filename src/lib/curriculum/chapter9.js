@@ -22,7 +22,7 @@ export const chapter9 = {
             type: "challenge",
             title: "Concept: Delimiters",
             goal: "Extract username from email",
-            description: "To handle messy data, we use \"Delimiters\" - specific characters we know will be there.\n\n**New Tool: `textBefore`** (Arity 2)\n`{{ textBefore string delimiter }}`\nReturns everything *before* the delimiter.\n\n*Example:* `{{ textBefore \"john.doe@email.com\" \"@\" }}` -> `\"john.doe\"`\n\n**Challenge:**\nGet the username (everything before `@`) from the `email`.",
+            description: "To handle messy data, we use \"Delimiters\" - specific characters we know will be there.\n\n**New Tool: `textBefore`** — Arity 2\n`{{ textBefore string delimiter }}`\nReturns everything *before* the delimiter.\n\n*Example:* `{{ textBefore \"john.doe@email.com\" \"@\" }}` -> `\"john.doe\"`\n\n**Challenge:**\nGet the username — everything before `@` — from the `email`.",
             testCases: [
                 { name: "Standard", data: { "email": "jdoe@example.com" }, expected: "jdoe" },
                 { name: "Short", data: { "email": "me@test.org" }, expected: "me" }
@@ -35,7 +35,7 @@ export const chapter9 = {
             type: "challenge",
             title: "Concept: The Other Side",
             goal: "Extract the domain from email",
-            description: "Now let's get the other side.\n\n**New Tool: `textAfter`** (Arity 2)\n`{{ textAfter string delimiter }}`\nReturns everything *after* the delimiter.\n\n*Example:* `{{ textAfter \"User: John\" \": \" }}` -> `\"John\"`\n\n**Challenge:**\nExtract the domain (everything *after* the `@`) from the `email`.",
+            description: "Now let's get the other side.\n\n**New Tool: `textAfter`** — Arity 2\n`{{ textAfter string delimiter }}`\nReturns everything *after* the delimiter.\n\n*Example:* `{{ textAfter \"User: John\" \": \" }}` -> `\"John\"`\n\n**Challenge:**\nExtract the domain — everything *after* the `@` — from the `email`.",
             testCases: [
                 { name: "Standard", data: { "email": "jdoe@example.com" }, expected: "example.com" },
                 { name: "Corp", data: { "email": "admin@corrp.net" }, expected: "corrp.net" }
@@ -56,7 +56,7 @@ export const chapter9 = {
             hints: [
                 "Inner step: get after `[` -> {{ textAfter log \"[\" }}",
                 "Outer step: get before `]`",
-                "{{ textBefore (textAfter log \"[\") \"]\" }}"
+                "{{ textBefore textAfter log \"[\" \"]\" }}"
             ],
             prefill: "{{}}"
         },
@@ -64,8 +64,8 @@ export const chapter9 = {
             id: "c9-s5",
             type: "challenge",
             title: "Practice: DN Start",
-            goal: "Extract the user portion (everything after CN=)",
-            description: "Let's practice with real identity data.\n\n**Context:** Systems like Active Directory use a \"Distinguished Name\" (DN) to locate users. It's like a file path:\n*   **CN** (Common Name): The person (e.g. Jean-Luc)\n*   **OU** (Organizational Unit): The folder (e.g. Users)\n*   **DC** (Domain Component): The organization\n\nAt Clever, we often need to extract just the **CN** to get the real name.\n\n**Data:** `\"CN=Jean-Luc,OU=Users,DC=Enterprise\"`.\n\n**Challenge:**\nWe only want the part *after* `\"CN=\"`.\n\nExtract `\"Jean-Luc,OU=Users,DC=Enterprise\"`.",
+            goal: "Extract the user portion — everything after CN=",
+            description: "Let's practice with real identity data.\n\n**Context:** Systems like Active Directory use a \"Distinguished Name\" — DN — to locate users. It's like a file path:\n*   **CN** — Common Name: The person, e.g. Jean-Luc\n*   **OU** — Organizational Unit: The folder, e.g. Users\n*   **DC** — Domain Component: The organization\n\nAt Clever, we often need to extract just the **CN** to get the real name.\n\n**Data:** `\"CN=Jean-Luc,OU=Users,DC=Enterprise\"`.\n\n**Challenge:**\nWe only want the part *after* `\"CN=\"`.\n\nExtract `\"Jean-Luc,OU=Users,DC=Enterprise\"`.",
             testCases: [
                 { name: "Jean-Luc", data: { "dn": "CN=Jean-Luc,OU=Users,DC=Enterprise" }, expected: "Jean-Luc,OU=Users,DC=Enterprise" },
                 { name: "Worf", data: { "dn": "CN=Worf,OU=Security,DC=Enterprise" }, expected: "Worf,OU=Security,DC=Enterprise" }
@@ -80,7 +80,7 @@ export const chapter9 = {
             type: "challenge",
             title: "Practice: DN Finish",
             goal: "Isolate the Common Name",
-            description: "Now let's finish the job.\n\n**Goal:**\nWe just want the name `\"Jean-Luc\"`.\n\n**Challenge:**\nTake your previous answer (which gave you `\"Jean-Luc,OU...\"`) and get the text **before** the first comma `\",\"`.",
+            description: "Now let's finish the job.\n\n**Goal:**\nWe just want the name `\"Jean-Luc\"`.\n\n**Challenge:**\nTake your previous answer — which gave you `\"Jean-Luc,OU...\"` — and get the text **before** the first comma `\",\"`.",
             testCases: [
                 { name: "Jean-Luc", data: { "dn": "CN=Jean-Luc,OU=Users,DC=Enterprise" }, expected: "Jean-Luc" },
                 { name: "Worf", data: { "dn": "CN=Worf,OU=Security,DC=Enterprise" }, expected: "Worf" }
@@ -88,7 +88,7 @@ export const chapter9 = {
             hints: [
                 "Your inner step is textAfter \"CN=\"",
                 "Your outer step is textBefore \",\"",
-                "{{ textBefore (textAfter dn \"CN=\") \",\" }}"
+                "{{ textBefore textAfter dn \"CN=\" \",\" }}"
             ],
             prefill: "{{}}"
         },
@@ -97,7 +97,7 @@ export const chapter9 = {
             type: "challenge",
             title: "Concept: The Last Resort",
             goal: "Extract file extension",
-            description: "What if there are multiple delimiters? \n`\"report.final.v2.pdf\"`\n\nIf we use `textAfter` \".\", we get `\"final.v2.pdf\"`. That's not what we want.\n\n**New Tool: `textAfterLast`** (Arity 2)\n`{{ textAfterLast string delimiter }}`\nFinds the *last* occurrence of the delimiter and takes everything after it.\n\n*Example:* `{{ textAfterLast \"a.b.c\" \".\" }}` -> `\"c\"`\n\n**Challenge:**\nExtract the file extension (e.g. `\"pdf\"`).",
+            description: "What if there are multiple delimiters? \n`\"report.final.v2.pdf\"`\n\nIf we use `textAfter` \".\", we get `\"final.v2.pdf\"`. That's not what we want.\n\n**New Tool: `textAfterLast`** — Arity 2\n`{{ textAfterLast string delimiter }}`\nFinds the *last* occurrence of the delimiter and takes everything after it.\n\n*Example:* `{{ textAfterLast \"a.b.c\" \".\" }}` -> `\"c\"`\n\n**Challenge:**\nExtract the file extension e.g. `\"pdf\"`.",
             testCases: [
                 { name: "PDF", data: { "file": "report.final.v2.pdf" }, expected: "pdf" },
                 { name: "Simple", data: { "file": "image.png" }, expected: "png" }
@@ -110,7 +110,7 @@ export const chapter9 = {
             type: "challenge",
             title: "Practice: Last Name",
             goal: "Extract the last name",
-            description: "Let's try another one. Sometimes names are messy too.\n\n**Data:** `\"Startrek, Jean Luc\"` or `\"Picard\"` (no comma).\n\nWait, actually let's look at full names formatted as `First Middle Last`.\n\n**Data:** `\"Jean Luc Picard\"`\n\n**Challenge:**\nGet the text after the *last* space to find the surname.",
+            description: "Let's try another one. Sometimes names are messy too.\n\n**Data:** `\"Startrek, Jean Luc\"` or `\"Picard\"` — no comma.\n\nWait, actually let's look at full names formatted as `First Middle Last`.\n\n**Data:** `\"Jean Luc Picard\"`\n\n**Challenge:**\nGet the text after the *last* space to find the surname.",
             testCases: [
                 { name: "Picard", data: { "name": "Jean Luc Picard" }, expected: "Picard" },
                 { name: "Riker", data: { "name": "William T. Riker" }, expected: "Riker" }
@@ -123,7 +123,7 @@ export const chapter9 = {
             type: "challenge",
             title: "Refinement: Cleaning Up",
             goal: "Clean up the dirty data",
-            description: "Sometimes extraction leaves garbage behind.\n\n**Data:** `\"   Value: 100\"`\nWe might be lazy and just extract after `\"Value:\"`. But the result is `\" 100\"`. (Note the space).\n\n**New Tool: `trimLeft`** (Arity 1)\n`{{ trimLeft string }}`\nRemoves whitespace from the start of a string.\n\n*Example:* `{{ trimLeft \"  hello\" }}` -> `\"hello\"`\n\n**Challenge:**\nExtract after `\"Value:\"` and then trim the result.",
+            description: "Sometimes extraction leaves garbage behind.\n\n**Data:** `\"   Value: 100\"`\nWe might be lazy and just extract after `\"Value:\"`. But the result is `\" 100\"`. Note the space.\n\n**New Tool: `trimLeft`** — Arity 1\n`{{ trimLeft string }}`\nRemoves whitespace from the start of a string.\n\n*Example:* `{{ trimLeft \"  hello\" }}` -> `\"hello\"`\n\n**Challenge:**\nExtract after `\"Value:\"` and then trim the result.",
             testCases: [
                 { name: "Spaced", data: { "raw": "   Value: 100" }, expected: "100" },
                 { name: "Tight", data: { "raw": "Value:200" }, expected: "200" }
@@ -144,7 +144,7 @@ export const chapter9 = {
                 { name: "Timeout", data: { "log": "ERROR -   Connection Timeout" }, expected: "Connection Timeout" },
                 { name: "Auth", data: { "log": "INFO - Auth Successful" }, expected: "Auth Successful" }
             ],
-            hints: ["{{ trimLeft (textAfter log \"-\") }}"],
+            hints: ["{{ trimLeft textAfter log \"-\" }}"],
             prefill: "{{}}"
         },
         {
@@ -152,14 +152,14 @@ export const chapter9 = {
             type: "challenge",
             title: "Refresher: Safety Check",
             goal: "Extract only if safe",
-            description: "If a delimiter doesn't exist, these functions usually return the empty string or original string. But sometimes we want to check first.\n\n**Refresher: `contains`** (Arity 2)\n`{{ contains haystack needle }}`\nReturns `true` if the text contains the substring.\n\n*Example:* `{{ contains \"test@test.com\" \"@\" }}` -> `true`\n\n**Challenge:**\nCheck if the `email` **contains** `\"@\"`. If yes, output `\"Valid\"`. If no, output `\"Invalid\"`.",
+            description: "If a delimiter doesn't exist, these functions usually return the empty string or original string. But sometimes we want to check first.\n\n**Refresher: `contains`** — Arity 2\n`{{ contains haystack needle }}`\nReturns `true` if the text contains the substring.\n\n*Example:* `{{ contains \"test@test.com\" \"@\" }}` -> `true`\n\n**Challenge:**\nCheck if the `email` **contains** `\"@\"`. If yes, output `\"Valid\"`. If no, output `\"Invalid\"`.",
             testCases: [
                 { name: "Valid", data: { "email": "test@test.com" }, expected: "Valid" },
                 { name: "Invalid", data: { "email": "notanemail" }, expected: "Invalid" }
             ],
             hints: [
                 "This is just a boolean check.",
-                "{{ if (contains email \"@\") \"Valid\" \"Invalid\" }}"
+                "{{ if contains email \"@\" \"Valid\" \"Invalid\" }}"
             ],
             prefill: "{{}}"
         },
@@ -173,7 +173,7 @@ export const chapter9 = {
                 { name: "Allowed", data: { "email": "student@college.edu" }, expected: "Allowed" },
                 { name: "Blocked", data: { "email": "hacker@gmail.com" }, expected: "Blocked" }
             ],
-            hints: ["{{ if (contains email \".edu\") \"Allowed\" \"Blocked\" }}"],
+            hints: ["{{ if contains email \".edu\" \"Allowed\" \"Blocked\" }}"],
             prefill: "{{}}"
         },
         {
@@ -189,7 +189,7 @@ export const chapter9 = {
             hints: [
                 "Delimiter 1: \"Status: \"",
                 "Delimiter 2: \" |\"",
-                "Sandwich pattern: textBefore (textAfter ...)"
+                "Sandwich pattern: textBefore textAfter ..."
             ],
             prefill: "{{}}"
         }

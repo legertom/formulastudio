@@ -9,8 +9,12 @@ import { chapter8 } from './chapter8';
 import { chapter9 } from './chapter9';
 import { chapter10 } from './chapter10';
 import { chapter11 } from './chapter11';
+import { validateCurriculum } from './validateCurriculum';
 
-export const CURRICULUM = [
+// Bump this to reset saved progress after a major curriculum rewrite.
+export const CURRICULUM_VERSION = 'v1';
+
+const curriculum = [
     chapter1,
     chapter2,
     chapter3,
@@ -23,3 +27,7 @@ export const CURRICULUM = [
     chapter10,
     chapter11
 ];
+
+validateCurriculum(curriculum);
+
+export const CURRICULUM = curriculum;
