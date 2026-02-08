@@ -14,15 +14,29 @@ const formatDate = (value) => {
 };
 
 const normalizeEmail = (value) => value.trim().toLowerCase();
+const parseJsonSafe = (value) => {
+    if (!value) return null;
+    try {
+        return JSON.parse(value);
+    } catch {
+        return null;
+    }
+};
+const getResponseError = async (response, fallbackMessage) => {
+    const raw = await response.text();
+    const parsed = parseJsonSafe(raw);
+    return parsed?.error || parsed?.message || raw || fallbackMessage;
+};
 
 const AdminPage = () => {
-    const { session, isAdmin, loading, isSupabaseConfigured } = useAuth();
+    const { session, user, isAdmin, loading, isSupabaseConfigured } = useAuth();
     const [isLoadingData, setIsLoadingData] = useState(true);
     const [error, setError] = useState('');
     const [users, setUsers] = useState([]);
     const [allowlist, setAllowlist] = useState([]);
     const [newAllowEmail, setNewAllowEmail] = useState('');
     const [isSavingAllowlist, setIsSavingAllowlist] = useState(false);
+    const [savingRoleUserId, setSavingRoleUserId] = useState('');
 
     const totalSteps = useMemo(
         () => CURRICULUM.reduce((sum, chapter) => sum + chapter.steps.length, 0),
@@ -53,10 +67,10 @@ const AdminPage = () => {
             ]);
 
             if (!progressResponse.ok) {
-                throw new Error(await progressResponse.text());
+                throw new Error(await getResponseError(progressResponse, 'Failed to load progress data.'));
             }
             if (!allowlistResponse.ok) {
-                throw new Error(await allowlistResponse.text());
+                throw new Error(await getResponseError(allowlistResponse, 'Failed to load allowlist.'));
             }
 
             const progressPayload = await progressResponse.json();
@@ -96,7 +110,7 @@ const AdminPage = () => {
             });
 
             if (!response.ok) {
-                throw new Error(await response.text());
+                throw new Error(await getResponseError(response, 'Failed to add allowlisted email.'));
             }
 
             setNewAllowEmail('');
@@ -120,7 +134,7 @@ const AdminPage = () => {
             });
 
             if (!response.ok) {
-                throw new Error(await response.text());
+                throw new Error(await getResponseError(response, 'Failed to remove allowlisted email.'));
             }
 
             await loadAdminData();
@@ -129,6 +143,47 @@ const AdminPage = () => {
             setError(removeError?.message || 'Failed to remove allowlisted email.');
         } finally {
             setIsSavingAllowlist(false);
+        }
+    };
+
+    const handleRoleChange = async (entry, nextRole) => {
+        if (!entry?.userId || !nextRole) return;
+
+        setSavingRoleUserId(entry.userId);
+        setError('');
+
+        try {
+            const response = await fetch('/api/admin-user-role', {
+                method: 'POST',
+                headers: {
+                    ...authHeaders,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    userId: entry.userId,
+                    role: nextRole
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(await getResponseError(response, 'Failed to update user role.'));
+            }
+
+            setUsers((previous) =>
+                previous.map((row) =>
+                    row.userId === entry.userId
+                        ? {
+                            ...row,
+                            role: nextRole
+                        }
+                        : row
+                )
+            );
+        } catch (roleError) {
+            console.error('Failed to update user role:', roleError);
+            setError(roleError?.message || 'Failed to update user role.');
+        } finally {
+            setSavingRoleUserId('');
         }
     };
 
@@ -209,12 +264,18 @@ const AdminPage = () => {
                                 <th>Progress</th>
                                 <th>Last Step</th>
                                 <th>Last Activity</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {users.map((entry) => {
                                 const completed = entry.completedSteps || 0;
                                 const percent = totalSteps > 0 ? Math.round((completed / totalSteps) * 100) : 0;
+                                const isCurrentUser = entry.userId === user?.id;
+                                const isUpdatingRole = savingRoleUserId === entry.userId;
+                                const isAdminRole = entry.role === 'admin';
+                                const targetRole = isAdminRole ? 'member' : 'admin';
+                                const actionLabel = isAdminRole ? 'Make member' : 'Make admin';
 
                                 return (
                                     <tr key={entry.userId}>
@@ -226,12 +287,32 @@ const AdminPage = () => {
                                         <td>{percent}%</td>
                                         <td>{entry.lastCompletedStepId || '—'}</td>
                                         <td>{formatDate(entry.lastCompletedAt)}</td>
+                                        <td>
+                                            <div className="admin-role-actions">
+                                                <button
+                                                    type="button"
+                                                    className="admin-role-btn"
+                                                    onClick={() => void handleRoleChange(entry, targetRole)}
+                                                    disabled={isUpdatingRole || isCurrentUser}
+                                                    title={
+                                                        isCurrentUser
+                                                            ? 'You cannot change your own role here.'
+                                                            : undefined
+                                                    }
+                                                >
+                                                    {isUpdatingRole ? 'Saving...' : actionLabel}
+                                                </button>
+                                                {isCurrentUser && (
+                                                    <span className="admin-muted admin-you-label">You</span>
+                                                )}
+                                            </div>
+                                        </td>
                                     </tr>
                                 );
                             })}
                             {users.length === 0 && (
                                 <tr>
-                                    <td colSpan={6} className="admin-muted">
+                                    <td colSpan={7} className="admin-muted">
                                         No user records yet.
                                     </td>
                                 </tr>

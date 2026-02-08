@@ -205,15 +205,21 @@ declare
     normalized_email text;
     email_domain text;
 begin
-    normalized_email := lower(trim(coalesce(event->>'email', '')));
+    -- Supabase hook payload uses event.user.email.
+    normalized_email := lower(trim(coalesce(event->'user'->>'email', event->>'email', '')));
     email_domain := split_part(normalized_email, '@', 2);
 
     if normalized_email = '' then
-        raise exception 'Email is required.';
+        return jsonb_build_object(
+            'error', jsonb_build_object(
+                'http_code', 400,
+                'message', 'Email is required.'
+            )
+        );
     end if;
 
     if email_domain = 'clever.com' then
-        return jsonb_set(event, '{email}', to_jsonb(normalized_email), true);
+        return '{}'::jsonb;
     end if;
 
     if exists (
@@ -221,10 +227,15 @@ begin
         from public.signup_allowlist a
         where a.email = normalized_email
     ) then
-        return jsonb_set(event, '{email}', to_jsonb(normalized_email), true);
+        return '{}'::jsonb;
     end if;
 
-    raise exception 'Signups are limited to @clever.com or approved allowlisted emails.';
+    return jsonb_build_object(
+        'error', jsonb_build_object(
+            'http_code', 403,
+            'message', 'Signups are limited to @clever.com or approved allowlisted emails.'
+        )
+    );
 end;
 $$;
 
@@ -234,4 +245,3 @@ grant execute on function public.before_user_created(jsonb) to supabase_auth_adm
 revoke execute on function public.before_user_created(jsonb) from anon, authenticated, public;
 
 commit;
-

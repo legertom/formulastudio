@@ -100,6 +100,7 @@
     border-bottom: 1px solid var(--glass-border);
     padding: 0.6rem 0.4rem;
     font-size: 0.9rem;
+    vertical-align: middle;
 }
 
 .admin-table th {
@@ -113,3 +114,26 @@
     color: var(--text-muted);
 }
 
+.admin-role-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.admin-role-btn {
+    border: 1px solid var(--glass-border);
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border-radius: 8px;
+    padding: 0.3rem 0.55rem;
+    cursor: pointer;
+}
+
+.admin-role-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.admin-you-label {
+    font-size: 0.8rem;
+}
