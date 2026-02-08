@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import EditorView from './features/editor/EditorView'
 import DocsPage from './features/docs/DocsPage'
 import TrainingCenter from './features/training/TrainingCenter'
@@ -11,6 +11,38 @@ import NavBar from './components/NavBar'
 import ScrollToTop from './components/ScrollToTop'
 import './App.css'
 
+const hasAuthCallbackParams = (search, hash) => {
+  const params = new URLSearchParams(search || '')
+  if (
+    params.has('code') ||
+    params.has('error') ||
+    params.has('error_description')
+  ) {
+    return true
+  }
+
+  const fragment = String(hash || '')
+  return (
+    fragment.includes('access_token=') ||
+    fragment.includes('refresh_token=') ||
+    fragment.includes('error=')
+  )
+}
+
+function RootEntryRedirect() {
+  const location = useLocation()
+  if (hasAuthCallbackParams(location.search, location.hash)) {
+    return (
+      <Navigate
+        to={`/auth/callback${location.search || ''}${location.hash || ''}`}
+        replace
+      />
+    )
+  }
+
+  return <Navigate to="/explorer" replace />
+}
+
 function App() {
   return (
     <div className="app-container">
@@ -18,7 +50,7 @@ function App() {
       <NavBar />
       <div className="app-content">
         <Routes>
-          <Route path="/" element={<Navigate to="/explorer" replace />} />
+          <Route path="/" element={<RootEntryRedirect />} />
           <Route path="/explorer" element={<EditorView mode="EXPLORER" />} />
           <Route path="/ou" element={<EditorView mode="OU" />} />
           <Route path="/group" element={<EditorView mode="GROUP" />} />

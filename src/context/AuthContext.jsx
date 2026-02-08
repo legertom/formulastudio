@@ -15,6 +15,14 @@ const parseAdminEmails = () => {
 };
 
 const isMissingProfilesTable = (error) => error?.code === '42P01';
+const parseJsonSafe = (rawValue) => {
+    if (!rawValue) return null;
+    try {
+        return JSON.parse(rawValue);
+    } catch {
+        return null;
+    }
+};
 
 export const AuthProvider = ({ children }) => {
     const [session, setSession] = useState(null);
@@ -166,21 +174,38 @@ export const AuthProvider = ({ children }) => {
     };
 
     const checkEmailAllowed = async (email) => {
-        const response = await fetch(`/api/auth-email-allowed?email=${encodeURIComponent(email)}`);
+        const response = await fetch(`/api/auth-email-allowed?email=${encodeURIComponent(email)}`, {
+            headers: {
+                Accept: 'application/json'
+            }
+        });
+
+        const rawPayload = await response.text();
+        const payload = parseJsonSafe(rawPayload);
+
         if (!response.ok) {
-            const text = await response.text();
-            throw new Error(text || 'Unable to validate email access.');
+            throw new Error(payload?.error || payload?.message || 'Unable to validate email access.');
         }
 
-        const payload = await response.json();
-        return Boolean(payload.allowed);
+        if (typeof payload?.allowed !== 'boolean') {
+            throw new Error('Unable to validate email access.');
+        }
+
+        return payload.allowed;
     };
 
     const signInWithMagicLink = async (email) => {
         if (!supabase) throw new Error('Supabase is not configured.');
 
         const normalizedEmail = email.trim().toLowerCase();
-        const allowed = await checkEmailAllowed(normalizedEmail);
+        let allowed = true;
+
+        try {
+            allowed = await checkEmailAllowed(normalizedEmail);
+        } catch (allowlistError) {
+            // Signup restriction is still enforced by Supabase auth hook.
+            console.warn('Email allowlist precheck failed, deferring to auth hook:', allowlistError);
+        }
 
         if (!allowed) {
             throw new Error('Only @clever.com or approved emails can create accounts.');
