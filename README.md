@@ -68,6 +68,54 @@ Run the test suite:
 npm run test
 ```
 
+## IDM Export/API Toolkit
+
+Formula Studio now includes endpoints you can use to distribute IDM generation rules as a download or API.
+
+### 1) Downloadable instruction pack
+
+- `GET /api/idm-instructions` returns markdown instructions for LLM integration.
+- `GET /api/idm-instructions?download=1` forces a file download (`idm-llm-instructions.md`).
+
+### 2) Machine-readable IDM spec
+
+- `GET /api/idm-spec` returns JSON with:
+  - syntax rules
+  - function catalog (name + arity + signature)
+  - operator aliases
+  - CSV schema for group rules
+
+### 3) Group rule compiler API
+
+- `GET /api/idm-group-rules` returns request schema + examples.
+- `POST /api/idm-group-rules` accepts either:
+  - JSON rules: `{ "rules": [ ... ], "defaultOutput": "uncategorized" }`
+  - CSV text: `{ "csv": "priority,output,match,...", "defaultOutput": "uncategorized" }`
+
+Response includes:
+- normalized rules
+- per-rule formulas
+- one nested master IDM formula
+
+#### Example JSON request
+
+```json
+{
+  "defaultOutput": "uncategorized",
+  "rules": [
+    {
+      "priority": 1,
+      "output": "Group A",
+      "match": "all",
+      "conditions": [
+        { "field": "school_name", "operator": "equals", "value": "A" },
+        { "field": "student.sis_id", "operator": "startsWith", "value": "2" }
+      ]
+    }
+  ]
+}
+```
+
 ## Architecture
 
 Formula Studio is architected as a static **Single Page Application (SPA)**. This design choice highlights a commitment to security, speed, and reliability.

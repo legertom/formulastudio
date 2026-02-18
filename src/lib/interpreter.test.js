@@ -48,10 +48,10 @@ describe('Interpreter - New Functions', () => {
         });
 
         it('should handle alphanumeric', () => {
-            expect(evalExpr('alphanumeric "User123"')).toBe(true);
-            expect(evalExpr('alphanumeric "User-123"')).toBe(false);
-            expect(evalExpr('alphanumeric "123"')).toBe(true);
-            expect(evalExpr('alphanumeric ""')).toBe(false);
+            expect(evalExpr('alphanumeric "User123"')).toBe('User123');
+            expect(evalExpr('alphanumeric "User-123"')).toBe('User123');
+            expect(evalExpr('alphanumeric "123"')).toBe('123');
+            expect(evalExpr('alphanumeric ""')).toBe('');
         });
 
         it('should handle subtract', () => {

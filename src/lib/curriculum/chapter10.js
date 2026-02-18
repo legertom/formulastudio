@@ -2,7 +2,7 @@ export const chapter10 = {
     id: "chapter-10",
     title: "Chapter 10: The Analyst",
     description: "Master dates, math, and data reporting.",
-    functions: ["subtract", "formatDate", "delimiterCapitalize"],
+    functions: ["subtract", "formatDate", "delimiterCapitalize", "alphanumeric"],
     steps: [
         {
             id: "c10-s1",
@@ -160,12 +160,15 @@ export const chapter10 = {
             type: "challenge",
             title: "Validation: Safe ID",
             goal: "Ensure ID is alphanumeric",
-            description: "Before printing IDs, we want to make sure they don't contain illegal symbols.\n\n**New Tool: `alphanumeric`** — Arity 1\n`{{ alphanumeric string }}`\nReturns `true` if the text contains ONLY letters and numbers.\n\n*Example:* `{{ alphanumeric \"abc1\" }}` -> `true`\n\n**Challenge:**\nIf the `id` is alphanumeric, output `\"Valid\"`. Else `\"Invalid\"`.",
+            description: "Before printing IDs, we want to make sure they don't contain illegal symbols.\n\n**New Tool: `alphanumeric`** — Arity 1\n`{{ alphanumeric string }}`\nRemoves all non-letters and non-numbers from a string.\n\n*Example:* `{{ alphanumeric \"abc-1\" }}` -> `\"abc1\"`\n\n**Validation Pattern:**\nIf a value is already alphanumeric, cleaning it will not change it:\n`{{ equals alphanumeric id id }}`\n\n**Challenge:**\nIf the `id` is alphanumeric, output `\"Valid\"`. Else `\"Invalid\"`.",
             testCases: [
                 { name: "Good", data: { "id": "User123" }, expected: "Valid" },
                 { name: "Bad", data: { "id": "User_123" }, expected: "Invalid" }
             ],
-            hints: ["{{ if alphanumeric id \"Valid\" \"Invalid\" }}"],
+            hints: [
+                "Compare cleaned value to original.",
+                "{{ if equals alphanumeric id id \"Valid\" \"Invalid\" }}"
+            ],
             prefill: "{{}}"
         },
         {
@@ -173,12 +176,12 @@ export const chapter10 = {
             type: "challenge",
             title: "Practice: Security Check",
             goal: "Block special chars",
-            description: "We are strict about `username` security. No special characters allowed!\n\n**Challenge:**\nCheck if the `username` is alphanumeric. If NOT — `false` — return `\"Error\"`. If it is — `true` — return `\"OK\"`.\n\n*Hint: Use the if tool.*",
+            description: "We are strict about `username` security. No special characters allowed!\n\n**Challenge:**\nClean `username` with `alphanumeric`, compare it to the original value, and return:\n- `\"OK\"` when unchanged (already alphanumeric)\n- `\"Error\"` when changed (had illegal characters)\n\n*Hint: Use `if` + `equals`.*",
             testCases: [
                 { name: "Hacker", data: { "username": "admin!" }, expected: "Error" },
                 { name: "User", data: { "username": "user1" }, expected: "OK" }
             ],
-            hints: ["{{ if alphanumeric username \"OK\" \"Error\" }}"],
+            hints: ["{{ if equals alphanumeric username username \"OK\" \"Error\" }}"],
             prefill: "{{}}"
         },
         {
