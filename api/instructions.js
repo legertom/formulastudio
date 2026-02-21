@@ -211,7 +211,7 @@ ${endpointRows}
     <section class="card">
       <h2>Feature Modes (open-ended)</h2>
       <ul>
-        <li><strong>Set A: Deterministic CSV Compiler</strong> — use fixed CSV templates and compile with zero AI interpretation.</li>
+        <li><strong>Set A: Deterministic CSV Compiler</strong> — use the standard group-rule CSV schema and compile with zero AI interpretation.</li>
         <li><strong>Set B: Group Rule Builder</strong> — convert JSON/CSV rules into per-rule and nested IDM formulas.</li>
         <li><strong>Set C: OU Logic Builder</strong> — write and format OU-focused IDM formulas with validation.</li>
         <li><strong>Set D: Validation + Debug</strong> — run <code>idm-validate</code>, <code>idm-format</code>, and <code>idm-test</code> for QA.</li>

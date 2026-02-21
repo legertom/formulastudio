@@ -91,7 +91,6 @@ Formula Studio now includes endpoints you can use to distribute IDM generation r
 - `POST /api/idm-group-rules` accepts either:
   - JSON rules: `{ "rules": [ ... ], "defaultOutput": "uncategorized" }`
   - CSV text: `{ "csv": "priority,output,match,...", "defaultOutput": "uncategorized" }`
-  - CSV profile mode: `{ "csv": "...", "profile": "staffTypeMatrix", "typeCodeField": "ext.type_code" }`
 
 ### 4) Validation, formatting, and testing APIs
 
