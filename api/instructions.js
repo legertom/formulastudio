@@ -204,6 +204,16 @@ ${endpointRows}
     </section>
 
     <section class="card">
+      <h2>Important Constraints</h2>
+      <ul>
+        <li><code>forEach</code> argument 3 must be URL-encoded (example: <code>%7B%7Bs.name%7D%7D</code>).</li>
+        <li>String literals cannot contain raw double quotes.</li>
+        <li>Nested <code>if</code> formulas should always include an explicit fallback output.</li>
+        <li>Request limits: max 200 rules per request; max 100 conditions per rule.</li>
+      </ul>
+    </section>
+
+    <section class="card">
       <h2>POST JSON Example</h2>
       <pre><code>${htmlEscape(curlJson)}</code></pre>
     </section>

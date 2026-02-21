@@ -25,6 +25,8 @@ Convert natural English policy requirements and spreadsheet rule sets into valid
 ${IDM_SPEC.syntax.map((rule) => `- ${rule}`).join('\n')}
 - Prefer canonical names: \`length\` (not \`len\`), \`equals\` (not \`equal\`).
 - Always include an explicit fallback in \`if\` formulas.
+- In \`forEach\`, argument 3 must be URL-encoded (example: \`%7B%7Bitem.name%7D%7D\`).
+- String literals cannot contain raw double quotes.
 
 ## Supported Functions
 ${renderFunctionLines()}
@@ -63,6 +65,10 @@ Alternative compact format:
 priority,output,match,conditions
 1,Group A,all,school_name|equals|A;student.sis_id|startsWith|2
 \`\`\`
+
+Validation limits:
+- Max rules per request: 200
+- Max conditions per rule: 100
 
 ## API Endpoints
 - \`GET /api/idm-spec\`: machine-readable language + operator schema.

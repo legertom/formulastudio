@@ -78,4 +78,15 @@ describe('idmCompiler', () => {
         expect(rules).toHaveLength(1);
         expect(rules[0].conditions).toHaveLength(2);
     });
+
+    it('rejects payloads above max rule limit', () => {
+        const rules = Array.from({ length: 201 }).map((_, index) => ({
+            priority: index + 1,
+            output: `Group ${index + 1}`,
+            match: 'all',
+            conditions: [{ field: 'school_name', operator: 'equals', value: 'A' }]
+        }));
+
+        expect(() => normalizeRulesFromJson(rules)).toThrow(/max allowed/i);
+    });
 });

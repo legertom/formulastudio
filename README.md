@@ -97,6 +97,12 @@ Response includes:
 - per-rule formulas
 - one nested master IDM formula
 
+Validation + generation guardrails:
+- `forEach` argument 3 should be URL-encoded logic (`%7B%7B...%7D%7D`).
+- String literals do not support raw double quotes.
+- Explicit fallback output is required for nested `if` chains.
+- Limits: max 200 rules per request, max 100 conditions per rule.
+
 #### Example JSON request
 
 ```json

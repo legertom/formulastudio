@@ -4,7 +4,8 @@ const SYNTAX_RULES = [
     'Do not use parentheses or commas.',
     'Use double quotes for all string literals.',
     'Use dot notation for fields (example: student.sis_id).',
-    'Functions are fixed-arity; every function must receive the exact number of arguments.'
+    'Functions are fixed-arity; every function must receive the exact number of arguments.',
+    'forEach argument 3 (inner logic expression) must be URL-encoded (example: %7B%7Bitem.name%7D%7D).'
 ];
 
 const FUNCTION_CATALOG = [
@@ -24,7 +25,7 @@ const FUNCTION_CATALOG = [
     { name: 'replace', arity: 3, category: 'string', signature: 'replace text find replacement' },
     { name: 'length', arity: 1, category: 'string', signature: 'length text' },
     { name: 'ignoreIfNull', arity: 1, category: 'utility', signature: 'ignoreIfNull field' },
-    { name: 'forEach', arity: 3, category: 'utility', signature: 'forEach "item" list expression' },
+    { name: 'forEach', arity: 3, category: 'utility', signature: 'forEach "item" list encodedExpression', notes: ['Argument 3 must be URL-encoded.'] },
     { name: 'toUpper', arity: 1, category: 'string', signature: 'toUpper text' },
     { name: 'toLower', arity: 1, category: 'string', signature: 'toLower text' },
     { name: 'initials', arity: 1, category: 'string', signature: 'initials text' },
@@ -96,7 +97,7 @@ const GROUP_RULES_CSV_SCHEMA = {
 export function buildIdmSpec() {
     return {
         name: 'IDM Formula Language',
-        version: '2026-02-18',
+        version: '2026-02-21',
         syntax: SYNTAX_RULES,
         functionCatalog: FUNCTION_CATALOG,
         fieldHints: FIELD_HINTS,
@@ -105,7 +106,14 @@ export function buildIdmSpec() {
         generationPolicy: {
             canonicalFunctionNames: ['length', 'equals'],
             avoidAliases: ['len', 'trim'],
-            fallbackOutputRequired: true
+            fallbackOutputRequired: true,
+            forEachThirdArgumentMustBeUrlEncoded: true,
+            disallowUnescapedDoubleQuotesInStringLiterals: true,
+            allowedGroupRuleOperators: ['equals', 'contains', 'notContains', 'startsWith', 'in', 'greater', 'less', 'geq', 'leq', 'exists', 'notExists']
+        },
+        validationLimits: {
+            maxRules: 200,
+            maxConditionsPerRule: 100
         }
     };
 }

@@ -7,6 +7,12 @@ Use this as the baseline rulebook for converting natural English or spreadsheet 
 - Use prefix notation (`if condition true false`), no parentheses.
 - Use canonical functions: `equals`, `length`, `startsWith` pattern via `substr`.
 - Always include a fallback output in `if`.
+- In `forEach`, argument 3 must be URL-encoded (example: `%7B%7Bs.name%7D%7D`).
+- String literals cannot contain raw double quotes.
+
+## Validation limits
+- Max rules per request: 200
+- Max conditions per rule: 100
 
 ## API references
 - `GET /api/idm-spec` for machine-readable syntax/function/operator schema.

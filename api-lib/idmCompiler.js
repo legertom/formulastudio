@@ -1,6 +1,8 @@
 import { IDM_SPEC } from './idmSpec.js';
 
 const OPERATOR_ALIASES = IDM_SPEC.operatorAliases || {};
+const MAX_RULES = IDM_SPEC.validationLimits?.maxRules ?? 200;
+const MAX_CONDITIONS_PER_RULE = IDM_SPEC.validationLimits?.maxConditionsPerRule ?? 100;
 
 function normalizeWhitespace(value) {
     return String(value || '').trim();
@@ -120,6 +122,12 @@ function normalizeCondition(condition, rowLabel) {
     };
 }
 
+function enforceConditionLimit(conditions, rowLabel) {
+    if (conditions.length > MAX_CONDITIONS_PER_RULE) {
+        throw new Error(`${rowLabel}: too many conditions (${conditions.length}). Max allowed is ${MAX_CONDITIONS_PER_RULE}.`);
+    }
+}
+
 function getRuleOutput(rawRule) {
     const output = rawRule.output ?? rawRule.group_name ?? rawRule.group ?? rawRule.result;
     if (output === undefined || output === null || String(output).trim() === '') {
@@ -175,10 +183,14 @@ export function normalizeRulesFromJson(rawRules) {
     if (!Array.isArray(rawRules) || !rawRules.length) {
         throw new Error('rules must be a non-empty array.');
     }
+    if (rawRules.length > MAX_RULES) {
+        throw new Error(`rules exceeds max allowed (${MAX_RULES}).`);
+    }
 
     return rawRules.map((rawRule, index) => {
         const rowLabel = `rule ${index + 1}`;
         const { match, conditions } = getRuleConditions(rawRule, rowLabel);
+        enforceConditionLimit(conditions, rowLabel);
         return {
             priority: parsePriority(rawRule.priority, index + 1),
             output: getRuleOutput(rawRule),
@@ -302,6 +314,9 @@ export function normalizeRulesFromCsv(csvText) {
     if (!dataRows.length) {
         throw new Error('CSV must include at least one data row.');
     }
+    if (dataRows.length > MAX_RULES) {
+        throw new Error(`CSV exceeds max allowed rows (${MAX_RULES}).`);
+    }
 
     return dataRows.map((values, index) => {
         const rowNumber = index + 2;
@@ -319,6 +334,7 @@ export function normalizeRulesFromCsv(csvText) {
         if (!conditions.length) {
             throw new Error(`row ${rowNumber}: no conditions were found.`);
         }
+        enforceConditionLimit(conditions, `row ${rowNumber}`);
 
         return {
             priority: parsePriority(rowObject.priority, index + 1),
