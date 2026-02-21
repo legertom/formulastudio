@@ -55,11 +55,6 @@ function buildPageHtml() {
             method: 'POST',
             path: '/api/idm-test',
             purpose: 'Runs formula against test cases and returns pass/fail output.'
-        },
-        {
-            method: 'POST',
-            path: '/api/idm-lint',
-            purpose: 'Lints formulas for logic-risk and maintainability patterns.'
         }
     ];
 
@@ -321,9 +316,10 @@ ${endpointRows}
   ]
 }`)}</code></pre>
 
-      <p><strong>/api/idm-lint response shape:</strong></p>
+      <p><strong>/api/idm-validate response shape (lint mode):</strong></p>
       <pre><code>${htmlEscape(`{
   "success": true,
+  "mode": "lint",
   "valid": true,
   "findings": [
     {
@@ -348,7 +344,7 @@ ${endpointRows}
         <li><strong>L006</strong> — Deep nested if-chain. Harder to maintain/debug past configured depth threshold.</li>
         <li><strong>L007</strong> — Large <code>in</code>-list. Valid but brittle if the token list grows too large.</li>
       </ul>
-      <p class="tiny">Use <code>GET /api/idm-lint</code> for machine-readable rule metadata (id, severity, message, guidance).</p>
+      <p class="tiny">Use <code>GET /api/idm-validate</code> for machine-readable rule metadata (id, severity, message, guidance), and <code>POST /api/idm-validate</code> with <code>{"mode":"lint"}</code> to run linting.</p>
     </section>
   </main>
 </body>
