@@ -7,6 +7,7 @@ import AuthPage from './features/auth/AuthPage'
 import AuthCallbackPage from './features/auth/AuthCallbackPage'
 import AdminPage from './features/admin/AdminPage'
 import AccountPage from './features/account/AccountPage'
+import AboutPage from './features/about/AboutPage'
 import NavBar from './components/NavBar'
 import ScrollToTop from './components/ScrollToTop'
 import './App.css'
@@ -59,6 +60,7 @@ function App() {
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/auth/callback" element={<AuthCallbackPage />} />
           <Route path="/account" element={<AccountPage />} />
+          <Route path="/about" element={<AboutPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/docs" element={<Navigate to="/docs/intro" replace />} />
           <Route path="/docs/:pageId" element={<DocsPage />} />
