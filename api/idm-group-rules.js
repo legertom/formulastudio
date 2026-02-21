@@ -1,6 +1,7 @@
 import {
     normalizeRulesFromCsv,
     normalizeRulesFromJson,
+    normalizeRulesFromStaffTypeMatrixCsv,
     compileRuleList,
     compileNestedRules
 } from '../api-lib/idmCompiler.js';
@@ -10,7 +11,7 @@ function usage() {
         description: 'Compile JSON or CSV group rules into IDM formulas.',
         methods: {
             GET: 'Returns this schema.',
-            POST: 'Accepts either { rules: [...] } or { csv: "..." } and returns compiled formulas.'
+            POST: 'Accepts { rules: [...] } or { csv: "..." }. Optional: { profile: "staffTypeMatrix", typeCodeField: "ext.type_code" }.'
         },
         jsonSchema: {
             defaultOutput: 'uncategorized',
@@ -26,7 +27,16 @@ function usage() {
                 }
             ]
         },
-        csvSchema: 'priority,output,match,field_1,operator_1,value_1,field_2,operator_2,value_2'
+        csvSchema: 'priority,output,match,field_1,operator_1,value_1,field_2,operator_2,value_2',
+        profiles: {
+            staffTypeMatrix: {
+                description: 'Map staff type codes to one or more groups from matrix columns.',
+                csvSchema: 'Staff Type Code,Description,Group1,Group2,Group3,Group4',
+                options: {
+                    typeCodeField: 'ext.type_code'
+                }
+            }
+        }
     };
 }
 
@@ -41,10 +51,17 @@ export default async function handler(req, res) {
         }
 
         const defaultOutput = String(req.body?.defaultOutput ?? '');
+        const profile = String(req.body?.profile || '').trim();
         let rules = [];
 
         if (typeof req.body?.csv === 'string' && req.body.csv.trim()) {
-            rules = normalizeRulesFromCsv(req.body.csv);
+            if (profile === 'staffTypeMatrix') {
+                rules = normalizeRulesFromStaffTypeMatrixCsv(req.body.csv, {
+                    typeCodeField: req.body?.typeCodeField || 'ext.type_code'
+                });
+            } else {
+                rules = normalizeRulesFromCsv(req.body.csv);
+            }
         } else if (Array.isArray(req.body?.rules)) {
             rules = normalizeRulesFromJson(req.body.rules);
         } else {

@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
     normalizeRulesFromJson,
     normalizeRulesFromCsv,
+    normalizeRulesFromStaffTypeMatrixCsv,
     compileCondition,
     compileConditionGroup,
     compileRuleList,
@@ -88,5 +89,18 @@ describe('idmCompiler', () => {
         }));
 
         expect(() => normalizeRulesFromJson(rules)).toThrow(/max allowed/i);
+    });
+
+    it('derives rules from staff type matrix csv profile', () => {
+        const csv = `Staff Type Code,Description,All Staff,Selected 1,Selected 2,Selected 3
+PRIN,Principal,Raptor_EmergencyManagementUser,Classroom Teachers,Raptor_BuildingAdmin,
+ASSTPR,Assistant Principal,Raptor_EmergencyManagementUser,Classroom Teachers,Raptor_BuildingAdmin,
+SECPOL,Secretary Police,Raptor_EmergencyManagementUser,,Raptor_ClientAdmin,Police-Staff
+`;
+        const rules = normalizeRulesFromStaffTypeMatrixCsv(csv, { typeCodeField: 'ext.type_code' });
+
+        expect(rules.length).toBe(5);
+        const buildingAdmin = rules.find((r) => r.output === 'Raptor_BuildingAdmin');
+        expect(buildingAdmin.conditions[0].value).toBe('PRIN ASSTPR');
     });
 });

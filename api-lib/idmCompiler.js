@@ -378,3 +378,65 @@ export function compileNestedRules(rules, defaultOutput = '') {
 
     return `{{${expression}}}`;
 }
+
+export function normalizeRulesFromStaffTypeMatrixCsv(csvText, options = {}) {
+    const rows = parseCsv(csvText);
+    const dataRows = rows.slice(1);
+
+    if (!dataRows.length) {
+        throw new Error('CSV must include at least one data row.');
+    }
+
+    const typeCodeField = options.typeCodeField || 'ext.type_code';
+    const groupColumnStartIndex = Number(options.groupColumnStartIndex ?? 2);
+    const groupColumnEndIndex = Number(options.groupColumnEndIndex ?? 5);
+
+    const groups = new Map();
+
+    for (let index = 0; index < dataRows.length; index += 1) {
+        const rowNumber = index + 2;
+        const row = dataRows[index];
+        const typeCode = String(row[0] ?? '').trim();
+
+        if (!typeCode || typeCode.startsWith('*')) {
+            continue;
+        }
+
+        for (let col = groupColumnStartIndex; col <= groupColumnEndIndex; col += 1) {
+            const output = String(row[col] ?? '').trim();
+            if (!output) continue;
+
+            if (!groups.has(output)) {
+                groups.set(output, new Set());
+            }
+            groups.get(output).add(typeCode);
+        }
+
+        if (rowNumber > MAX_RULES + 1 && groups.size > MAX_RULES) {
+            throw new Error(`Derived groups exceed max allowed (${MAX_RULES}).`);
+        }
+    }
+
+    const rules = Array.from(groups.entries()).map(([output, codeSet], index) => ({
+        priority: index + 1,
+        output,
+        match: 'all',
+        conditions: [
+            {
+                field: typeCodeField,
+                operator: 'in',
+                value: Array.from(codeSet).join(' ')
+            }
+        ]
+    }));
+
+    if (!rules.length) {
+        throw new Error('No valid group assignments found in CSV.');
+    }
+
+    if (rules.length > MAX_RULES) {
+        throw new Error(`Derived groups exceed max allowed (${MAX_RULES}).`);
+    }
+
+    return rules;
+}
