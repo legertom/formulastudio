@@ -209,24 +209,39 @@ ${endpointRows}
     </section>
 
     <section class="card">
+      <h2>Quick Start (recommended 4-call flow)</h2>
+      <ol>
+        <li><strong>Format</strong> with <code>POST /api/idm-format</code> (canonicalize aliases + normalize layout).</li>
+        <li><strong>Validate</strong> with <code>POST /api/idm-validate</code> (syntax + guardrails).</li>
+        <li><strong>Lint</strong> with <code>POST /api/idm-validate</code> and <code>{"mode":"lint"}</code> (logic-risk checks).</li>
+        <li><strong>Test</strong> with <code>POST /api/idm-test</code> using sample records.</li>
+      </ol>
+      <p class="tiny">For group rules from structured inputs, use <code>POST /api/idm-group-rules</code> before step 1.</p>
+    </section>
+
+    <section class="card">
       <h2>Feature Modes (open-ended)</h2>
       <ul>
         <li><strong>Set A: Deterministic CSV Compiler</strong> — use the standard group-rule CSV schema and compile with zero AI interpretation.</li>
         <li><strong>Set B: Group Rule Builder</strong> — convert JSON/CSV rules into per-rule and nested IDM formulas.</li>
         <li><strong>Set C: OU Logic Builder</strong> — write and format OU-focused IDM formulas with validation.</li>
-        <li><strong>Set D: Validation + Debug</strong> — run <code>idm-validate</code>, <code>idm-format</code>, and <code>idm-test</code> for QA.</li>
+        <li><strong>Set D: Validation + Debug</strong> — run format/validate/lint/test before production use.</li>
       </ul>
-      <p class="tiny">These are capabilities, not rigid scripts — users can compose them as needed.</p>
+      <p class="tiny">These are capabilities, not rigid scripts — users and agents can compose them as needed.</p>
     </section>
 
     <section class="card">
-      <h2>Common Workflow</h2>
-      <ul>
-        <li>Call <code>/api/idm-spec</code> to fetch machine-readable syntax and operator aliases.</li>
-        <li>Call <code>/api/idm-group-rules</code> (GET) to read request schema.</li>
-        <li>Post JSON rules or CSV rules to <code>/api/idm-group-rules</code> (POST).</li>
-        <li>Use <code>formulas.list</code> for one-rule-per-formula output, or <code>formulas.nested</code> for one master formula.</li>
-      </ul>
+      <h2>Validation Result Types</h2>
+      <table>
+        <thead>
+          <tr><th style="width:120px;">Type</th><th>Meaning</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>error</code></td><td>Invalid formula or broken guardrail.</td><td>Must fix before use.</td></tr>
+          <tr><td><code>warning</code></td><td>Likely risky logic pattern.</td><td>Review intent before use.</td></tr>
+          <tr><td><code>info</code></td><td>Style/maintainability guidance.</td><td>Optional cleanup.</td></tr>
+        </tbody>
+      </table>
     </section>
 
     <section class="card">
@@ -234,8 +249,8 @@ ${endpointRows}
       <ul>
         <li><code>forEach</code> argument 3 must be URL-encoded (example: <code>%7B%7Bs.name%7D%7D</code>).</li>
         <li>String literals cannot contain raw double quotes.</li>
-        <li>Nested <code>if</code> formulas should always include an explicit fallback output.</li>
-        <li>Request limits: max 200 rules per request; max 100 conditions per rule.</li>
+        <li>Nested <code>if</code> formulas should include an explicit fallback output.</li>
+        <li>Group rule request limits: max 200 rules per request; max 100 conditions per rule.</li>
       </ul>
     </section>
 
@@ -250,11 +265,30 @@ ${endpointRows}
     </section>
 
     <section class="card">
-      <h2>CSV Formats Accepted</h2>
-      <p><strong>Wide columns:</strong></p>
+      <h2>CSV Input Contract (strict schema)</h2>
+      <p><strong>Required columns:</strong> <code>priority</code>, <code>output</code>, <code>match</code>.</p>
+      <p><strong>Allowed match values:</strong> <code>all</code> or <code>any</code>.</p>
+      <p><strong>Condition column styles:</strong></p>
+      <ul>
+        <li><strong>Wide columns:</strong> <code>field_1,operator_1,value_1,field_2,operator_2,value_2,...</code></li>
+        <li><strong>Compact conditions:</strong> single <code>conditions</code> column as <code>field|operator|value;field|operator|value</code></li>
+      </ul>
+      <p class="tiny">No AI interpretation is applied in deterministic CSV mode. CSV must match schema.</p>
+    </section>
+
+    <section class="card">
+      <h2>CSV Example</h2>
       <pre><code>${htmlEscape(csvExample)}</code></pre>
-      <p><strong>Compact conditions:</strong> Use a single <code>conditions</code> column in this format:<br />
-      <code>field|operator|value;field|operator|value</code></p>
+    </section>
+
+    <section class="card">
+      <h2>Common CSV Errors</h2>
+      <ul>
+        <li>Missing one of the required columns: <code>priority</code>, <code>output</code>, <code>match</code>.</li>
+        <li>Unsupported <code>match</code> value (must be <code>all</code> or <code>any</code>).</li>
+        <li>No valid conditions found on a row.</li>
+        <li>Unsupported operator in a condition.</li>
+      </ul>
     </section>
 
     <section class="card">
@@ -331,6 +365,14 @@ ${endpointRows}
     }
   ]
 }`)}</code></pre>
+    </section>
+
+    <section class="card">
+      <h2>Agent Prompt Starter (Cursor / Claude Code)</h2>
+      <pre><code>${htmlEscape(`Visit https://formulastudio.net/api/instructions and follow the Quick Start flow.
+Use deterministic CSV mode only when the CSV matches the documented schema exactly.
+If input is ambiguous or non-standard, convert it to structured rules first, then call /api/idm-group-rules.
+Always run validate + lint + test before final output.`)}</code></pre>
     </section>
 
     <section class="card">
