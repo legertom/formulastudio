@@ -256,6 +256,66 @@ ${endpointRows}
       <p><strong>Compact conditions:</strong> Use a single <code>conditions</code> column in this format:<br />
       <code>field|operator|value;field|operator|value</code></p>
     </section>
+
+    <section class="card">
+      <h2>Data Structures (for humans + robots)</h2>
+      <p><strong>Group rule object:</strong></p>
+      <pre><code>${htmlEscape(`{
+  "priority": 1,
+  "output": "Group A",
+  "match": "all",
+  "conditions": [
+    { "field": "school_name", "operator": "equals", "value": "A" },
+    { "field": "student.sis_id", "operator": "startsWith", "value": "2" }
+  ]
+}`)}</code></pre>
+
+      <p><strong>/api/idm-group-rules response shape:</strong></p>
+      <pre><code>${htmlEscape(`{
+  "success": true,
+  "count": 2,
+  "defaultOutput": "uncategorized",
+  "rules": [ ...normalized rules... ],
+  "formulas": {
+    "list": [
+      {
+        "priority": 1,
+        "output": "Group A",
+        "condition": "{{and equals school_name \"A\" equals substr student.sis_id 0 1 \"2\"}}",
+        "formula": "{{if and equals school_name \"A\" equals substr student.sis_id 0 1 \"2\" \"Group A\" \"\"}}"
+      }
+    ],
+    "nested": "{{if and equals school_name \"A\" equals substr student.sis_id 0 1 \"2\" \"Group A\" \"uncategorized\"}}"
+  }
+}`)}</code></pre>
+
+      <p><strong>/api/idm-format response shape:</strong></p>
+      <pre><code>${htmlEscape(`{
+  "success": true,
+  "formula": "{{if\n  equals school_name \"A\"\n  \"Group A\"\n  \"uncategorized\"}}",
+  "options": { "pretty": true, "canonicalize": true }
+}`)}</code></pre>
+
+      <p><strong>/api/idm-validate response shape:</strong></p>
+      <pre><code>${htmlEscape(`{
+  "success": true,
+  "valid": true,
+  "errors": [],
+  "warnings": ["if expression has an empty fallback output."]
+}`)}</code></pre>
+
+      <p><strong>/api/idm-test response shape:</strong></p>
+      <pre><code>${htmlEscape(`{
+  "success": true,
+  "count": 2,
+  "compared": 2,
+  "passCount": 2,
+  "failCount": 0,
+  "results": [
+    { "name": "row 1", "output": "Group A", "expected": "Group A", "passed": true }
+  ]
+}`)}</code></pre>
+    </section>
   </main>
 </body>
 </html>`;
