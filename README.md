@@ -97,6 +97,7 @@ Formula Studio now includes endpoints you can use to distribute IDM generation r
 - `POST /api/idm-validate` validates syntax + rule guardrails and returns `errors` + `warnings`.
 - `POST /api/idm-format` formats formulas and canonicalizes aliases.
 - `POST /api/idm-test` runs formulas against sample test cases and returns pass/fail results.
+- `POST /api/idm-lint` flags maintainability and logic-risk patterns with rule IDs and guidance.
 
 Response includes:
 - normalized rules

@@ -55,6 +55,11 @@ function buildPageHtml() {
             method: 'POST',
             path: '/api/idm-test',
             purpose: 'Runs formula against test cases and returns pass/fail output.'
+        },
+        {
+            method: 'POST',
+            path: '/api/idm-lint',
+            purpose: 'Lints formulas for logic-risk and maintainability patterns.'
         }
     ];
 
@@ -315,6 +320,35 @@ ${endpointRows}
     { "name": "row 1", "output": "Group A", "expected": "Group A", "passed": true }
   ]
 }`)}</code></pre>
+
+      <p><strong>/api/idm-lint response shape:</strong></p>
+      <pre><code>${htmlEscape(`{
+  "success": true,
+  "valid": true,
+  "findings": [
+    {
+      "ruleId": "L004",
+      "severity": "warning",
+      "title": "Potentially unreachable branch (broader condition first)",
+      "message": "branch 1 may shadow branch 2 (broader condition appears first).",
+      "guidance": "Place specific conditions before broader catch-all conditions."
+    }
+  ]
+}`)}</code></pre>
+    </section>
+
+    <section class="card">
+      <h2>Linter Rule Documentation</h2>
+      <ul>
+        <li><strong>L001</strong> — Non-canonical function alias. Example: <code>equal</code> instead of <code>equals</code>.</li>
+        <li><strong>L002</strong> — Empty fallback output in <code>if</code>. Valid but easy to misuse if you expected explicit catch-all grouping.</li>
+        <li><strong>L003</strong> — Potentially unreachable branch (duplicate condition). A later branch repeats an earlier branch condition.</li>
+        <li><strong>L004</strong> — Potentially unreachable branch (broader condition first). Example: <code>A</code> before <code>A AND B</code>.</li>
+        <li><strong>L005</strong> — <code>forEach</code> arg3 may not be URL-encoded.</li>
+        <li><strong>L006</strong> — Deep nested if-chain. Harder to maintain/debug past configured depth threshold.</li>
+        <li><strong>L007</strong> — Large <code>in</code>-list. Valid but brittle if the token list grows too large.</li>
+      </ul>
+      <p class="tiny">Use <code>GET /api/idm-lint</code> for machine-readable rule metadata (id, severity, message, guidance).</p>
     </section>
   </main>
 </body>
