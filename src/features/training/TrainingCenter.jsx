@@ -230,6 +230,54 @@ const TrainingCenter = () => {
         }
     };
 
+    const resetProgress = async (stepIdsToReset) => {
+        if (!stepIdsToReset || stepIdsToReset.length === 0) return;
+
+        const resetSet = new Set(stepIdsToReset);
+        const nextSteps = completedSteps.filter(id => !resetSet.has(id));
+        completedStepsRef.current = nextSteps;
+        setCompletedSteps(nextSteps);
+
+        if (userId && isSupabaseConfigured && supabase) {
+            setProgressSaveState('syncing');
+            try {
+                // Remove progress records
+                await supabase
+                    .from('step_progress')
+                    .delete()
+                    .eq('user_id', userId)
+                    .eq('course_slug', TRAINING_PROGRESS_COURSE_SLUG)
+                    .in('step_id', stepIdsToReset);
+
+                // Remove drafted formulas for these steps
+                await supabase
+                    .from('draft_formulas')
+                    .delete()
+                    .eq('user_id', userId)
+                    .eq('course_slug', TRAINING_PROGRESS_COURSE_SLUG)
+                    .in('step_id', stepIdsToReset);
+
+                setProgressSaveState('cloud');
+            } catch (err) {
+                console.error("Failed to reset progress in cloud:", err);
+                setProgressSaveState('local');
+            }
+        }
+    };
+
+    const handleResetChapter = (e, chapter) => {
+        e.stopPropagation();
+        if (window.confirm(`Are you sure you want to reset all progress for "${chapter.title}"?`)) {
+            resetProgress(chapter.steps.map(s => s.id));
+        }
+    };
+
+    const handleResetAll = () => {
+        if (window.confirm("Are you sure you want to reset ALL your training progress? This cannot be undone.")) {
+            resetProgress([...ALL_STEP_IDS]);
+        }
+    };
+
     const progressSaveText = (() => {
         if (!userId) return 'Saved on this device';
         if (progressSaveState === 'syncing') return 'Syncing to account...';
@@ -295,9 +343,28 @@ const TrainingCenter = () => {
                             {sidebarCollapsed ? '→' : '←'}
                         </button>
                     </div>
-                    <span className="progress-text">
-                        {completedSteps.length} Steps Completed
-                    </span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem' }}>
+                        <span className="progress-text">
+                            {completedSteps.length} Steps Completed
+                        </span>
+                        {!sidebarCollapsed && completedSteps.length > 0 && (
+                            <button
+                                className="btn-reset-text"
+                                onClick={handleResetAll}
+                                title="Reset all curriculum progress"
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    color: 'var(--text-muted)',
+                                    fontSize: '0.75rem',
+                                    cursor: 'pointer',
+                                    textDecoration: 'underline'
+                                }}
+                            >
+                                Reset All
+                            </button>
+                        )}
+                    </div>
                     <span className={`progress-save-status ${progressSaveState}`}>
                         {progressSaveText}
                     </span>
@@ -327,8 +394,30 @@ const TrainingCenter = () => {
                                     </div>
 
                                     {!sidebarCollapsed && (
-                                        <div className="level-info">
-                                            <span className="level-title">{chapter.title}</span>
+                                        <div className="level-info" style={{ flex: 1, overflow: 'hidden' }}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                <span className="level-title">{chapter.title}</span>
+                                                {completedInChapter > 0 && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={(e) => handleResetChapter(e, chapter)}
+                                                        title="Reset chapter progress"
+                                                        style={{
+                                                            background: 'none',
+                                                            border: 'none',
+                                                            color: 'var(--text-muted)',
+                                                            cursor: 'pointer',
+                                                            opacity: 0.5,
+                                                            fontSize: '0.8rem',
+                                                            padding: '0 0.2rem'
+                                                        }}
+                                                        onMouseEnter={e => e.currentTarget.style.opacity = 1}
+                                                        onMouseLeave={e => e.currentTarget.style.opacity = 0.5}
+                                                    >
+                                                        ↺
+                                                    </button>
+                                                )}
+                                            </div>
                                             <div className="chapter-progress-bar">
                                                 <div
                                                     className="progress-fill"

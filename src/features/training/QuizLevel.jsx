@@ -246,6 +246,26 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep 
         }
     };
 
+    const handleResetFormula = async () => {
+        // 1. Reset component state to default
+        setFormula(level.prefill ?? '');
+        setResults([]);
+
+        // 2. Clear from Supabase if logged in
+        if (level.type === 'challenge' && userId && isSupabaseConfigured && supabase) {
+            try {
+                await supabase
+                    .from('draft_formulas')
+                    .delete()
+                    .eq('user_id', userId)
+                    .eq('course_slug', 'formula-studio-core')
+                    .eq('step_id', level.id);
+            } catch (err) {
+                console.error("Failed to delete draft:", err);
+            }
+        }
+    };
+
     // ---- RENDER LESSON ----
     if (level.type === 'lesson') {
         return (
@@ -551,6 +571,20 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep 
                     <div className="editor-label-row">
                         <label>Formula Editor</label>
                         <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                            <button
+                                type="button"
+                                className="btn-format"
+                                onMouseDown={(e) => e.preventDefault()}
+                                onClick={handleResetFormula}
+                                title="Reset formula to default"
+                                style={{
+                                    background: 'transparent',
+                                    border: '1px solid var(--glass-border)',
+                                    color: 'var(--text-muted)'
+                                }}
+                            >
+                                ↺ Reset
+                            </button>
                             <button
                                 type="button"
                                 className="btn-format"
