@@ -3,6 +3,8 @@ import { tokenize, parse, prettyStringify } from '../../lib/parser';
 import SyntaxHighlightedEditor from '../editor/SyntaxHighlightedEditor';
 import { renderMarkdownText, evaluateAst } from '../../lib/quizUtils.jsx';
 import CoachMark from '../../components/CoachMark';
+import { useAuth } from '../../context/AuthContext';
+import { isSupabaseConfigured, supabase } from '../../lib/supabaseClient';
 import './QuizLevel.css';
 
 
@@ -10,6 +12,9 @@ const UI_STYLE = 'minimal';
 const LAYOUT = 'workbench';
 
 const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep }) => {
+    const { user } = useAuth();
+    const userId = user?.id;
+
     const [formula, setFormula] = useState('');
     const [results, setResults] = useState([]);
     const [visibleHints, setVisibleHints] = useState(0);
@@ -17,19 +22,94 @@ const QuizLevel = ({ level, onComplete, onNext, onPrev, isLastStep, isFirstStep 
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [answerStatus, setAnswerStatus] = useState(null); // null, 'correct', 'incorrect'
     const [bannerDismissed, setBannerDismissed] = useState(false);
+    const [isDraftLoaded, setIsDraftLoaded] = useState(false);
 
-
-    // Initialize/Reset
+    // Initialize/Reset & Fetch Draft
     useEffect(() => {
-        // Use ?? instead of || so empty string prefills work
-        setFormula(level.prefill ?? '');
+        let isMounted = true;
+
+        // Reset local ephemeral state
+        setFormula(''); // Prevent flash of old formula
         setResults([]);
         setVisibleHints(0);
         setSelectedCaseIndex(0);
         setSelectedAnswer(null);
         setAnswerStatus(null);
         setBannerDismissed(false);
-    }, [level]);
+        setIsDraftLoaded(false);
+
+        const initLevel = async () => {
+            if (level.type !== 'challenge' || !userId || !isSupabaseConfigured || !supabase) {
+                if (isMounted) {
+                    setFormula(level.prefill ?? '');
+                    setIsDraftLoaded(true);
+                }
+                return;
+            }
+
+            try {
+                const { data, error } = await supabase
+                    .from('draft_formulas')
+                    .select('formula')
+                    .eq('user_id', userId)
+                    .eq('course_slug', 'formula-studio-core')
+                    .eq('step_id', level.id)
+                    .maybeSingle();
+
+                if (error) {
+                    console.error("Failed to load draft formula", error);
+                }
+
+                if (isMounted) {
+                    if (data) {
+                        setFormula(data.formula);
+                    } else {
+                        setFormula(level.prefill ?? '');
+                    }
+                    setIsDraftLoaded(true);
+                }
+            } catch (err) {
+                console.error("Error fetching draft", err);
+                if (isMounted) {
+                    setFormula(level.prefill ?? '');
+                    setIsDraftLoaded(true);
+                }
+            }
+        };
+
+        initLevel();
+
+        return () => { isMounted = false; };
+    }, [level, userId]);
+
+    // Save draft when formula changes
+    useEffect(() => {
+        if (!isDraftLoaded || level.type !== 'challenge' || !userId || !isSupabaseConfigured || !supabase) {
+            return;
+        }
+
+        const saveDraft = async () => {
+            try {
+                await supabase
+                    .from('draft_formulas')
+                    .upsert({
+                        user_id: userId,
+                        course_slug: 'formula-studio-core',
+                        step_id: level.id,
+                        formula: formula,
+                        updated_at: new Date().toISOString()
+                    }, { onConflict: 'user_id,course_slug,step_id' });
+            } catch (err) {
+                console.error("Failed to save draft:", err);
+            }
+        };
+
+        const timer = setTimeout(() => {
+            saveDraft();
+        }, 1000); // 1s debounce
+
+        return () => clearTimeout(timer);
+    }, [formula, isDraftLoaded, level.id, level.type, userId]);
 
     // Timer for success banner
     useEffect(() => {
